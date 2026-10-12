@@ -1,0 +1,80 @@
+[
+ {
+  "start": 0,
+  "end": 5,
+  "cls": "breathing",
+  "file": "5-213293-A-23.wav"
+ },
+ {
+  "start": 5,
+  "end": 7.5,
+  "cls": "silence_gap",
+  "file": null
+ },
+ {
+  "start": 7.5,
+  "end": 12.5,
+  "cls": "snoring",
+  "file": "5-216368-A-28.wav"
+ },
+ {
+  "start": 12.5,
+  "end": 17.5,
+  "cls": "snoring",
+  "file": "5-233312-A-28.wav"
+ },
+ {
+  "start": 17.5,
+  "end": 20,
+  "cls": "silence_gap",
+  "file": null
+ },
+ {
+  "start": 20,
+  "end": 25,
+  "cls": "rain",
+  "file": "5-181766-A-10.wav"
+ },
+ {
+  "start": 25,
+  "end": 30,
+  "cls": "snoring",
+  "file": "5-234145-A-28.wav"
+ },
+ {
+  "start": 30,
+  "end": 35,
+  "cls": "clock_tick",
+  "file": "5-201194-A-38.wav"
+ },
+ {
+  "start": 35,
+  "end": 37.5,
+  "cls": "silence_gap",
+  "file": null
+ },
+ {
+  "start": 37.5,
+  "end": 42.5,
+  "cls": "snoring",
+  "file": "5-235874-A-28.wav"
+ },
+ {
+  "start": 42.5,
+  "end": 47.5,
+  "cls": "wind",
+  "file": "5-117773-A-16.wav"
+ },
+ {
+  "start": 47.5,
+  "end": 50,
+  "cls": "silence_gap",
+  "file": null
+ },
+ {
+  "start": 50,
+  "end": 55,
+  "cls": "insects",
+  "file": "5-194932-A-7.wav"
+ }
+]

@@ -1,0 +1,117 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Council Report: SleepSmooth</title><style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:#1d1d1f;max-width:860px;margin:0 auto;padding:32px 16px;line-height:1.55}
+h1{font-size:24px;margin:0 0 4px}h2{font-size:18px;margin:32px 0 10px;border-bottom:1px solid #e3e3e6;padding-bottom:6px}h3{font-size:16px;margin:22px 0 6px;color:#2c6fa8}
+.q{background:#f6f7f9;border:1px solid #e3e3e6;border-radius:8px;padding:14px 16px}.verdict{border:2px solid #2c6fa8;border-radius:10px;padding:8px 20px 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.cell{border:1px solid #e3e3e6;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:3px;font-size:13px}.cell span{color:#2c6fa8;font-weight:600}.cell small{color:#666}
+details{border:1px solid #e3e3e6;border-radius:8px;padding:8px 14px;margin:8px 0}summary{cursor:pointer;font-weight:600}.tag{font-weight:400;color:#888;font-size:12px;margin-left:6px}
+footer{margin-top:36px;color:#888;font-size:12px;border-top:1px solid #e3e3e6;padding-top:10px}li{margin:3px 0}
+</style></head><body>
+<h1>Council Report</h1><div style="color:#666;font-size:14px">SleepSmooth hackathon pivot</div>
+<h2>The question</h2><div class="q">Is the SleepSmooth pivot ("screening evidence engine that prevents false reassurance and gets users evaluated") the right strategy for the sleep-apnea hackathon? What should be built, cut and demoed?</div>
+<h2>Chairman's verdict</h2><div class="verdict"><h3>Where the Council Agrees</h3>
+<ul>
+<li><strong>Take the pivot, but shrink it.</strong> All five say the &quot;evidence engine&quot; idea beats &quot;AI detects apnea&quot;, and all five say five modules is too many for a short build.</li>
+<li><strong>Cut the wearable integration.</strong> Every advisor that addressed it says it is fake without real device data, and fake integrations cost you on the &quot;honest about finished vs planned&quot; criterion. Show it only as a roadmap slide.</li>
+<li><strong>The demo is the contradiction case.</strong> Quiet/normal-sounding recording plus a high-risk questionnaire produces &quot;can&#x27;t rule out, here&#x27;s why, here&#x27;s your summary&quot;.</li>
+<li><strong>Honesty is the scoring weapon.</strong> Say aloud what is real, what is a sample and what is unvalidated. The criteria reward this under Presentation and Rigor.</li>
+<li><strong>Build the core in Momen.</strong> The $2000 special prize is a second shot on the same project, and the core (form, rules, LLM summary) fits no-code.</li>
+<li><strong>Never say &quot;diagnosis&quot; and make no accuracy claims.</strong></li>
+</ul>
+<h3>Where the Council Clashes</h3>
+<ul>
+<li><strong>How real should the audio be?</strong> The Executor and Expansionist say use pre-baked sample nights and label them as samples. The Contrarian wants a live demo with a real uploaded recording. First Principles wants a real quality gate (noise, duration, snore-like energy). Pre-baked is fast and honest but looks scripted; real is more credible but riskier to build. The peer reviewers added that judges may upload their own audio, so the quality gate must handle unusable audio gracefully.</li>
+<li><strong>Scope ambition.</strong> The Expansionist wants a platform (&quot;any device feeds it&quot;), a B2B2C referral angle and a 2-week outcome loop. Everyone else says that is scope creep. Reviewers unanimously called it the biggest blind spot, and its &quot;80% undiagnosed&quot; figure is unsourced.</li>
+<li><strong>Is it a real contribution or a checklist?</strong> The Contrarian says STOP-BANG scoring plus a summary page is a rules engine over a questionnaire that Cleveland Clinic&#x27;s app already approximates. The others say the refusal-to-score behavior is the differentiator. Both are partly right: it is modest on Implementation, so the project wins on Health Impact, Presentation and honesty, not technical depth.</li>
+</ul>
+<h3>Blind Spots the Council Caught</h3>
+<p>Raised in peer review, missed by all five advisors:</p>
+<ol>
+<li><strong>Safety escalation.</strong> Red flags (drowsy driving, gasping/choking, witnessed apneas) must trigger urgent-care language, never a calm &quot;inconclusive&quot;. The &quot;no flag&quot; state is itself a false-reassurance risk and needs a &quot;does not rule out&quot; label.</li>
+<li><strong>STOP-Bang limits.</strong> Needs measured BMI, neck size and blood pressure (will be self-reported), has moderate specificity and is less accurate in women. Cite cutoffs and define how missing items are handled.</li>
+<li><strong>Judges will test it.</strong> Someone may upload their own audio or take the questionnaire. Define behavior for unusable audio and don&#x27;t hardcode outcomes.</li>
+<li><strong>Demo resilience.</strong> Record a 60-second backup video, and verify early that Momen supports file upload, LLM calls and printable output.</li>
+<li><strong>Show Momen in the demo</strong> (flash the workflow), since the special prize is judged on the no-code build.</li>
+<li><strong>LLM guardrails.</strong> A prompt constraint is not enough; test the clinician summary for hallucinated claims.</li>
+<li><strong>Label synthetic data</strong> and add medical/wellness disclaimers. Do not use real patient data.</li>
+<li><strong>&quot;Diagnosing&quot; and &quot;smoothing it over&quot;.</strong> The theme has two halves. A compact &quot;what test next (home sleep test vs lab)&quot; step and a one-line treatment-adherence roadmap slide cover both without scope creep.</li>
+<li><strong>Quick credibility check.</strong> A 3-person usability test or a clinician sanity check, even informal.</li>
+</ol>
+<h3>The Recommendation</h3>
+<p>Pivot to SleepSmooth, but pitch and build exactly one falsifiable behavior: <strong>the app refuses to give a reassuring score when evidence is thin or conflicting, and tells you exactly why.</strong></p>
+<p>Build in Momen:</p>
+<ol>
+<li>Real STOP-Bang (8 items) plus a few symptom and red-flag fields, scored by a deterministic rules workflow.</li>
+<li>One audio input with a real quality gate, reported as &quot;pattern present / absent / unusable&quot;. Offer 2-3 labeled sample nights as a fallback, and let a judge upload their own.</li>
+<li>A three-state rule layer: concerning, inconclusive, no flag (always labeled &quot;does not rule out apnea&quot;), with the conflict shown. Red flags override to urgent.</li>
+<li>An LLM-written one-page clinician summary and next-steps checklist (what to bring, home sleep test vs lab), constrained against diagnostic language.</li>
+</ol>
+<p>Cut: wearables, accounts and storage, the platform and B2B story, outcome loop (all go on a &quot;planned&quot; slide with CPAP adherence). Pitch it to one named person (&quot;Dana snores, is exhausted, never tested&quot;) in one sentence: <em>an app that tells you whether to see a sleep doctor and hands you the page to bring.</em> Frame &quot;inconclusive&quot; as protecting you from a false all-clear. Close with: &quot;Rules are deterministic. Nothing here is validated. Here is what validation would take.&quot;</p>
+<p>Expect to win on Presentation, Health Impact and the Momen prize rather than Implementation. That is the realistic route.</p>
+<h3>The One Thing to Do First</h3>
+<p>Create the Momen project and, in the first sitting, get the STOP-Bang form scoring correctly plus the single contradiction rule (&quot;high risk + normal-sounding audio = inconclusive, get evaluated&quot;) producing its result screen. In the same hour, confirm Momen can handle audio upload, an LLM call and a printable page.</p></div>
+<h2>Where each advisor landed</h2><div class="grid"><div class="cell"><b>Executor</b><span>Take it, shrink it</span><small>Build now in Momen, pre-baked audio</small></div><div class="cell"><b>Contrarian</b><span>Take it, but it is thin</span><small>Real audio demo, cut wearables</small></div><div class="cell"><b>Expansionist</b><span>Take it, think bigger</span><small>Platform + outcome loop</small></div><div class="cell"><b>First Principles</b><span>Take it, one claim only</span><small>Refuse-to-score behavior, rules layer</small></div><div class="cell"><b>Outsider</b><span>Take it, make it plain</span><small>One named user, one sentence</small></div></div>
+<p style="font-size:13px;color:#666">All five backed the pivot. They differ on scope and audio realism. In peer review, 5 of 5 reviewers picked the First Principles response as strongest and the Expansionist as the biggest blind spot.</p>
+<h2>Advisor responses</h2><details style="border-left:4px solid #2f7d5b"><summary>The Executor <span class="tag">Response A</span></summary><p>Take the pivot, but cut it to what you can ship and demo in one working sitting. Five modules is a plan. You need one thing that runs.</p>
+<p>First, a stack warning. The &quot;Best No-code AI App built with Momen&quot; prize is $2000, which is likely worth more than a placement bundle. Build in Momen, and that prize is a second shot on the same project. Its AI-agent and workflow blocks are enough, because the &quot;engine&quot; is rules plus an LLM summary. It does not need custom ML.</p>
+<p>Monday morning, in order:</p>
+<ol>
+<li>Create the Momen project. Build a form with the STOP-Bang questionnaire (8 yes/no items, published and validated) plus a few symptom fields. Score it with a plain rules workflow. About 2 hours.</li>
+<li>Skip real audio analysis. Offer 3 pre-baked sample &quot;nights&quot; (normal-sounding, snoring, quiet and ambiguous), each with a hand-written quality flag and pattern summary. Say in the demo that these are samples. Faking live detection will cost you Rigor and Honesty. Do not add a real audio ML model.</li>
+<li>Write the conflict logic as an if/else table: questionnaire high + audio normal = &quot;Inconclusive, audio cannot rule this out, get evaluated&quot;. That is your demo moment, about 20 lines of rules.</li>
+<li>Add one LLM call that generates the clinician-ready summary and a concrete &quot;next steps&quot; checklist (book a PCP or sleep study, what to bring, what to say). Constrain the prompt to never say &quot;diagnosis&quot; or &quot;you have/don&#x27;t have&quot;. Output as a printable page.</li>
+<li>Cut the wearable integration completely. Show it only as a &quot;planned&quot; slide. Cut accounts and storage. Privacy-first means you store nothing.</li>
+</ol>
+<p>Demo script, 3 minutes: the problem (a normal-sounding night gives false reassurance), run the contradicting persona live, show the &quot;inconclusive&quot; result and the clinician handoff, then a finished-versus-planned slide.</p>
+<p>Weak point: nothing here is technically impressive. Win on honesty and Health Impact, not on Implementation. If you cannot finish step 1 and step 3 by end of day one, the project has no clear first step.</p></details>
+<details style="border-left:4px solid #b3423a"><summary>The Contrarian <span class="tag">Response B</span></summary><p>The pivot is better than the original idea, but as framed it will likely lose, and the health claim is the part most likely to hurt you.</p>
+<ol>
+<li>&quot;Prevents false reassurance&quot; is a clinical claim you can&#x27;t back. Your demo case is a recording that sounds normal while symptoms say otherwise. That is only a conclusion someone wrote into the data. You have no validation data and no ground truth, and you can&#x27;t show the engine does this on anyone but your scripted persona. Judges scoring Health Impact &amp; Rigor will see a rules engine over a questionnaire. STOP-BANG and Berlin already do that, and so does the Cleveland Clinic SLEEP app, which also routes users to appointments. Your differentiator is mostly a checklist with a nice summary page.</li>
+</ol>
+<ol>
+<li>The audio analysis will be the weakest part. In a short build, &quot;audible pattern detection with quality checks&quot; means a snore-detection heuristic or an off-the-shelf model on a sample file. Judges will ask for sensitivity and specificity, and you will have none. The 8-of-41 external validation statistic cuts against you: you are adding one more unvalidated tool.</li>
+</ol>
+<ol>
+<li>Five features is too many for a short window. Wearable comparison is the first to fail, because without real device data it is fake. Fake integrations will damage your credibility on &quot;honesty about finished vs planned.&quot;</li>
+</ol>
+<ol>
+<li>The clinician summary risks looking like a PDF generator with a disclaimer.</li>
+</ol>
+<p>What I&#x27;d build:</p>
+<ul>
+<li>One flow: questionnaire, then a recording, then an &quot;inconclusive, here is why, here is what to do&quot; output.</li>
+<li>Real, honestly labeled limits. State that a normal-sounding recording cannot exclude apnea and that the tool does not diagnose.</li>
+<li>Cut the wearable data entirely.</li>
+<li>Use no-code (Momen) for the Momen prize. That is a cheaper bet than placing in the top three.</li>
+</ul>
+<p>Demo it live with a real uploaded recording rather than a fake dashboard, and say plainly what is a stub.</p></details>
+<details style="border-left:4px solid #7a5bb0"><summary>The Expansionist <span class="tag">Response C</span></summary><p>The pivot is right, but it is still too small. Do not pitch a better apnea app. Pitch the missing layer of a whole category: the Evidence Engine for undiagnosed sleep apnea. Roughly 80% of apnea cases go undiagnosed, and the core failure is false reassurance and dropped follow-through, not detection. Every competitor (SnoreLab, Apple Watch, myAir) produces a score. Nobody produces a defensible &quot;inconclusive, and here is why.&quot; That uncertainty engine is your moat, so build it as a reusable, source-agnostic evidence-reconciliation layer. Audio, questionnaire, and wearable are plug-in sources. The pitch becomes: any device, including future Apple Watch exports, SnoreLab logs, and home sleep tests, can feed this layer.</p>
+<p>Upside nobody is seeing:</p>
+<ol>
+<li>The clinician-ready summary is the most valuable artifact. Make it a one-page PDF with a conflict matrix, STOP-BANG score, and the exact questions to ask. Pitch it as a referral accelerator for primary care and sleep centers, a B2B2C angle that lifts Health Impact.</li>
+<li>Add a &quot;why a normal recording cannot rule out apnea&quot; explainer (positional, REM-dependent, mouth-breathing, upper-airway resistance, partner-less sleepers). A shareable educational asset that doubles as marketing.</li>
+<li>Add an outcome loop: a follow-up nudge at 2 weeks asking &quot;did you book the appointment?&quot; Measure navigation completion, not detection accuracy. A metric nobody else claims.</li>
+<li>The adjacent wedge is the CPAP-adherence and &quot;smooth it over&quot; half of the theme. A diagnosed user&#x27;s same engine can flag mask-leak and residual-event conflicts for their clinician. Show it as a roadmap slide only.</li>
+</ol>
+<p>Momen prize: build the whole thing no-code (forms, scoring logic, LLM summary) and call it out explicitly. That wins the $2000 special prize and frees time for demo polish.</p>
+<p>Demo: three personas, one conflict each, ending with the PDF and the appointment-prep checklist. Be openly honest that audio is simulated.</p></details>
+<details style="border-left:4px solid #2c6fa8"><summary>The First Principles Thinker <span class="tag">Response D</span></summary><p>You&#x27;re asking the wrong question. &quot;Is this pivot the right strategy?&quot; assumes the contest is about differentiation. The real question is: what single claim can you prove, live, in 3 minutes, that a judge would believe?</p>
+<p>Strip it down. The theme is &quot;diagnosing sleep apnea and smoothing it over.&quot; The hard fact in your research is that 33 of 41 digital apnea tools were never externally validated. The market&#x27;s actual failure isn&#x27;t missing detection. It&#x27;s confident outputs with no evidence behind them. Your pivot spots this, but then bolts on five features to address it. That is the trap.</p>
+<p>Don&#x27;t claim &quot;evidence engine.&quot; That is a category, not a demo. Claim one falsifiable behavior: the app refuses to output a score when evidence is insufficient or conflicting, and says exactly why. Everything else is scaffolding.</p>
+<p>Build: (1) STOP-BANG questionnaire, a real validated instrument, scored correctly. (2) One audio sample with a quality gate (noise, duration, snore-like energy), reported honestly as &quot;audible pattern present/absent/unusable.&quot; (3) A rule layer, not a model, that produces three states: concerning, inconclusive, or no flag, with the conflict shown. (4) A one-page clinician summary.</p>
+<p>Cut: wearable integration (unless a mock file import, labeled as such), any accuracy claims, any &quot;AI diagnoses&quot; language. Audio-based AHI estimation is unvalidatable in your timeframe. Don&#x27;t touch it.</p>
+<p>Demo: two personas side by side. Quiet recording plus STOP-BANG 6 produces &quot;Can&#x27;t rule out. Here&#x27;s why. Here&#x27;s your summary.&quot; Loud snoring plus low risk produces a different, equally honest result. Then state plainly: &quot;Rules are deterministic. Nothing here is validated. Here&#x27;s what validation would require.&quot; That honesty line scores on Presentation and Rigor simultaneously.</p>
+<p>For the Momen prize, build the questionnaire, rule flow, and summary in Momen and keep audio analysis as a thin external call.</p></details>
+<details style="border-left:4px solid #b57a1c"><summary>The Outsider <span class="tag">Response E</span></summary><p>Reading this cold, I can&#x27;t tell what SleepSmooth is. A judge skimming will have the same problem. &quot;Screening evidence engine,&quot; &quot;multimodal validation,&quot; &quot;uncertainty engine&quot; and &quot;diagnosis-navigation workflow&quot; are builder jargon. The framed question never says who the user is. Pick one person and name them, for example: &quot;Dana snores, is exhausted every day, and has never been tested.&quot;</p>
+<p>Here is the plain version a judge would want: &quot;An app that tells you whether you should see a sleep doctor, and hands you a one-page summary to bring.&quot; That is understandable and useful. The audio analysis is the least interesting part. Lead with the outcome (a person gets tested), not the pipeline.</p>
+<p>The curse-of-knowledge risk is the demo moment. &quot;A normal-sounding recording can&#x27;t rule out apnea&quot; is obvious to you after the research. A lay judge may hear &quot;your app told me nothing&quot; or &quot;so why did I record?&quot; Show the surprise visibly: a green &quot;sounds normal&quot; next to a red &quot;but your symptoms say get checked,&quot; in 10 seconds, without explanation.</p>
+<p>&quot;Inconclusive instead of a score&quot; will feel to some judges like the app refuses to answer. Reframe it as the app protecting you from a false all-clear.</p>
+<p>Cut anything a stranger can&#x27;t see working in 2 minutes: wearable integration, privacy-first claims you can&#x27;t demo, long competitor comparisons.</p>
+<p>Build one clean flow: a few questionnaire questions, a pre-recorded sample, a result, and a printable summary. Say aloud what is real and what is mock. Judges reward that honesty, and the criteria ask for it.</p>
+<p>Verdict: the pivot is right, but only if you can explain it in one sentence to your grandmother.</p></details>
+
+<h2>Peer review highlights</h2><details><summary>Five anonymous reviews</summary><p><strong>Reviewer 1 (general):</strong> Strongest D (one falsifiable demoable behavior, honesty line). Blind spot C (scope expansion, unsourced &quot;80% undiagnosed&quot;). Missed: safety of &quot;no flag&quot; and urgent-symptom escape, real test data, regulatory framing, user testing, Momen feasibility check, &quot;smoothing it over&quot;, demo fallback.</p>
+<p><strong>Reviewer 2 (skeptical judge):</strong> Strongest D, A close second. Blind spot C (scope inflation, unsourced stat). Missed: red-flag safety, which STOP-BANG items need measurements, judge skepticism of hand-written samples (use public labeled audio or the judge&#x27;s voice), 60-second backup video, treatment half of theme, 3-person user check.</p>
+<p><strong>Reviewer 3 (clinician):</strong> Strongest D, A close. Blind spot C (platform pitch, unsourced stat, CPAP claim). Missed: safety-net red flags and &quot;no flag&quot; needing a &quot;does not rule out&quot; label, STOP-Bang validation limits (moderate specificity, women), synthetic-data labeling, disclaimers/SaMD, home test vs polysomnography guidance, access/equity, LLM hallucination testing, persona bias.</p>
+<p><strong>Reviewer 4 (product/UX):</strong> Strongest D (two-direction demo). Blind spot C (scope, unsourced stat, &quot;any device&quot; unbuilt). Missed: high-stakes edge-case UX (drowsy driving, no doctor access), judges testing with their own input and unusable-audio behavior, first 10 seconds of pitch and Momen story, STOP-Bang self-reported measurements and population mismatch.</p>
+<p><strong>Reviewer 5 (competition strategy):</strong> Strongest D, A best runnable plan. Blind spot C. Missed: Implementation is scored and nobody proposes a cheap real technical differentiator (browser-side audio feature extraction with visible quality gate), &quot;Diagnosing&quot; half of theme, safety/escalation, showing the Momen workflow in demo, backup demo video, clinician sanity check.</p></details>
+<footer>Generated 2026-10-09 · Counciled: SleepSmooth hackathon strategy · Transcript: council-transcript-20261009.md</footer></body></html>

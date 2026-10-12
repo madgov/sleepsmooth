@@ -1,0 +1,79 @@
+{
+  "expo": {
+    "name": "SleepSmooth Overnight",
+    "slug": "sleepsmooth-overnight",
+    "scheme": "sleepsmooth",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.sleepsmooth.overnight.dev",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ],
+        "NSMicrophoneUsageDescription": "SleepSmooth listens during the sleep hours you set to look for snore-like sounds. The analysis runs on this iPhone.",
+        "CADisableMinimumFrameDurationOnPhone": true
+      }
+    },
+    "android": {
+      "package": "com.sleepsmooth.overnight.dev",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-asset",
+      [
+        "react-native-audio-api",
+        {
+          "iosBackgroundMode": true,
+          "iosMicrophonePermission": "SleepSmooth listens during the sleep hours you set to look for snore-like sounds. The analysis runs on this iPhone.",
+          "androidForegroundService": true,
+          "androidFSTypes": [
+            "microphone"
+          ],
+          "androidFSStopWithTask": false,
+          "androidPermissions": [
+            "android.permission.RECORD_AUDIO",
+            "android.permission.FOREGROUND_SERVICE",
+            "android.permission.FOREGROUND_SERVICE_MICROPHONE"
+          ],
+          "disableFFmpeg": true
+        }
+      ],
+      "expo-dev-client",
+      "expo-router",
+      "expo-splash-screen",
+      "@react-native-community/datetimepicker",
+      [
+        "./plugins/withLiveActivity",
+        {
+          "enabled": true
+        }
+      ],
+      "./plugins/withAppIntents",
+      [
+        "./plugins/withHealthKit",
+        {
+          "healthkit": false
+        }
+      ],
+      "./plugins/withMotionUsage",
+      "./plugins/withoutPushEntitlement",
+      "expo-sharing"
+    ],
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

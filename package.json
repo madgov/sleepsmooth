@@ -1,0 +1,44 @@
+{
+  "name": "sleepsmooth",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "data:prepare": "tsx scripts/prepare-data.ts && tsx scripts/extract-features.ts",
+    "train": "tsx scripts/train.ts",
+    "evaluate": "tsx scripts/evaluate.ts",
+    "model:export": "tsx scripts/export-model.ts",
+    "sample:build": "tsx scripts/build-sample-audio.ts",
+    "train:all": "npm run data:prepare && npm run train && npm run evaluate && npm run model:export && npm run sample:build",
+    "train:v2": "tsx scripts/augment-features.ts && tsx scripts/train-v2.ts",
+    "yamnet:all": "bash scripts/yamnet/run_all.sh",
+    "yamnet:sanity": "python3 -I scripts/yamnet/sanity_classes.py"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "jsdom": "^29.1.1",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3"
+  }
+}

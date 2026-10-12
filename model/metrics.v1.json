@@ -1,0 +1,593 @@
+{
+  "generatedAt": "2026-10-10T08:07:22.528Z",
+  "silenceFloorDbfs": -72,
+  "testFold": 5,
+  "trainFolds": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "selection": {
+    "method": "4-fold grouped CV over folds 1-4 (each fold held out in turn)",
+    "grid": [
+      {
+        "name": "logreg l2=0.0001",
+        "cvAucPooled": 0.8641711919761509,
+        "cvAucFolds": [
+          0.8321647030201925,
+          0.9048042537172972,
+          0.8282024864345079,
+          0.89936849291688
+        ]
+      },
+      {
+        "name": "mlp32 l2=0.0001",
+        "cvAucPooled": 0.907335510619365,
+        "cvAucFolds": [
+          0.9116141869113404,
+          0.9361189535102579,
+          0.8721020216589968,
+          0.9219278033794163
+        ]
+      },
+      {
+        "name": "logreg l2=0.001",
+        "cvAucPooled": 0.8642133528110807,
+        "cvAucFolds": [
+          0.8320343725019984,
+          0.9054300771692076,
+          0.8280834306385512,
+          0.8991338112305854
+        ]
+      },
+      {
+        "name": "mlp32 l2=0.001",
+        "cvAucPooled": 0.9070144181679135,
+        "cvAucFolds": [
+          0.9123353491120147,
+          0.9376199887069452,
+          0.8678984362479109,
+          0.9227897252090801
+        ]
+      },
+      {
+        "name": "logreg l2=0.01",
+        "cvAucPooled": 0.8643239202987109,
+        "cvAucFolds": [
+          0.8307441003718764,
+          0.9104178430265387,
+          0.8268058703665545,
+          0.8970600785116914
+        ]
+      },
+      {
+        "name": "mlp32 l2=0.01",
+        "cvAucPooled": 0.8990345727222748,
+        "cvAucFolds": [
+          0.897147499391791,
+          0.9361095426312818,
+          0.856569819355725,
+          0.9222520908004779
+        ]
+      }
+    ],
+    "winner": "mlp32 l2=0.0001"
+  },
+  "trainWindows": 13116,
+  "trainPositiveWindows": 279,
+  "test": {
+    "baseline": {
+      "model": "logreg l2=0.01",
+      "threshold": 0.8193910166302001,
+      "cvAuc": 0.8643239202987109,
+      "overall": {
+        "n": 3308,
+        "positives": 71,
+        "auc": 0.8792657085546954,
+        "accuracy": 0.9537484885126964,
+        "precision": 0.15833333333333333,
+        "recall": 0.2676056338028169,
+        "f1": 0.19895287958115182,
+        "fpr": 0.031201729996910718,
+        "confusion": {
+          "tp": 19,
+          "fp": 101,
+          "tn": 3136,
+          "fn": 52
+        },
+        "ci95": {
+          "auc": [
+            0.7585421542980403,
+            0.957473498408417
+          ],
+          "accuracy": [
+            0.934351145038168,
+            0.9726644638029438
+          ],
+          "precision": [
+            0.012987012987012988,
+            0.3333333333333333
+          ],
+          "recall": [
+            0.044444444444444446,
+            0.5555555555555556
+          ],
+          "f1": [
+            0.02575107296137339,
+            0.38392857142857145
+          ],
+          "fpr": [
+            0.016900510204081634,
+            0.04835232522328303
+          ]
+        }
+      },
+      "bedroomNegatives": {
+        "windows": 1589,
+        "fpr": 0.05349276274386407,
+        "ci95": [
+          0.0273972602739726,
+          0.08270202020202021
+        ]
+      }
+    },
+    "mlp": {
+      "model": "mlp32 l2=0.0001",
+      "threshold": 0.7952122356614229,
+      "cvAuc": 0.907335510619365,
+      "overall": {
+        "n": 3308,
+        "positives": 71,
+        "auc": 0.9194220000261066,
+        "accuracy": 0.9474002418379686,
+        "precision": 0.23036649214659685,
+        "recall": 0.6197183098591549,
+        "f1": 0.3358778625954198,
+        "fpr": 0.04541241890639481,
+        "confusion": {
+          "tp": 44,
+          "fp": 147,
+          "tn": 3090,
+          "fn": 27
+        },
+        "ci95": {
+          "auc": [
+            0.8234769273665133,
+            0.977849196538937
+          ],
+          "accuracy": [
+            0.9294367050272562,
+            0.9641200123724095
+          ],
+          "precision": [
+            0.07222222222222222,
+            0.3853211009174312
+          ],
+          "recall": [
+            0.36507936507936506,
+            0.864406779661017
+          ],
+          "f1": [
+            0.1256038647342995,
+            0.49315068493150693
+          ],
+          "fpr": [
+            0.030112923462986198,
+            0.062109862671660424
+          ]
+        }
+      },
+      "bedroomNegatives": {
+        "windows": 1589,
+        "fpr": 0.06482064191315293,
+        "ci95": [
+          0.03954802259887006,
+          0.09473023839397741
+        ]
+      }
+    }
+  },
+  "winnerPerSource": {
+    "esc50": {
+      "n": 3308,
+      "positives": 71,
+      "auc": 0.9194220000261066,
+      "accuracy": 0.9474002418379686,
+      "precision": 0.23036649214659685,
+      "recall": 0.6197183098591549,
+      "f1": 0.3358778625954198,
+      "fpr": 0.04541241890639481,
+      "confusion": {
+        "tp": 44,
+        "fp": 147,
+        "tn": 3090,
+        "fn": 27
+      },
+      "ci95": {
+        "auc": [
+          0.8234769273665133,
+          0.977849196538937
+        ],
+        "accuracy": [
+          0.9294367050272562,
+          0.9641200123724095
+        ],
+        "precision": [
+          0.07222222222222222,
+          0.3853211009174312
+        ],
+        "recall": [
+          0.36507936507936506,
+          0.864406779661017
+        ],
+        "f1": [
+          0.1256038647342995,
+          0.49315068493150693
+        ],
+        "fpr": [
+          0.030112923462986198,
+          0.062109862671660424
+        ]
+      }
+    },
+    "kaggle": {
+      "note": "no test windows from this source in this build"
+    }
+  },
+  "winnerWorstNegativeClasses": [
+    {
+      "cls": "mouse_click",
+      "windows": 64,
+      "fpr": 0.296875
+    },
+    {
+      "cls": "crickets",
+      "windows": 72,
+      "fpr": 0.2638888888888889
+    },
+    {
+      "cls": "clock_alarm",
+      "windows": 72,
+      "fpr": 0.19444444444444445
+    },
+    {
+      "cls": "crackling_fire",
+      "windows": 72,
+      "fpr": 0.16666666666666666
+    },
+    {
+      "cls": "door_wood_creaks",
+      "windows": 60,
+      "fpr": 0.13333333333333333
+    },
+    {
+      "cls": "insects",
+      "windows": 72,
+      "fpr": 0.125
+    },
+    {
+      "cls": "keyboard_typing",
+      "windows": 72,
+      "fpr": 0.1111111111111111
+    },
+    {
+      "cls": "footsteps",
+      "windows": 66,
+      "fpr": 0.10606060606060606
+    }
+  ],
+  "confound": {
+    "applicable": false,
+    "note": "No Kaggle data in this build. Positives and negatives are all ESC-50, so the ER-2 source confound does not apply. Within-Kaggle AUC and source-classifier check not run."
+  },
+  "robustnessWinner": {
+    "clean": {
+      "auc": 0.9194220000261066,
+      "recall": 0.6197183098591549,
+      "fpr": 0.04541241890639481,
+      "bedroomFpr": 0.06482064191315293,
+      "precision": 0.23036649214659685
+    },
+    "white noise SNR 20 dB": {
+      "auc": 0.8945554699839444,
+      "recall": 0.6901408450704225,
+      "fpr": 0.09854803830707445,
+      "bedroomFpr": 0.14348646947765892,
+      "precision": 0.1331521739130435
+    },
+    "white noise SNR 10 dB": {
+      "auc": 0.8867060876224291,
+      "recall": 0.4788732394366197,
+      "fpr": 0.0410874266295953,
+      "bedroomFpr": 0.06419131529263687,
+      "precision": 0.20359281437125748
+    },
+    "pink noise SNR 20 dB": {
+      "auc": 0.9105283539357865,
+      "recall": 0.7183098591549296,
+      "fpr": 0.08526413345690455,
+      "bedroomFpr": 0.1145374449339207,
+      "precision": 0.1559633027522936
+    },
+    "pink noise SNR 10 dB": {
+      "auc": 0.9145226626984645,
+      "recall": 0.5633802816901409,
+      "fpr": 0.05375347544022243,
+      "bedroomFpr": 0.07300188797986155,
+      "precision": 0.18691588785046728
+    },
+    "8 kHz sampling rate (4 kHz bandwidth, phone proxy)": {
+      "auc": 0.8105096442106454,
+      "recall": 0,
+      "fpr": 0.006796416434970652,
+      "bedroomFpr": 0.0062932662051604785,
+      "precision": 0
+    }
+  },
+  "sampleRecordingCheck": {
+    "note": "windows labeled by the segment containing their midpoint; fold-5 clips; for manual review, not a performance claim",
+    "durationSec": 55,
+    "perClass": {
+      "breathing": {
+        "windows": 9,
+        "tooQuiet": 0,
+        "snoreLike": 0
+      },
+      "silence_gap": {
+        "windows": 20,
+        "tooQuiet": 16,
+        "snoreLike": 0
+      },
+      "snoring": {
+        "windows": 40,
+        "tooQuiet": 2,
+        "snoreLike": 23
+      },
+      "rain": {
+        "windows": 10,
+        "tooQuiet": 0,
+        "snoreLike": 0
+      },
+      "clock_tick": {
+        "windows": 10,
+        "tooQuiet": 0,
+        "snoreLike": 0
+      },
+      "wind": {
+        "windows": 10,
+        "tooQuiet": 0,
+        "snoreLike": 0
+      },
+      "insects": {
+        "windows": 10,
+        "tooQuiet": 0,
+        "snoreLike": 0
+      }
+    }
+  },
+  "gate": {
+    "aucAtLeast085": true,
+    "beatsBaseline": true,
+    "beatsBaselineNote": "MLP test AUC 0.919 vs logistic regression 0.879",
+    "ambientFpAcceptable": true,
+    "ambientFpCriterion": "window-level FPR on bedroom-relevant negatives <= 0.10 at the validation-chosen threshold",
+    "confoundGate": "not applicable (ESC-50-only build)",
+    "pass": true
+  },
+  "droppedSilentWindows": {
+    "floorDbfs": -72,
+    "bySplit": {
+      "train/val (folds 1-4)": {
+        "kept": 13116,
+        "dropped": 1284
+      },
+      "test (fold 5)": {
+        "kept": 3308,
+        "dropped": 292
+      }
+    },
+    "byClass": {
+      "esc50:dog": {
+        "kept": 309,
+        "dropped": 51
+      },
+      "esc50:chirping_birds": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:vacuum_cleaner": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:thunderstorm": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:door_wood_knock": {
+        "kept": 236,
+        "dropped": 124
+      },
+      "esc50:can_opening": {
+        "kept": 257,
+        "dropped": 103
+      },
+      "esc50:crow": {
+        "kept": 333,
+        "dropped": 27
+      },
+      "esc50:clapping": {
+        "kept": 349,
+        "dropped": 11
+      },
+      "esc50:fireworks": {
+        "kept": 358,
+        "dropped": 2
+      },
+      "esc50:chainsaw": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:airplane": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:mouse_click": {
+        "kept": 299,
+        "dropped": 61
+      },
+      "esc50:pouring_water": {
+        "kept": 333,
+        "dropped": 27
+      },
+      "esc50:train": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:sheep": {
+        "kept": 357,
+        "dropped": 3
+      },
+      "esc50:water_drops": {
+        "kept": 295,
+        "dropped": 65
+      },
+      "esc50:church_bells": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:clock_alarm": {
+        "kept": 345,
+        "dropped": 15
+      },
+      "esc50:keyboard_typing": {
+        "kept": 356,
+        "dropped": 4
+      },
+      "esc50:wind": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:footsteps": {
+        "kept": 345,
+        "dropped": 15
+      },
+      "esc50:frog": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:cow": {
+        "kept": 328,
+        "dropped": 32
+      },
+      "esc50:brushing_teeth": {
+        "kept": 350,
+        "dropped": 10
+      },
+      "esc50:car_horn": {
+        "kept": 284,
+        "dropped": 76
+      },
+      "esc50:crackling_fire": {
+        "kept": 353,
+        "dropped": 7
+      },
+      "esc50:helicopter": {
+        "kept": 352,
+        "dropped": 8
+      },
+      "esc50:drinking_sipping": {
+        "kept": 300,
+        "dropped": 60
+      },
+      "esc50:rain": {
+        "kept": 360,
+        "dropped": 0
+      },
+      "esc50:insects": {
+        "kept": 346,
+        "dropped": 14
+      },
+      "esc50:laughing": {
+        "kept": 328,
+        "dropped": 32
+      },
+      "esc50:hen": {
+        "kept": 341,
+        "dropped": 19
+      },
+      "esc50:engine": {
+        "kept": 349,
+        "dropped": 11
+      },
+      "esc50:breathing": {
+        "kept": 298,
+        "dropped": 62
+      },
+      "esc50:crying_baby": {
+        "kept": 354,
+        "dropped": 6
+      },
+      "esc50:hand_saw": {
+        "kept": 351,
+        "dropped": 9
+      },
+      "esc50:coughing": {
+        "kept": 235,
+        "dropped": 125
+      },
+      "esc50:glass_breaking": {
+        "kept": 184,
+        "dropped": 176
+      },
+      "esc50:snoring": {
+        "kept": 350,
+        "dropped": 10
+      },
+      "esc50:toilet_flush": {
+        "kept": 359,
+        "dropped": 1
+      },
+      "esc50:pig": {
+        "kept": 324,
+        "dropped": 36
+      },
+      "esc50:washing_machine": {
+        "kept": 359,
+        "dropped": 1
+      },
+      "esc50:clock_tick": {
+        "kept": 359,
+        "dropped": 1
+      },
+      "esc50:sneezing": {
+        "kept": 206,
+        "dropped": 154
+      },
+      "esc50:rooster": {
+        "kept": 244,
+        "dropped": 116
+      },
+      "esc50:sea_waves": {
+        "kept": 358,
+        "dropped": 2
+      },
+      "esc50:siren": {
+        "kept": 353,
+        "dropped": 7
+      },
+      "esc50:cat": {
+        "kept": 312,
+        "dropped": 48
+      },
+      "esc50:door_wood_creaks": {
+        "kept": 324,
+        "dropped": 36
+      },
+      "esc50:crickets": {
+        "kept": 351,
+        "dropped": 9
+      }
+    }
+  }
+}

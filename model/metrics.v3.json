@@ -1,0 +1,2170 @@
+{
+ "generatedAt": "2026-10-12T09:01:39.468466+00:00",
+ "trainedFile": "trained.v3.json",
+ "useKaggle": false,
+ "testFold": 5,
+ "nTestWindows": 3308,
+ "nTestPositiveWindows": 71,
+ "nTestPositiveClips": 8,
+ "optimismNote": "Fold 5 was scored by v1 and v2 before v3; v3 choices used folds 1-4 only, but the fold-5 estimate is mildly optimistic.",
+ "selection": {
+  "grid": [
+   {
+    "name": "zeroshot class38 (Snoring)",
+    "family": "zeroshot",
+    "augment": false,
+    "l2": null,
+    "aucClean": 0.917664356755492,
+    "aucLp": 0.9076814528344506,
+    "crit": 0.9126729047949713,
+    "folds": [
+     0.9312463073019845,
+     0.8583815640880859,
+     0.9408407170822172,
+     0.917042157364738
+    ]
+   },
+   {
+    "name": "zeroshot max(38 Snoring, 41 Snort)",
+    "family": "zeroshot",
+    "augment": false,
+    "l2": null,
+    "aucClean": 0.9138240910361318,
+    "aucLp": 0.9030479491545915,
+    "crit": 0.9084360200953616,
+    "folds": [
+     0.9278359920759045,
+     0.8549277715038585,
+     0.9330791949996565,
+     0.914168373442567
+    ]
+   },
+   {
+    "name": "logreg[emb] l2=0.001",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 0.001,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9621987629285084,
+    "aucLp": 0.9394285615365306,
+    "crit": 0.9508136622325195,
+    "folds": [
+     0.9503962047753102,
+     0.9472802559759081,
+     0.9463768115942028,
+     0.9657087386926098
+    ]
+   },
+   {
+    "name": "logreg[emb] l2=0.01",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 0.01,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9631491965848048,
+    "aucLp": 0.9510267000937869,
+    "crit": 0.9570879483392958,
+    "folds": [
+     0.9605728460709693,
+     0.9499294184076792,
+     0.9509146690477825,
+     0.9741338112305855
+    ]
+   },
+   {
+    "name": "logreg[emb] l2=0.1",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 0.1,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9662757994294606,
+    "aucLp": 0.9601716923219535,
+    "crit": 0.9632237458757071,
+    "folds": [
+     0.9720136933931116,
+     0.9580745341614907,
+     0.9497492959681297,
+     0.982415941286909
+    ]
+   },
+   {
+    "name": "logreg[emb] l2=1.0",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 1.0,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9646739669129586,
+    "aucLp": 0.9604832916052752,
+    "crit": 0.962578629259117,
+    "folds": [
+     0.9715119208980642,
+     0.9673136645962732,
+     0.9380451954117728,
+     0.9867511520737327
+    ]
+   },
+   {
+    "name": "mlp32[emb] l2=0.001",
+    "family": "mlp",
+    "feat": "emb",
+    "kind": "mlp",
+    "augment": false,
+    "l2": 0.001,
+    "hidden": 32,
+    "epochs": 30,
+    "aucClean": 0.9675127033946174,
+    "aucLp": 0.9501834833951925,
+    "crit": 0.958848093394905,
+    "folds": [
+     0.9568410489000104,
+     0.9686076604554865,
+     0.9392265952331891,
+     0.9722136883427206
+    ]
+   },
+   {
+    "name": "mlp32[emb] l2=0.01",
+    "family": "mlp",
+    "feat": "emb",
+    "kind": "mlp",
+    "augment": false,
+    "l2": 0.01,
+    "hidden": 32,
+    "epochs": 30,
+    "aucClean": 0.9693404174704449,
+    "aucLp": 0.9550981523781922,
+    "crit": 0.9622192849243185,
+    "folds": [
+     0.9681407048274424,
+     0.9716685488424619,
+     0.9466492662041808,
+     0.9709016043693464
+    ]
+   },
+   {
+    "name": "mlp32[emb] l2=0.1",
+    "family": "mlp",
+    "feat": "emb",
+    "kind": "mlp",
+    "augment": false,
+    "l2": 0.1,
+    "hidden": 32,
+    "epochs": 30,
+    "aucClean": 0.9672795623537808,
+    "aucLp": 0.9587722876552797,
+    "crit": 0.9630259250045302,
+    "folds": [
+     0.9728304313071282,
+     0.9607825145868625,
+     0.949513473910754,
+     0.9847627581498549
+    ]
+   },
+   {
+    "name": "logreg[emb]+aug l2=0.001",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 0.001,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9632111813884764,
+    "aucLp": 0.943602484194573,
+    "crit": 0.9534068327915247,
+    "folds": [
+     0.9571516699683731,
+     0.9265339732731037,
+     0.9593149712663416,
+     0.9708717357910907
+    ]
+   },
+   {
+    "name": "logreg[emb]+aug l2=0.01",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 0.01,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.966684005659045,
+    "aucLp": 0.9575214231487554,
+    "crit": 0.9621027144039003,
+    "folds": [
+     0.963961439544017,
+     0.9427465650291738,
+     0.9619708313299906,
+     0.9809374466632531
+    ]
+   },
+   {
+    "name": "logreg[emb]+aug l2=0.1",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 0.1,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9700577100859048,
+    "aucLp": 0.9657958360172474,
+    "crit": 0.9679267730515762,
+    "folds": [
+     0.9738296319466166,
+     0.9558088650479954,
+     0.9586052155596767,
+     0.9856972179552825
+    ]
+   },
+   {
+    "name": "logreg[emb]+aug l2=1.0",
+    "family": "logreg",
+    "feat": "emb",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 1.0,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9703983472952707,
+    "aucLp": 0.9668853166655638,
+    "crit": 0.9686418319804173,
+    "folds": [
+     0.9756412261495151,
+     0.9697487295313383,
+     0.946930878952309,
+     0.986926096603516
+    ]
+   },
+   {
+    "name": "mlp32[emb]+aug l2=0.001",
+    "family": "mlp",
+    "feat": "emb",
+    "kind": "mlp",
+    "augment": true,
+    "l2": 0.001,
+    "hidden": 32,
+    "epochs": 12,
+    "aucClean": 0.958214005605995,
+    "aucLp": 0.9461209658572624,
+    "crit": 0.9521674857316287,
+    "folds": [
+     0.9459410732283737,
+     0.9132905138339921,
+     0.9610138058932618,
+     0.9861100443761734
+    ]
+   },
+   {
+    "name": "mlp32[emb]+aug l2=0.01",
+    "family": "mlp",
+    "feat": "emb",
+    "kind": "mlp",
+    "augment": true,
+    "l2": 0.01,
+    "hidden": 32,
+    "epochs": 12,
+    "aucClean": 0.9662547190119958,
+    "aucLp": 0.957596251650485,
+    "crit": 0.9619254853312404,
+    "folds": [
+     0.9623866124491711,
+     0.9560664878599661,
+     0.9482633880532088,
+     0.9869516982420208
+    ]
+   },
+   {
+    "name": "mlp32[emb]+aug l2=0.1",
+    "family": "mlp",
+    "feat": "emb",
+    "kind": "mlp",
+    "augment": true,
+    "l2": 0.1,
+    "hidden": 32,
+    "epochs": 12,
+    "aucClean": 0.9571870681830048,
+    "aucLp": 0.9489291287533265,
+    "crit": 0.9530580984681656,
+    "folds": [
+     0.9695330691968165,
+     0.9029173724825899,
+     0.9538475627904848,
+     0.9872290493258236
+    ]
+   },
+   {
+    "name": "logreg[scores] l2=0.001",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 0.001,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9513484905723069,
+    "aucLp": 0.9419428550368097,
+    "crit": 0.9466456728045582,
+    "folds": [
+     0.9659272581934453,
+     0.9677077451533973,
+     0.8915218536071616,
+     0.9804339477726575
+    ]
+   },
+   {
+    "name": "logreg[scores] l2=0.01",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 0.01,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9567946373651656,
+    "aucLp": 0.954354334734134,
+    "crit": 0.9555744860496498,
+    "folds": [
+     0.9714619608660897,
+     0.9693534726143422,
+     0.9120750051514528,
+     0.9853302611367127
+    ]
+   },
+   {
+    "name": "logreg[scores] l2=0.1",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 0.1,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9574750741514155,
+    "aucLp": 0.9585514318908465,
+    "crit": 0.9580132530211309,
+    "folds": [
+     0.9728499808848573,
+     0.9665584415584416,
+     0.9177141287176318,
+     0.9861367127496159
+    ]
+   },
+   {
+    "name": "logreg[scores] l2=1.0",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": false,
+    "l2": 1.0,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.943824317196902,
+    "aucLp": 0.9475340518544765,
+    "crit": 0.9456791845256892,
+    "folds": [
+     0.9652951551802037,
+     0.9466767833615659,
+     0.9005220138745793,
+     0.9770865335381465
+    ]
+   },
+   {
+    "name": "mlp32[scores] l2=0.001",
+    "family": "mlp_scores",
+    "feat": "scores",
+    "kind": "mlp",
+    "augment": false,
+    "l2": 0.001,
+    "hidden": 32,
+    "epochs": 30,
+    "aucClean": 0.9422270916590512,
+    "aucLp": 0.9348908271704524,
+    "crit": 0.9385589594147518,
+    "folds": [
+     0.9582551350224169,
+     0.9575098814229249,
+     0.8782837649105937,
+     0.9783218125960061
+    ]
+   },
+   {
+    "name": "mlp32[scores] l2=0.01",
+    "family": "mlp_scores",
+    "feat": "scores",
+    "kind": "mlp",
+    "augment": false,
+    "l2": 0.01,
+    "hidden": 32,
+    "epochs": 30,
+    "aucClean": 0.9488672835550687,
+    "aucLp": 0.9458682800585114,
+    "crit": 0.94736778180679,
+    "folds": [
+     0.9683731275848886,
+     0.9592767739506869,
+     0.889159053964329,
+     0.9793224099675713
+    ]
+   },
+   {
+    "name": "mlp32[scores] l2=0.1",
+    "family": "mlp_scores",
+    "feat": "scores",
+    "kind": "mlp",
+    "augment": false,
+    "l2": 0.1,
+    "hidden": 32,
+    "epochs": 30,
+    "aucClean": 0.9499778446208499,
+    "aucLp": 0.9532031484929735,
+    "crit": 0.9515904965569117,
+    "folds": [
+     0.9727565773468183,
+     0.9562617635987201,
+     0.9028344437575841,
+     0.9861281788701144
+    ]
+   },
+   {
+    "name": "logreg[scores]+aug l2=0.001",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 0.001,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.966412473129448,
+    "aucLp": 0.9596624117728687,
+    "crit": 0.9630374424511583,
+    "folds": [
+     0.9598147568901401,
+     0.964449228307924,
+     0.9458547977196236,
+     0.9846027479091994
+    ]
+   },
+   {
+    "name": "logreg[scores]+aug l2=0.01",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 0.01,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9713075973545332,
+    "aucLp": 0.9666326308668128,
+    "crit": 0.968970114110673,
+    "folds": [
+     0.9695113474437842,
+     0.9686841238471673,
+     0.9527600338851112,
+     0.9869794333504011
+    ]
+   },
+   {
+    "name": "logreg[scores]+aug l2=0.1",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 0.1,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.968024217630321,
+    "aucLp": 0.9672092012252888,
+    "crit": 0.9676167094278049,
+    "folds": [
+     0.9763276335453377,
+     0.9647986071899115,
+     0.9439155619662523,
+     0.9874637310121182
+    ]
+   },
+   {
+    "name": "logreg[scores]+aug l2=1.0",
+    "family": "logreg_scores",
+    "feat": "scores",
+    "kind": "logreg",
+    "augment": true,
+    "l2": 1.0,
+    "hidden": 0,
+    "epochs": 0,
+    "aucClean": 0.9483846676399956,
+    "aucLp": 0.9533413578525114,
+    "crit": 0.9508630127462535,
+    "folds": [
+     0.9709189170402808,
+     0.94687205910032,
+     0.9089932916638047,
+     0.978921317630995
+    ]
+   },
+   {
+    "name": "mlp32[scores]+aug l2=0.001",
+    "family": "mlp_scores",
+    "feat": "scores",
+    "kind": "mlp",
+    "augment": true,
+    "l2": 0.001,
+    "hidden": 32,
+    "epochs": 12,
+    "aucClean": 0.9658863003253085,
+    "aucLp": 0.9593577927602308,
+    "crit": 0.9626220465427697,
+    "folds": [
+     0.953832586105029,
+     0.9687794089968003,
+     0.9430020376857384,
+     0.9843552654036525
+    ]
+   },
+   {
+    "name": "mlp32[scores]+aug l2=0.01",
+    "family": "mlp_scores",
+    "feat": "scores",
+    "kind": "mlp",
+    "augment": true,
+    "l2": 0.01,
+    "hidden": 32,
+    "epochs": 12,
+    "aucClean": 0.9697220986714311,
+    "aucLp": 0.9614661137175442,
+    "crit": 0.9655941061944877,
+    "folds": [
+     0.9614699544712056,
+     0.9733813288161115,
+     0.9432584655539529,
+     0.9834933435739888
+    ]
+   },
+   {
+    "name": "mlp32[scores]+aug l2=0.1",
+    "family": "mlp_scores",
+    "feat": "scores",
+    "kind": "mlp",
+    "augment": true,
+    "l2": 0.1,
+    "hidden": 32,
+    "epochs": 12,
+    "aucClean": 0.9644508774619066,
+    "aucLp": 0.960510375055528,
+    "crit": 0.9624806262587173,
+    "folds": [
+     0.9691703159211761,
+     0.9760563711650667,
+     0.925015454358129,
+     0.9855969448711384
+    ]
+   }
+  ],
+  "chosen": {
+   "zeroshot": {
+    "name": "zeroshot class38 (Snoring)",
+    "family": "zeroshot",
+    "augment": false,
+    "l2": null,
+    "threshold": 0.006289101205766201,
+    "cvAucClean": 0.917664356755492,
+    "cvAucLp4k": 0.9076814528344506,
+    "cvCriterion": 0.9126729047949713,
+    "cvAucFolds": [
+     0.9312463073019845,
+     0.8583815640880859,
+     0.9408407170822172,
+     0.917042157364738
+    ],
+    "classes": [
+     38
+    ],
+    "trainAuc": 0.917664356755492
+   },
+   "logreg": {
+    "name": "logreg[emb]+aug l2=1.0",
+    "family": "logreg",
+    "augment": true,
+    "l2": 1.0,
+    "threshold": 0.5607372492718407,
+    "cvAucClean": 0.9703983472952707,
+    "cvAucLp4k": 0.9668853166655638,
+    "cvCriterion": 0.9686418319804173,
+    "cvAucFolds": [
+     0.9756412261495151,
+     0.9697487295313383,
+     0.946930878952309,
+     0.986926096603516
+    ],
+    "feat": "emb",
+    "kind": "logreg",
+    "hidden": 0,
+    "epochs": 0,
+    "trainAuc": 0.9796502772703121,
+    "trainWindows": 52464,
+    "trainPositiveWindows": 1116
+   },
+   "mlp": {
+    "name": "mlp32[emb] l2=0.1",
+    "family": "mlp",
+    "augment": false,
+    "l2": 0.1,
+    "threshold": 0.6492437146622181,
+    "cvAucClean": 0.9672795623537808,
+    "cvAucLp4k": 0.9587722876552797,
+    "cvCriterion": 0.9630259250045302,
+    "cvAucFolds": [
+     0.9728304313071282,
+     0.9607825145868625,
+     0.949513473910754,
+     0.9847627581498549
+    ],
+    "feat": "emb",
+    "kind": "mlp",
+    "hidden": 32,
+    "epochs": 30,
+    "trainAuc": 0.9874014490483518,
+    "trainWindows": 13116,
+    "trainPositiveWindows": 279
+   },
+   "logreg_scores": {
+    "name": "logreg[scores]+aug l2=0.01",
+    "family": "logreg_scores",
+    "augment": true,
+    "l2": 0.01,
+    "threshold": 0.6494545434975308,
+    "cvAucClean": 0.9713075973545332,
+    "cvAucLp4k": 0.9666326308668128,
+    "cvCriterion": 0.968970114110673,
+    "cvAucFolds": [
+     0.9695113474437842,
+     0.9686841238471673,
+     0.9527600338851112,
+     0.9869794333504011
+    ],
+    "feat": "scores",
+    "kind": "logreg",
+    "hidden": 0,
+    "epochs": 0,
+    "trainAuc": 0.9899599974647657,
+    "trainWindows": 52464,
+    "trainPositiveWindows": 1116
+   },
+   "mlp_scores": {
+    "name": "mlp32[scores]+aug l2=0.01",
+    "family": "mlp_scores",
+    "augment": true,
+    "l2": 0.01,
+    "threshold": 0.6939606846552081,
+    "cvAucClean": 0.9697220986714311,
+    "cvAucLp4k": 0.9614661137175442,
+    "cvCriterion": 0.9655941061944877,
+    "cvAucFolds": [
+     0.9614699544712056,
+     0.9733813288161115,
+     0.9432584655539529,
+     0.9834933435739888
+    ],
+    "feat": "scores",
+    "kind": "mlp",
+    "hidden": 32,
+    "epochs": 12,
+    "trainAuc": 0.990577611814862,
+    "trainWindows": 52464,
+    "trainPositiveWindows": 1116
+   }
+  }
+ },
+ "test": {
+  "zeroshot": {
+   "n": 3308,
+   "positives": 71,
+   "threshold": 0.006289101205766201,
+   "confusion": {
+    "tp": 57,
+    "fp": 123,
+    "tn": 3114,
+    "fn": 14
+   },
+   "auc": 0.9201529846362699,
+   "precision": 0.31666666666666665,
+   "recall": 0.8028169014084507,
+   "f1": 0.4541832669322709,
+   "fpr": 0.037998146431881374,
+   "bedroomFpr": 0.05286343612334802,
+   "accuracy": 0.9585852478839177,
+   "ci95": {
+    "auc": [
+     0.8483300729938346,
+     0.9898940230636143
+    ],
+    "precision": [
+     0.1515110565110565,
+     0.48193308950086056
+    ],
+    "recall": [
+     0.7049180327868853,
+     0.9091164453524003
+    ],
+    "f1": [
+     0.2560299635801788,
+     0.602641955835962
+    ],
+    "fpr": [
+     0.026594382376549857,
+     0.05039278522758915
+    ],
+    "bedroomFpr": [
+     0.03259438642431186,
+     0.07422154947456196
+    ]
+   },
+   "bedroomWindows": 1589,
+   "worstNegativeClasses": [
+    {
+     "cls": "breathing",
+     "fpr": 0.4782608695652174
+    },
+    {
+     "cls": "door_wood_creaks",
+     "fpr": 0.21666666666666667
+    },
+    {
+     "cls": "hand_saw",
+     "fpr": 0.1527777777777778
+    },
+    {
+     "cls": "insects",
+     "fpr": 0.1388888888888889
+    },
+    {
+     "cls": "cow",
+     "fpr": 0.11594202898550725
+    },
+    {
+     "cls": "brushing_teeth",
+     "fpr": 0.08955223880597014
+    },
+    {
+     "cls": "pouring_water",
+     "fpr": 0.08695652173913043
+    },
+    {
+     "cls": "washing_machine",
+     "fpr": 0.06944444444444445
+    }
+   ],
+   "cvAucClean": 0.917664356755492,
+   "cvAucLp4k": 0.9076814528344506,
+   "cvCriterion": 0.9126729047949713,
+   "trainAucInSample": 0.917664356755492,
+   "name": "zeroshot class38 (Snoring)",
+   "reliability": [
+    {
+     "lo": 0.0,
+     "hi": 0.1,
+     "n": 3232,
+     "meanScore": 0.0010194406815879238,
+     "observedPositiveFraction": 0.006497524752475247
+    },
+    {
+     "lo": 0.1,
+     "hi": 0.2,
+     "n": 18,
+     "meanScore": 0.14529014999667803,
+     "observedPositiveFraction": 0.2222222222222222
+    },
+    {
+     "lo": 0.2,
+     "hi": 0.30000000000000004,
+     "n": 6,
+     "meanScore": 0.25720929354429245,
+     "observedPositiveFraction": 0.16666666666666666
+    },
+    {
+     "lo": 0.30000000000000004,
+     "hi": 0.4,
+     "n": 6,
+     "meanScore": 0.3654578775167465,
+     "observedPositiveFraction": 0.6666666666666666
+    },
+    {
+     "lo": 0.4,
+     "hi": 0.5,
+     "n": 4,
+     "meanScore": 0.4394906982779503,
+     "observedPositiveFraction": 1.0
+    },
+    {
+     "lo": 0.5,
+     "hi": 0.6000000000000001,
+     "n": 2,
+     "meanScore": 0.5492146611213684,
+     "observedPositiveFraction": 0.5
+    },
+    {
+     "lo": 0.6000000000000001,
+     "hi": 0.7000000000000001,
+     "n": 5,
+     "meanScore": 0.637031352519989,
+     "observedPositiveFraction": 1.0
+    },
+    {
+     "lo": 0.7000000000000001,
+     "hi": 0.8,
+     "n": 4,
+     "meanScore": 0.7352114319801331,
+     "observedPositiveFraction": 0.75
+    },
+    {
+     "lo": 0.8,
+     "hi": 0.9,
+     "n": 4,
+     "meanScore": 0.8663216978311539,
+     "observedPositiveFraction": 0.5
+    },
+    {
+     "lo": 0.9,
+     "hi": 1.0,
+     "n": 27,
+     "meanScore": 0.9739361449524209,
+     "observedPositiveFraction": 0.9629629629629629
+    }
+   ]
+  },
+  "logreg": {
+   "n": 3308,
+   "positives": 71,
+   "threshold": 0.5607372492718407,
+   "confusion": {
+    "tp": 62,
+    "fp": 102,
+    "tn": 3135,
+    "fn": 9
+   },
+   "auc": 0.9849713045029522,
+   "precision": 0.3780487804878049,
+   "recall": 0.8732394366197183,
+   "f1": 0.5276595744680851,
+   "fpr": 0.03151065801668211,
+   "bedroomFpr": 0.04719949653870359,
+   "accuracy": 0.9664449818621523,
+   "ci95": {
+    "auc": [
+     0.9730191067246662,
+     0.9951911906274834
+    ],
+    "precision": [
+     0.1875,
+     0.5442283163265307
+    ],
+    "recall": [
+     0.7777777777777778,
+     0.9619137466307278
+    ],
+    "f1": [
+     0.3096774193548387,
+     0.6797283582734123
+    ],
+    "fpr": [
+     0.022279866268254456,
+     0.041683114605094454
+    ],
+    "bedroomFpr": [
+     0.03029962656085891,
+     0.0667143728906543
+    ]
+   },
+   "bedroomWindows": 1589,
+   "worstNegativeClasses": [
+    {
+     "cls": "breathing",
+     "fpr": 0.4492753623188406
+    },
+    {
+     "cls": "cat",
+     "fpr": 0.12727272727272726
+    },
+    {
+     "cls": "cow",
+     "fpr": 0.11594202898550725
+    },
+    {
+     "cls": "door_wood_knock",
+     "fpr": 0.1111111111111111
+    },
+    {
+     "cls": "glass_breaking",
+     "fpr": 0.1111111111111111
+    },
+    {
+     "cls": "sneezing",
+     "fpr": 0.1111111111111111
+    },
+    {
+     "cls": "rooster",
+     "fpr": 0.10526315789473684
+    },
+    {
+     "cls": "coughing",
+     "fpr": 0.1
+    }
+   ],
+   "cvAucClean": 0.9703983472952707,
+   "cvAucLp4k": 0.9668853166655638,
+   "cvCriterion": 0.9686418319804173,
+   "trainAucInSample": 0.9796502772703121,
+   "name": "logreg[emb]+aug l2=1.0",
+   "reliability": [
+    {
+     "lo": 0.0,
+     "hi": 0.1,
+     "n": 667,
+     "meanScore": 0.06584847949799746,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.1,
+     "hi": 0.2,
+     "n": 1302,
+     "meanScore": 0.1487325327401277,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.2,
+     "hi": 0.30000000000000004,
+     "n": 778,
+     "meanScore": 0.23846403434876534,
+     "observedPositiveFraction": 0.002570694087403599
+    },
+    {
+     "lo": 0.30000000000000004,
+     "hi": 0.4,
+     "n": 242,
+     "meanScore": 0.3406345567237712,
+     "observedPositiveFraction": 0.004132231404958678
+    },
+    {
+     "lo": 0.4,
+     "hi": 0.5,
+     "n": 120,
+     "meanScore": 0.4413401589632187,
+     "observedPositiveFraction": 0.03333333333333333
+    },
+    {
+     "lo": 0.5,
+     "hi": 0.6000000000000001,
+     "n": 59,
+     "meanScore": 0.5525375082210991,
+     "observedPositiveFraction": 0.05084745762711865
+    },
+    {
+     "lo": 0.6000000000000001,
+     "hi": 0.7000000000000001,
+     "n": 51,
+     "meanScore": 0.6430135736629475,
+     "observedPositiveFraction": 0.17647058823529413
+    },
+    {
+     "lo": 0.7000000000000001,
+     "hi": 0.8,
+     "n": 36,
+     "meanScore": 0.7424276763827805,
+     "observedPositiveFraction": 0.2777777777777778
+    },
+    {
+     "lo": 0.8,
+     "hi": 0.9,
+     "n": 23,
+     "meanScore": 0.8458014655804561,
+     "observedPositiveFraction": 0.5652173913043478
+    },
+    {
+     "lo": 0.9,
+     "hi": 1.0,
+     "n": 30,
+     "meanScore": 0.9618645783969509,
+     "observedPositiveFraction": 0.9666666666666667
+    }
+   ]
+  },
+  "mlp": {
+   "n": 3308,
+   "positives": 71,
+   "threshold": 0.6492437146622181,
+   "confusion": {
+    "tp": 60,
+    "fp": 97,
+    "tn": 3140,
+    "fn": 11
+   },
+   "auc": 0.9860416748249771,
+   "precision": 0.3821656050955414,
+   "recall": 0.8450704225352113,
+   "f1": 0.5263157894736842,
+   "fpr": 0.029966017917825147,
+   "bedroomFpr": 0.04405286343612335,
+   "accuracy": 0.9673518742442564,
+   "ci95": {
+    "auc": [
+     0.9723922022953675,
+     0.995762052834412
+    ],
+    "precision": [
+     0.1904220779220779,
+     0.5479142706536323
+    ],
+    "recall": [
+     0.7222222222222222,
+     0.9600476190476189
+    ],
+    "f1": [
+     0.3058786062195579,
+     0.6750770547945205
+    ],
+    "fpr": [
+     0.021081295376751755,
+     0.03958969309582288
+    ],
+    "bedroomFpr": [
+     0.02910831727514192,
+     0.06165752127315299
+    ]
+   },
+   "bedroomWindows": 1589,
+   "worstNegativeClasses": [
+    {
+     "cls": "breathing",
+     "fpr": 0.43478260869565216
+    },
+    {
+     "cls": "coughing",
+     "fpr": 0.14
+    },
+    {
+     "cls": "door_wood_knock",
+     "fpr": 0.12962962962962962
+    },
+    {
+     "cls": "glass_breaking",
+     "fpr": 0.1111111111111111
+    },
+    {
+     "cls": "cow",
+     "fpr": 0.10144927536231885
+    },
+    {
+     "cls": "door_wood_creaks",
+     "fpr": 0.1
+    },
+    {
+     "cls": "cat",
+     "fpr": 0.09090909090909091
+    },
+    {
+     "cls": "rooster",
+     "fpr": 0.08771929824561403
+    }
+   ],
+   "cvAucClean": 0.9672795623537808,
+   "cvAucLp4k": 0.9587722876552797,
+   "cvCriterion": 0.9630259250045302,
+   "trainAucInSample": 0.9874014490483518,
+   "name": "mlp32[emb] l2=0.1",
+   "reliability": [
+    {
+     "lo": 0.0,
+     "hi": 0.1,
+     "n": 2272,
+     "meanScore": 0.04497840704649426,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.1,
+     "hi": 0.2,
+     "n": 494,
+     "meanScore": 0.1380759441233325,
+     "observedPositiveFraction": 0.004048582995951417
+    },
+    {
+     "lo": 0.2,
+     "hi": 0.30000000000000004,
+     "n": 150,
+     "meanScore": 0.23964673761755773,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.30000000000000004,
+     "hi": 0.4,
+     "n": 84,
+     "meanScore": 0.349658656913407,
+     "observedPositiveFraction": 0.011904761904761904
+    },
+    {
+     "lo": 0.4,
+     "hi": 0.5,
+     "n": 71,
+     "meanScore": 0.4523805441246696,
+     "observedPositiveFraction": 0.04225352112676056
+    },
+    {
+     "lo": 0.5,
+     "hi": 0.6000000000000001,
+     "n": 55,
+     "meanScore": 0.5499279139150488,
+     "observedPositiveFraction": 0.05454545454545454
+    },
+    {
+     "lo": 0.6000000000000001,
+     "hi": 0.7000000000000001,
+     "n": 47,
+     "meanScore": 0.6462229056753057,
+     "observedPositiveFraction": 0.0425531914893617
+    },
+    {
+     "lo": 0.7000000000000001,
+     "hi": 0.8,
+     "n": 49,
+     "meanScore": 0.7519454642895946,
+     "observedPositiveFraction": 0.14285714285714285
+    },
+    {
+     "lo": 0.8,
+     "hi": 0.9,
+     "n": 33,
+     "meanScore": 0.8479844687235092,
+     "observedPositiveFraction": 0.2727272727272727
+    },
+    {
+     "lo": 0.9,
+     "hi": 1.0,
+     "n": 53,
+     "meanScore": 0.965592293299574,
+     "observedPositiveFraction": 0.8301886792452831
+    }
+   ]
+  },
+  "logreg_scores": {
+   "n": 3308,
+   "positives": 71,
+   "threshold": 0.6494545434975308,
+   "confusion": {
+    "tp": 63,
+    "fp": 101,
+    "tn": 3136,
+    "fn": 8
+   },
+   "auc": 0.9859285462543566,
+   "precision": 0.38414634146341464,
+   "recall": 0.8873239436619719,
+   "f1": 0.5361702127659574,
+   "fpr": 0.031201729996910718,
+   "bedroomFpr": 0.040276903713027064,
+   "accuracy": 0.967049576783555,
+   "ci95": {
+    "auc": [
+     0.9679469859340464,
+     0.9973290852642722
+    ],
+    "precision": [
+     0.1923,
+     0.5407812688275695
+    ],
+    "recall": [
+     0.7546692813228748,
+     1.0
+    ],
+    "f1": [
+     0.31501300987219716,
+     0.6793482574189096
+    ],
+    "fpr": [
+     0.02327639284793231,
+     0.039891354261066464
+    ],
+    "bedroomFpr": [
+     0.027649226154247458,
+     0.0529804421066539
+    ]
+   },
+   "bedroomWindows": 1589,
+   "worstNegativeClasses": [
+    {
+     "cls": "breathing",
+     "fpr": 0.15942028985507245
+    },
+    {
+     "cls": "rooster",
+     "fpr": 0.15789473684210525
+    },
+    {
+     "cls": "door_wood_knock",
+     "fpr": 0.14814814814814814
+    },
+    {
+     "cls": "glass_breaking",
+     "fpr": 0.14814814814814814
+    },
+    {
+     "cls": "door_wood_creaks",
+     "fpr": 0.13333333333333333
+    },
+    {
+     "cls": "cat",
+     "fpr": 0.12727272727272726
+    },
+    {
+     "cls": "coughing",
+     "fpr": 0.12
+    },
+    {
+     "cls": "cow",
+     "fpr": 0.11594202898550725
+    }
+   ],
+   "cvAucClean": 0.9713075973545332,
+   "cvAucLp4k": 0.9666326308668128,
+   "cvCriterion": 0.968970114110673,
+   "trainAucInSample": 0.9899599974647657,
+   "name": "logreg[scores]+aug l2=0.01",
+   "reliability": [
+    {
+     "lo": 0.0,
+     "hi": 0.1,
+     "n": 2720,
+     "meanScore": 0.01619454252400893,
+     "observedPositiveFraction": 0.0007352941176470588
+    },
+    {
+     "lo": 0.1,
+     "hi": 0.2,
+     "n": 188,
+     "meanScore": 0.1404295797977948,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.2,
+     "hi": 0.30000000000000004,
+     "n": 86,
+     "meanScore": 0.24510921583641643,
+     "observedPositiveFraction": 0.011627906976744186
+    },
+    {
+     "lo": 0.30000000000000004,
+     "hi": 0.4,
+     "n": 61,
+     "meanScore": 0.3472549060611171,
+     "observedPositiveFraction": 0.01639344262295082
+    },
+    {
+     "lo": 0.4,
+     "hi": 0.5,
+     "n": 41,
+     "meanScore": 0.4519836919895266,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.5,
+     "hi": 0.6000000000000001,
+     "n": 30,
+     "meanScore": 0.5462278161004359,
+     "observedPositiveFraction": 0.06666666666666667
+    },
+    {
+     "lo": 0.6000000000000001,
+     "hi": 0.7000000000000001,
+     "n": 31,
+     "meanScore": 0.6456000790778584,
+     "observedPositiveFraction": 0.06451612903225806
+    },
+    {
+     "lo": 0.7000000000000001,
+     "hi": 0.8,
+     "n": 72,
+     "meanScore": 0.7547338508328703,
+     "observedPositiveFraction": 0.09722222222222222
+    },
+    {
+     "lo": 0.8,
+     "hi": 0.9,
+     "n": 20,
+     "meanScore": 0.8481390234420102,
+     "observedPositiveFraction": 0.4
+    },
+    {
+     "lo": 0.9,
+     "hi": 1.0,
+     "n": 59,
+     "meanScore": 0.9734192578420633,
+     "observedPositiveFraction": 0.8135593220338984
+    }
+   ]
+  },
+  "mlp_scores": {
+   "n": 3308,
+   "positives": 71,
+   "threshold": 0.6939606846552081,
+   "confusion": {
+    "tp": 64,
+    "fp": 110,
+    "tn": 3127,
+    "fn": 7
+   },
+   "auc": 0.984906038019902,
+   "precision": 0.367816091954023,
+   "recall": 0.9014084507042254,
+   "f1": 0.5224489795918367,
+   "fpr": 0.03398208217485326,
+   "bedroomFpr": 0.0434235368156073,
+   "accuracy": 0.9646311970979444,
+   "ci95": {
+    "auc": [
+     0.9670134285815605,
+     0.9974331256903817
+    ],
+    "precision": [
+     0.18181818181818182,
+     0.5314186943225635
+    ],
+    "recall": [
+     0.7923995739500913,
+     1.0
+    ],
+    "f1": [
+     0.30047940815127394,
+     0.674348235976649
+    ],
+    "fpr": [
+     0.025676005029372437,
+     0.04303742546360669
+    ],
+    "bedroomFpr": [
+     0.030336937689257954,
+     0.05746788017422885
+    ]
+   },
+   "bedroomWindows": 1589,
+   "worstNegativeClasses": [
+    {
+     "cls": "door_wood_knock",
+     "fpr": 0.16666666666666666
+    },
+    {
+     "cls": "coughing",
+     "fpr": 0.16
+    },
+    {
+     "cls": "breathing",
+     "fpr": 0.15942028985507245
+    },
+    {
+     "cls": "cow",
+     "fpr": 0.15942028985507245
+    },
+    {
+     "cls": "glass_breaking",
+     "fpr": 0.14814814814814814
+    },
+    {
+     "cls": "cat",
+     "fpr": 0.14545454545454545
+    },
+    {
+     "cls": "sneezing",
+     "fpr": 0.13333333333333333
+    },
+    {
+     "cls": "door_wood_creaks",
+     "fpr": 0.11666666666666667
+    }
+   ],
+   "cvAucClean": 0.9697220986714311,
+   "cvAucLp4k": 0.9614661137175442,
+   "cvCriterion": 0.9655941061944877,
+   "trainAucInSample": 0.990577611814862,
+   "name": "mlp32[scores]+aug l2=0.01",
+   "reliability": [
+    {
+     "lo": 0.0,
+     "hi": 0.1,
+     "n": 2784,
+     "meanScore": 0.012218766973665739,
+     "observedPositiveFraction": 0.0007183908045977011
+    },
+    {
+     "lo": 0.1,
+     "hi": 0.2,
+     "n": 114,
+     "meanScore": 0.1435133666405433,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.2,
+     "hi": 0.30000000000000004,
+     "n": 76,
+     "meanScore": 0.24094693717743373,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.30000000000000004,
+     "hi": 0.4,
+     "n": 53,
+     "meanScore": 0.35031587331433006,
+     "observedPositiveFraction": 0.03773584905660377
+    },
+    {
+     "lo": 0.4,
+     "hi": 0.5,
+     "n": 36,
+     "meanScore": 0.4470031496077565,
+     "observedPositiveFraction": 0.0
+    },
+    {
+     "lo": 0.5,
+     "hi": 0.6000000000000001,
+     "n": 37,
+     "meanScore": 0.548179907511532,
+     "observedPositiveFraction": 0.05405405405405406
+    },
+    {
+     "lo": 0.6000000000000001,
+     "hi": 0.7000000000000001,
+     "n": 37,
+     "meanScore": 0.6537824511229344,
+     "observedPositiveFraction": 0.02702702702702703
+    },
+    {
+     "lo": 0.7000000000000001,
+     "hi": 0.8,
+     "n": 36,
+     "meanScore": 0.7466076553255269,
+     "observedPositiveFraction": 0.05555555555555555
+    },
+    {
+     "lo": 0.8,
+     "hi": 0.9,
+     "n": 63,
+     "meanScore": 0.8394594927241605,
+     "observedPositiveFraction": 0.1111111111111111
+    },
+    {
+     "lo": 0.9,
+     "hi": 1.0,
+     "n": 72,
+     "meanScore": 0.970173731176721,
+     "observedPositiveFraction": 0.7638888888888888
+    }
+   ]
+  },
+  "v1": {
+   "n": 3308,
+   "positives": 71,
+   "threshold": 0.7952122356614229,
+   "confusion": {
+    "tp": 44,
+    "fp": 147,
+    "tn": 3090,
+    "fn": 27
+   },
+   "auc": 0.9194220000261066,
+   "precision": 0.23036649214659685,
+   "recall": 0.6197183098591549,
+   "f1": 0.3358778625954198,
+   "fpr": 0.04541241890639481,
+   "bedroomFpr": 0.06482064191315293,
+   "accuracy": 0.9474002418379686,
+   "ci95": {
+    "auc": [
+     0.8282005036194193,
+     0.9737060802325679
+    ],
+    "precision": [
+     0.08374472694105575,
+     0.3793572891771935
+    ],
+    "recall": [
+     0.3888888888888889,
+     0.8194501366120218
+    ],
+    "f1": [
+     0.13704761904761906,
+     0.4939301378446115
+    ],
+    "fpr": [
+     0.031020505063270455,
+     0.06180197181679395
+    ],
+    "bedroomFpr": [
+     0.03947802451502484,
+     0.09431647312221239
+    ]
+   },
+   "bedroomWindows": 1589,
+   "cvAucClean": 0.907335510619365,
+   "cvAucLp4k": 0.785004033200401,
+   "cvCriterion": 0.8461697719098831,
+   "name": "sleepsmooth-snore-mlp-esc50-0.1.0"
+  }
+ },
+ "pairedAucDifferences": {
+  "zeroshot_minus_v1": {
+   "diff": 0.0007309846101632989,
+   "ci95": [
+    -0.10313312112036908,
+    0.1364248013503418
+   ]
+  },
+  "logreg_minus_v1": {
+   "diff": 0.0655493044768456,
+   "ci95": [
+    0.008492261567315074,
+    0.15983356578384747
+   ]
+  },
+  "mlp_minus_v1": {
+   "diff": 0.06661967479887043,
+   "ci95": [
+    0.011381642037402545,
+    0.16036407343246767
+   ]
+  },
+  "logreg_scores_minus_v1": {
+   "diff": 0.06650654622824992,
+   "ci95": [
+    0.011041761405364118,
+    0.15991324100050858
+   ]
+  },
+  "mlp_scores_minus_v1": {
+   "diff": 0.06548403799379532,
+   "ci95": [
+    0.008968741767678862,
+    0.15952348293115778
+   ]
+  },
+  "logreg_minus_zeroshot": {
+   "diff": 0.0648183198666823,
+   "ci95": [
+    -0.000797646563398751,
+    0.13496649908013936
+   ]
+  },
+  "mlp_minus_zeroshot": {
+   "diff": 0.06588869018870713,
+   "ci95": [
+    0.0022181376905620553,
+    0.13370409980500822
+   ]
+  },
+  "logreg_scores_minus_zeroshot": {
+   "diff": 0.06577556161808662,
+   "ci95": [
+    0.002982257285606582,
+    0.13198522952918657
+   ]
+  },
+  "mlp_scores_minus_zeroshot": {
+   "diff": 0.06475305338363202,
+   "ci95": [
+    0.0007366208565843968,
+    0.13132100518208742
+   ]
+  },
+  "mlp_minus_logreg": {
+   "diff": 0.0010703703220248384,
+   "ci95": [
+    -0.0026018428273219983,
+    0.005007264910073471
+   ]
+  },
+  "mlp_scores_minus_mlp": {
+   "diff": -0.0011356368050751131,
+   "ci95": [
+    -0.0062702003132818875,
+    0.0033378721585642247
+   ]
+  }
+ },
+ "gates": {
+  "zeroshot": {
+   "aucAtLeast085": true,
+   "ambientFpAtMost10": true,
+   "beatsBaseline": true,
+   "beatsBaselineNote": "baseline = YAMNet zero-shot Snoring score; zero-shot is itself the baseline",
+   "pass": true
+  },
+  "logreg": {
+   "aucAtLeast085": true,
+   "ambientFpAtMost10": true,
+   "beatsBaseline": true,
+   "beatsBaselineNote": "logreg test AUC 0.985 vs zero-shot 0.920",
+   "pass": true
+  },
+  "mlp": {
+   "aucAtLeast085": true,
+   "ambientFpAtMost10": true,
+   "beatsBaseline": true,
+   "beatsBaselineNote": "mlp test AUC 0.986 vs zero-shot 0.920",
+   "pass": true
+  },
+  "logreg_scores": {
+   "aucAtLeast085": true,
+   "ambientFpAtMost10": true,
+   "beatsBaseline": true,
+   "beatsBaselineNote": "logreg_scores test AUC 0.986 vs zero-shot 0.920",
+   "pass": true
+  },
+  "mlp_scores": {
+   "aucAtLeast085": true,
+   "ambientFpAtMost10": true,
+   "beatsBaseline": true,
+   "beatsBaselineNote": "mlp_scores test AUC 0.985 vs zero-shot 0.920",
+   "pass": true
+  },
+  "v1": {
+   "pass": true,
+   "note": "v1 gate result from model/metrics.v1.json (fold 5, scored previously)"
+  }
+ },
+ "decision": {
+  "rule": "ship the highest-CV-criterion candidate (incl. v1) that passes the fold-5 gate; criterion = mean pooled OOF AUC over (clean, lp4k); preregistered before the test fold was touched",
+  "candidatesPassingGate": [
+   [
+    "v1",
+    0.8461697719098831
+   ],
+   [
+    "zeroshot",
+    0.9126729047949713
+   ],
+   [
+    "logreg",
+    0.9686418319804173
+   ],
+   [
+    "mlp",
+    0.9630259250045302
+   ],
+   [
+    "logreg_scores",
+    0.968970114110673
+   ],
+   [
+    "mlp_scores",
+    0.9655941061944877
+   ]
+  ],
+  "shipped": "logreg_scores"
+ },
+ "robustness": {
+  "clean": {
+   "zeroshot": {
+    "auc": 0.9201529846362699,
+    "recall": 0.8028169014084507,
+    "fpr": 0.037998146431881374,
+    "bedroomFpr": 0.05286343612334802,
+    "precision": 0.31666666666666665
+   },
+   "logreg": {
+    "auc": 0.9849713045029522,
+    "recall": 0.8732394366197183,
+    "fpr": 0.03151065801668211,
+    "bedroomFpr": 0.04719949653870359,
+    "precision": 0.3780487804878049
+   },
+   "mlp": {
+    "auc": 0.9860416748249771,
+    "recall": 0.8450704225352113,
+    "fpr": 0.029966017917825147,
+    "bedroomFpr": 0.04405286343612335,
+    "precision": 0.3821656050955414
+   },
+   "logreg_scores": {
+    "auc": 0.9859285462543566,
+    "recall": 0.8873239436619719,
+    "fpr": 0.031201729996910718,
+    "bedroomFpr": 0.040276903713027064,
+    "precision": 0.38414634146341464
+   },
+   "mlp_scores": {
+    "auc": 0.984906038019902,
+    "recall": 0.9014084507042254,
+    "fpr": 0.03398208217485326,
+    "bedroomFpr": 0.0434235368156073,
+    "precision": 0.367816091954023
+   }
+  },
+  "white noise SNR 20 dB": {
+   "zeroshot": {
+    "auc": 0.9315485125768512,
+    "recall": 0.676056338028169,
+    "fpr": 0.059932035835650294,
+    "bedroomFpr": 0.08558842039018251,
+    "precision": 0.19834710743801653
+   },
+   "logreg": {
+    "auc": 0.961405753022926,
+    "recall": 0.8169014084507042,
+    "fpr": 0.062403459993821436,
+    "bedroomFpr": 0.08055380742605413,
+    "precision": 0.2230769230769231
+   },
+   "mlp": {
+    "auc": 0.9670491282573414,
+    "recall": 0.7464788732394366,
+    "fpr": 0.042632066728452274,
+    "bedroomFpr": 0.06041535556954059,
+    "precision": 0.2774869109947644
+   },
+   "logreg_scores": {
+    "auc": 0.96010042336192,
+    "recall": 0.8028169014084507,
+    "fpr": 0.0639481000926784,
+    "bedroomFpr": 0.07551919446192575,
+    "precision": 0.2159090909090909
+   },
+   "mlp_scores": {
+    "auc": 0.967405918364683,
+    "recall": 0.8450704225352113,
+    "fpr": 0.06363917207290701,
+    "bedroomFpr": 0.06859660163624921,
+    "precision": 0.22556390977443608
+   }
+  },
+  "white noise SNR 10 dB": {
+   "zeroshot": {
+    "auc": 0.8321998720776932,
+    "recall": 0.38028169014084506,
+    "fpr": 0.046030274945937595,
+    "bedroomFpr": 0.06104468219005664,
+    "precision": 0.1534090909090909
+   },
+   "logreg": {
+    "auc": 0.9270451252463809,
+    "recall": 0.647887323943662,
+    "fpr": 0.05375347544022243,
+    "bedroomFpr": 0.06482064191315293,
+    "precision": 0.20909090909090908
+   },
+   "mlp": {
+    "auc": 0.9367002136389545,
+    "recall": 0.43661971830985913,
+    "fpr": 0.03274637009576769,
+    "bedroomFpr": 0.04657016991818754,
+    "precision": 0.22627737226277372
+   },
+   "logreg_scores": {
+    "auc": 0.9180209461899603,
+    "recall": 0.676056338028169,
+    "fpr": 0.07414272474513438,
+    "bedroomFpr": 0.08747640025173065,
+    "precision": 0.16666666666666666
+   },
+   "mlp_scores": {
+    "auc": 0.9435836520513255,
+    "recall": 0.7464788732394366,
+    "fpr": 0.07136237256719184,
+    "bedroomFpr": 0.07866582756450598,
+    "precision": 0.18661971830985916
+   }
+  },
+  "pink noise SNR 20 dB": {
+   "zeroshot": {
+    "auc": 0.9477433025710643,
+    "recall": 0.8309859154929577,
+    "fpr": 0.055298115539079394,
+    "bedroomFpr": 0.07551919446192575,
+    "precision": 0.24789915966386555
+   },
+   "logreg": {
+    "auc": 0.9785882424606335,
+    "recall": 0.8591549295774648,
+    "fpr": 0.059932035835650294,
+    "bedroomFpr": 0.08055380742605413,
+    "precision": 0.23921568627450981
+   },
+   "mlp": {
+    "auc": 0.9799588386046896,
+    "recall": 0.9154929577464789,
+    "fpr": 0.06147667593450726,
+    "bedroomFpr": 0.08432976714915041,
+    "precision": 0.24621212121212122
+   },
+   "logreg_scores": {
+    "auc": 0.9794693399818124,
+    "recall": 0.9014084507042254,
+    "fpr": 0.057460611677479144,
+    "bedroomFpr": 0.07426054122089365,
+    "precision": 0.256
+   },
+   "mlp_scores": {
+    "auc": 0.9839857806088927,
+    "recall": 0.9295774647887324,
+    "fpr": 0.057769539697250544,
+    "bedroomFpr": 0.06607929515418502,
+    "precision": 0.2608695652173913
+   }
+  },
+  "pink noise SNR 10 dB": {
+   "zeroshot": {
+    "auc": 0.9236599703255057,
+    "recall": 0.6619718309859155,
+    "fpr": 0.04633920296570899,
+    "bedroomFpr": 0.06356198867212083,
+    "precision": 0.23857868020304568
+   },
+   "logreg": {
+    "auc": 0.9675146958364335,
+    "recall": 0.8450704225352113,
+    "fpr": 0.05375347544022243,
+    "bedroomFpr": 0.07426054122089365,
+    "precision": 0.2564102564102564
+   },
+   "mlp": {
+    "auc": 0.9727882276668973,
+    "recall": 0.8169014084507042,
+    "fpr": 0.04664813098548038,
+    "bedroomFpr": 0.06419131529263687,
+    "precision": 0.27751196172248804
+   },
+   "logreg_scores": {
+    "auc": 0.9626240607065314,
+    "recall": 0.8169014084507042,
+    "fpr": 0.062403459993821436,
+    "bedroomFpr": 0.07992448080553807,
+    "precision": 0.2230769230769231
+   },
+   "mlp_scores": {
+    "auc": 0.967627824407054,
+    "recall": 0.8591549295774648,
+    "fpr": 0.07167130058696324,
+    "bedroomFpr": 0.08370044052863436,
+    "precision": 0.20819112627986347
+   }
+  },
+  "8 kHz sampling rate (4 kHz bandwidth, phone proxy)": {
+   "zeroshot": {
+    "auc": 0.9002597606025402,
+    "recall": 0.7183098591549296,
+    "fpr": 0.04881062712388014,
+    "bedroomFpr": 0.06419131529263687,
+    "precision": 0.24401913875598086
+   },
+   "logreg": {
+    "auc": 0.9679149969324753,
+    "recall": 0.7323943661971831,
+    "fpr": 0.03151065801668211,
+    "bedroomFpr": 0.0446821900566394,
+    "precision": 0.33766233766233766
+   },
+   "mlp": {
+    "auc": 0.9712696941612604,
+    "recall": 0.7464788732394366,
+    "fpr": 0.03521779425393883,
+    "bedroomFpr": 0.051604782882315924,
+    "precision": 0.31736526946107785
+   },
+   "logreg_scores": {
+    "auc": 0.9708911485595687,
+    "recall": 0.7887323943661971,
+    "fpr": 0.03738029039233858,
+    "bedroomFpr": 0.048458149779735685,
+    "precision": 0.3163841807909605
+   },
+   "mlp_scores": {
+    "auc": 0.9783358787261723,
+    "recall": 0.8309859154929577,
+    "fpr": 0.04077849860982391,
+    "bedroomFpr": 0.050975456261799876,
+    "precision": 0.3089005235602094
+   }
+  }
+ },
+ "v1RobustnessFromMetricsV1": {
+  "clean": {
+   "auc": 0.9194220000261066,
+   "recall": 0.6197183098591549,
+   "fpr": 0.04541241890639481,
+   "bedroomFpr": 0.06482064191315293,
+   "precision": 0.23036649214659685
+  },
+  "white noise SNR 20 dB": {
+   "auc": 0.8945554699839444,
+   "recall": 0.6901408450704225,
+   "fpr": 0.09854803830707445,
+   "bedroomFpr": 0.14348646947765892,
+   "precision": 0.1331521739130435
+  },
+  "white noise SNR 10 dB": {
+   "auc": 0.8867060876224291,
+   "recall": 0.4788732394366197,
+   "fpr": 0.0410874266295953,
+   "bedroomFpr": 0.06419131529263687,
+   "precision": 0.20359281437125748
+  },
+  "pink noise SNR 20 dB": {
+   "auc": 0.9105283539357865,
+   "recall": 0.7183098591549296,
+   "fpr": 0.08526413345690455,
+   "bedroomFpr": 0.1145374449339207,
+   "precision": 0.1559633027522936
+  },
+  "pink noise SNR 10 dB": {
+   "auc": 0.9145226626984645,
+   "recall": 0.5633802816901409,
+   "fpr": 0.05375347544022243,
+   "bedroomFpr": 0.07300188797986155,
+   "precision": 0.18691588785046728
+  },
+  "8 kHz sampling rate (4 kHz bandwidth, phone proxy)": {
+   "auc": 0.8105096442106454,
+   "recall": 0,
+   "fpr": 0.006796416434970652,
+   "bedroomFpr": 0.0062932662051604785,
+   "precision": 0
+  }
+ },
+ "tags": {
+  "snore-like": {
+   "evaluated": true,
+   "escClass": "snoring",
+   "classes": [
+    38,
+    41
+   ],
+   "threshold": 0.95,
+   "positivesInTest": 8,
+   "confusion": {
+    "tp": 7,
+    "fp": 1,
+    "tn": 391,
+    "fn": 1
+   },
+   "accuracy": 0.995,
+   "precision": 0.875,
+   "recall": 0.875,
+   "f1": 0.875,
+   "fpr": 0.002551020408163265,
+   "ci95": {
+    "precision": [
+     0.5992857142857143,
+     1.0
+    ],
+    "recall": [
+     0.6,
+     1.0
+    ],
+    "f1": [
+     0.6153846153846154,
+     1.0
+    ]
+   },
+   "withoutSpeechExclusion": {
+    "precision": 0.8888888888888888,
+    "recall": 1.0
+   },
+   "falsePositivesByEscClass": {
+    "pouring_water": 1
+   },
+   "positivesExcludedBySpeechRule": 1
+  },
+  "cough-like": {
+   "evaluated": true,
+   "escClass": "coughing",
+   "classes": [
+    42
+   ],
+   "threshold": 0.95,
+   "positivesInTest": 8,
+   "confusion": {
+    "tp": 4,
+    "fp": 0,
+    "tn": 392,
+    "fn": 4
+   },
+   "accuracy": 0.99,
+   "precision": 1.0,
+   "recall": 0.5,
+   "f1": 0.6666666666666666,
+   "fpr": 0.0,
+   "ci95": {
+    "precision": [
+     1.0,
+     1.0
+    ],
+    "recall": [
+     0.14285714285714285,
+     0.875
+    ],
+    "f1": [
+     0.2857142857142857,
+     0.9333333333333333
+    ]
+   },
+   "withoutSpeechExclusion": {
+    "precision": 0.8571428571428571,
+    "recall": 0.75
+   },
+   "falsePositivesByEscClass": {},
+   "positivesExcludedBySpeechRule": 2
+  },
+  "sneeze-like": {
+   "evaluated": true,
+   "escClass": "sneezing",
+   "classes": [
+    44
+   ],
+   "threshold": 0.84,
+   "positivesInTest": 8,
+   "confusion": {
+    "tp": 3,
+    "fp": 0,
+    "tn": 392,
+    "fn": 5
+   },
+   "accuracy": 0.9875,
+   "precision": 1.0,
+   "recall": 0.375,
+   "f1": 0.5454545454545454,
+   "fpr": 0.0,
+   "ci95": {
+    "precision": [
+     1.0,
+     1.0
+    ],
+    "recall": [
+     0.0,
+     0.75
+    ],
+    "f1": [
+     0.19999999999999998,
+     0.8571428571428571
+    ]
+   },
+   "withoutSpeechExclusion": {
+    "precision": 1.0,
+    "recall": 0.5
+   },
+   "falsePositivesByEscClass": {},
+   "positivesExcludedBySpeechRule": 1
+  },
+  "breathing": {
+   "evaluated": true,
+   "escClass": "breathing",
+   "classes": [
+    36
+   ],
+   "threshold": 0.52,
+   "positivesInTest": 8,
+   "confusion": {
+    "tp": 4,
+    "fp": 14,
+    "tn": 378,
+    "fn": 4
+   },
+   "accuracy": 0.955,
+   "precision": 0.2222222222222222,
+   "recall": 0.5,
+   "f1": 0.30769230769230765,
+   "fpr": 0.03571428571428571,
+   "ci95": {
+    "precision": [
+     0.05,
+     0.4
+    ],
+    "recall": [
+     0.14285714285714285,
+     0.8571428571428571
+    ],
+    "f1": [
+     0.09523809523809523,
+     0.5
+    ]
+   },
+   "withoutSpeechExclusion": {
+    "precision": 0.2857142857142857,
+    "recall": 0.75
+   },
+   "falsePositivesByEscClass": {
+    "snoring": 7,
+    "brushing_teeth": 3,
+    "door_wood_creaks": 1,
+    "hand_saw": 1,
+    "insects": 1,
+    "pouring_water": 1
+   },
+   "positivesExcludedBySpeechRule": 2
+  },
+  "gasp-like": {
+   "evaluated": false,
+   "note": "no ESC-50 ground truth class; not evaluated; not enabled",
+   "classes": [
+    39
+   ],
+   "descriptiveOnly": {
+    "clipsScoringAtLeast0_5": 8,
+    "byEscClass": {
+     "breathing": 6,
+     "hand_saw": 1,
+     "laughing": 1
+    }
+   }
+  },
+  "wheeze-like": {
+   "evaluated": false,
+   "note": "no ESC-50 ground truth class; not evaluated; not enabled",
+   "classes": [
+    37
+   ],
+   "descriptiveOnly": {
+    "clipsScoringAtLeast0_5": 4,
+    "byEscClass": {
+     "breathing": 2,
+     "brushing_teeth": 1,
+     "snoring": 1
+    }
+   }
+  },
+  "_speechExclusion": {
+   "threshold": 0.5,
+   "clipsExcluded": 30,
+   "clipsTotal": 400,
+   "validated": false,
+   "byEscClass": {
+    "breathing": 2,
+    "car_horn": 1,
+    "cat": 1,
+    "clapping": 3,
+    "coughing": 3,
+    "cow": 2,
+    "door_wood_creaks": 1,
+    "drinking_sipping": 3,
+    "frog": 2,
+    "insects": 1,
+    "laughing": 4,
+    "sheep": 3,
+    "sneezing": 3,
+    "snoring": 1
+   },
+   "note": "No ESC-50 speech class, so speech detection is unvalidated. The rule is used only to drop clips, never to label."
+  },
+  "_coverage": {
+   "testClipsWithAtLeastOneAssessableWindow": 400,
+   "testClipsTotal": 400,
+   "note": "Clips whose every window is below the silence floor receive no tags (\"too quiet to assess\")."
+  }
+ },
+ "kaggleChecks": null
+}

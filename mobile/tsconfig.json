@@ -1,0 +1,44 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "lib": [
+      "ES2022"
+    ],
+    "types": [],
+    "paths": {
+      "@core/*": [
+        "../src/*"
+      ]
+    }
+  },
+  "include": [
+    "app",
+    "src",
+    "../src/types",
+    "../src/content/claims.ts",
+    "../src/mobileLogic/index.ts",
+    "../src/evidence/*.ts",
+    "../src/questionnaire/**/*.ts",
+    "../src/audio/constants.ts",
+    "../src/audio/features/index.ts",
+    "../src/audio/features/fft.ts",
+    "../src/audio/features/frame.ts",
+    "../src/audio/features/logmel.ts",
+    "../src/audio/features/mel.ts",
+    "../src/audio/features/resample.ts",
+    "../src/audio/model/infer.ts",
+    "../src/audio/model/schema.ts",
+    "../src/audio/model/model.json",
+    "../src/audio/modelHook.ts",
+    "../src/audio/analyze.ts"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "../src/**/*.test.ts"
+  ]
+}

@@ -1,0 +1,99 @@
+/* Design tokens. Calm, neutral/blue for information, amber for "worth discussing".
+   Never green for an all-clear. All text pairs target 4.5:1 or better. */
+:root {
+  color-scheme: light dark;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --bg: #f7f6f2;
+  --surface: #fffefc;
+  --surface-2: #efede7;
+  --fg: #1a2230;
+  --muted: #4d586a;
+  --border: #c9d1dc;
+  --accent: #2a5798;
+  --accent-fg: #ffffff;
+  --focus: #1b4fd1;
+  --border-strong: #6b768a; /* non-text boundaries that must be seen (drop zone, chart axes): 4.5:1 on --surface */
+  --danger-bg: #7a1d1d;
+  --danger-fg: #ffffff;
+
+  --info-bg: #e8f0fb;
+  --info-fg: #17396b;
+  --info-border: #9db8e0;
+  --discuss-bg: #fff3d4;
+  --discuss-fg: #5a3d00;
+  --discuss-border: #d9a520;
+  --missing-bg: #eef1f5;
+  --missing-fg: #3e4859;
+  --missing-border: #8c97a8;
+  --sample-bg: #f1e9fb;
+  --sample-fg: #47246f;
+  --sample-border: #a98bd0;
+  --model-bg: #e3f3f6;
+  --model-fg: #0f4553;
+  --model-border: #7fbac6;
+  --error-bg: #fde8e8;
+  --error-fg: #7a1d1d;
+  --error-border: #d98a8a;
+
+  --chart-line: #2a5798;
+  --chart-gap: #9a6700;
+  --chart-snore: #47246f;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 2px rgba(20, 30, 50, 0.08);
+  --max-width: 48rem;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #11161f;
+    --surface: #1a212d;
+    --surface-2: #232c3b;
+    --fg: #e8ecf2;
+    --muted: #b0bacb;
+    --border: #3a4559;
+    --accent: #8fb6f2;
+    --accent-fg: #10213d;
+    --focus: #9cc0ff;
+    --border-strong: #8592a8;
+    --danger-bg: #ffd2d2;
+    --danger-fg: #3a0f12;
+    --info-bg: #1b2a44;
+    --info-fg: #cfe0fb;
+    --info-border: #46639a;
+    --discuss-bg: #3a2c0c;
+    --discuss-fg: #ffe3a3;
+    --discuss-border: #b48414;
+    --missing-bg: #232c3b;
+    --missing-fg: #c9d1de;
+    --missing-border: #66738a;
+    --sample-bg: #2c2040;
+    --sample-fg: #e3d3fa;
+    --sample-border: #7e5fb0;
+    --model-bg: #123640;
+    --model-fg: #c5ebf2;
+    --model-border: #3f8797;
+    --error-bg: #46191c;
+    --error-fg: #ffd2d2;
+    --error-border: #a54f55;
+    --chart-line: #8fb6f2;
+    --chart-gap: #e0b13a;
+    --chart-snore: #c9a8f0;
+    --shadow: none;
+  }
+}

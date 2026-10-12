@@ -1,0 +1,145 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generateCareSummary > snapshot (no audio, real user) 1`] = `
+{
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "sections": [
+    {
+      "id": "reported",
+      "source": "user-reported",
+      "text": "Symptoms I reported (team-written checklist, not a validated instrument):
+- I snore loudly: sometimes
+- I wake up choking or gasping: not answered
+- Someone has noticed pauses in my breathing during sleep: not answered
+- I wake up feeling unrefreshed: often
+- I feel very sleepy during the day: often
+- I wake up with headaches: not answered
+- Have you fallen asleep, or nearly fallen asleep, while driving? no",
+      "title": "What I reported",
+    },
+    {
+      "id": "screening",
+      "source": "user-reported",
+      "text": "NoSAS screening score: 5 of 17. Below the published cutoff of 8.
+Your NoSAS score is 5 of 17. In the studies that tested it, people scoring 8 or more were more likely to have clinically significant sleep-disordered breathing than people scoring lower. A lower score does not rule out sleep apnea. Talk to a clinician if you have symptoms. NoSAS (Marti-Soler et al., Lancet Respir Med 2016, doi:10.1016/S2213-2600(16)30075-3) is a screening score. It is not a diagnosis. This score is being applied outside the populations in which it was validated.
+Source: Marti-Soler H, et al. The NoSAS score for screening of sleep-disordered breathing: a derivation and validation study. Lancet Respir Med 2016;4:742-748. doi:10.1016/S2213-2600(16)30075-3.",
+      "title": "Screening score (NoSAS)",
+    },
+    {
+      "id": "audio",
+      "source": "missing",
+      "text": "Not provided. No recording was analyzed.
+A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea.",
+      "title": "Recording observations",
+    },
+    {
+      "id": "guidance",
+      "source": "app-guidance",
+      "text": "Based on what you shared, this is worth discussing with a clinician.
+Your symptoms and screening answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.
+Missing information:
+- Audio recording (optional)
+Uncertainty:
+- SleepSmooth is informational and is not a diagnosis. It cannot confirm or rule out sleep apnea.
+- A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea.
+- Your answers and the recording are shown separately. They are not combined into one score.",
+      "title": "What this app can and cannot say",
+    },
+    {
+      "id": "questions",
+      "source": "app-guidance",
+      "text": "- Given my symptoms, is an evaluation for sleep apnea appropriate for me?
+- What kind of sleep testing, if any, would you suggest?
+- Could anything else be causing my tiredness or snoring?
+- What should I watch for before my next visit?",
+      "title": "Questions for my clinician",
+    },
+    {
+      "id": "limits",
+      "source": "app-guidance",
+      "text": "SleepSmooth is informational and is not a diagnosis. It cannot confirm or rule out sleep apnea.
+Audio analysis detects acoustic patterns only. It does not directly measure airflow or confirm apnea events.
+A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea.",
+      "title": "Limitations",
+    },
+  ],
+  "userEdited": false,
+}
+`;
+
+exports[`generateCareSummary > snapshot (synthetic demo) 1`] = `
+{
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "sections": [
+    {
+      "id": "reported",
+      "isSynthetic": true,
+      "source": "user-reported",
+      "text": "Synthetic / illustrative: Symptoms I reported (team-written checklist, not a validated instrument):
+- I snore loudly: sometimes
+- I wake up choking or gasping: not answered
+- Someone has noticed pauses in my breathing during sleep: not answered
+- I wake up feeling unrefreshed: often
+- I feel very sleepy during the day: often
+- I wake up with headaches: not answered
+- Have you fallen asleep, or nearly fallen asleep, while driving? no",
+      "title": "What I reported",
+    },
+    {
+      "id": "screening",
+      "isSynthetic": true,
+      "source": "user-reported",
+      "text": "Synthetic / illustrative: NoSAS screening score: Incomplete.
+Neck measurement missing, so the score is incomplete. Without it, the highest possible score is 13.
+This score is being applied outside the populations in which it was validated.
+Source: Marti-Soler H, et al. The NoSAS score for screening of sleep-disordered breathing: a derivation and validation study. Lancet Respir Med 2016;4:742-748. doi:10.1016/S2213-2600(16)30075-3.",
+      "title": "Screening score (NoSAS)",
+    },
+    {
+      "id": "audio",
+      "isSynthetic": true,
+      "source": "audio-observation",
+      "text": "Synthetic / illustrative:
+- Recording length: 2 min 0 s. Quality: usable.
+- Synthetic example values for illustration only.
+- Snore-like pattern observed in 3 of 239 analyzed windows.
+- Windows too quiet to assess: 38.
+- Quiet periods found by a loudness threshold: 2.
+Audio analysis detects acoustic patterns only. It does not directly measure airflow or confirm apnea events.
+A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea.",
+      "title": "Recording observations",
+    },
+    {
+      "id": "guidance",
+      "isSynthetic": true,
+      "source": "app-guidance",
+      "text": "Synthetic / illustrative: Based on what you shared, this is worth discussing with a clinician.
+Your symptoms and screening answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.
+Uncertainty:
+- SleepSmooth is informational and is not a diagnosis. It cannot confirm or rule out sleep apnea.
+- A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea.
+- Your answers and the recording are shown separately. They are not combined into one score.
+- A recording is never used to lower the conclusion drawn from your answers.",
+      "title": "What this app can and cannot say",
+    },
+    {
+      "id": "questions",
+      "source": "app-guidance",
+      "text": "- Given my symptoms, is an evaluation for sleep apnea appropriate for me?
+- What kind of sleep testing, if any, would you suggest?
+- Could anything else be causing my tiredness or snoring?
+- What should I watch for before my next visit?",
+      "title": "Questions for my clinician",
+    },
+    {
+      "id": "limits",
+      "source": "app-guidance",
+      "text": "SleepSmooth is informational and is not a diagnosis. It cannot confirm or rule out sleep apnea.
+Audio analysis detects acoustic patterns only. It does not directly measure airflow or confirm apnea events.
+A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea.",
+      "title": "Limitations",
+    },
+  ],
+  "userEdited": false,
+}
+`;

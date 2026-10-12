@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f6f2" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#11161f" />
+    <!--
+      CSP (ER-7). Privacy enforcement: no network calls may carry user data.
+      - default-src 'self' and connect-src 'self': no third-party hosts.
+      - worker-src 'self' blob: : Web Workers (bundled by Vite) and blob workers.
+      - media-src 'self' blob: / img-src 'self' data: blob: : local audio playback and inline images.
+      - style-src 'unsafe-inline': needed because Vite dev injects <style> tags (HMR) and React
+        inline style attributes (e.g. SVG chart sizing). Revisit to remove for production if feasible.
+      - connect-src also allows ws://localhost:* so the Vite HMR websocket works in dev only.
+      Note: meta CSP cannot set frame-ancestors; not needed here.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; worker-src 'self' blob:; connect-src 'self' ws://localhost:* ws://127.0.0.1:*; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <title>SleepSmooth</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
