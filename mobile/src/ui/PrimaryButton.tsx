@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { ActivityIndicator, Pressable, View, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
@@ -17,12 +18,14 @@ export interface PrimaryButtonProps {
   /** Spoken when disabled, so the reason is not lost. */
   disabledReason?: string;
   accessibilityHint?: string;
+  /** Haptic on press. Default: light impact for filled and tinted, none for plain and destructive (dismissals and confirmations carry their own). */
+  haptic?: 'light' | 'selection' | 'none';
   testID?: string;
 }
 
 /** v2: the filled variant is the gradient CTA (cyan end darkened so white text is at least 4.5:1). Primary actions only. */
 /** M1: press feedback is a scale on the UI thread (CSS transition), 100 ms in and 160 ms out. */
-export function PrimaryButton({ label, onPress, variant = 'filled', shape = 'capsule', size = 'large', loading, disabled, disabledReason, accessibilityHint, testID }: PrimaryButtonProps) {
+export function PrimaryButton({ label, onPress, variant = 'filled', shape = 'capsule', size = 'large', loading, disabled, disabledReason, accessibilityHint, haptic, testID }: PrimaryButtonProps) {
   const { colors, radius, reduceMotion } = useTheme();
   const { fontScale } = useWindowDimensions();
   const [pressed, setPressed] = useState(false);
@@ -41,7 +44,12 @@ export function PrimaryButton({ label, onPress, variant = 'filled', shape = 'cap
       accessibilityHint={disabled && disabledReason ? disabledReason : accessibilityHint}
       accessibilityState={{ disabled: !!inactive, busy: !!loading }}
       disabled={inactive}
-      onPress={onPress}
+      onPress={() => {
+        const h = haptic ?? (variant === 'filled' || variant === 'tinted' ? 'light' : 'none');
+        if (h === 'light') void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        else if (h === 'selection') void Haptics.selectionAsync();
+        onPress();
+      }}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
       pressRetentionOffset={{ top: 12, bottom: 12, left: 12, right: 12 }}

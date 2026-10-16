@@ -2,7 +2,7 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { File } from 'expo-file-system';
 import { useMemo, useState } from 'react';
-import { Share, View } from 'react-native';
+import { Platform, Share, View } from 'react-native';
 import { ERROR_BOUNDARY_MESSAGE, SUMMARY_GENERATED_NOTE, SUMMARY_PRINT_NOT_DIAGNOSIS } from '@core/content/claims';
 import { buildSampleNightView } from '@core/night';
 import { buildSummary, summaryToHtml, summaryToPlainText } from '@core/mobileLogic/summaryText';
@@ -12,10 +12,14 @@ import { AppText } from '../src/ui/AppText';
 import { BackBar } from '../src/ui/ScreenHeader';
 import { Screen } from '../src/ui/Screen';
 import { InsetGroup, ListRow } from '../src/ui/InsetGroup';
+import { LimitsPanel } from '../src/ui/LimitsPanel';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
 import { Skeleton } from '../src/ui/Skeleton';
 import { StateCard } from '../src/ui/StateCard';
 import { Surface } from '../src/ui/Surface';
+
+/** The web preview has no iOS share sheet; say so instead of a generic failure. */
+const WEB_SHARE_NOTE = Platform.OS === 'web' ? 'Sharing needs the iPhone app. This web preview cannot open a share sheet. Nothing was sent.' : null;
 
 export default function SummaryScreen() {
   const s = useSettings();
@@ -31,6 +35,7 @@ export default function SummaryScreen() {
         answers: s.answers,
         symptoms: s.symptoms,
         redFlag: s.redFlag,
+        partner: s.partner,
         realNights: nights.map((n) => n.view),
         sampleNight: useSample ? buildSampleNightView('snore-episodes') : null,
         generatedAtISO: new Date().toISOString(),
@@ -38,7 +43,7 @@ export default function SummaryScreen() {
     } catch {
       return 'error' as const;
     }
-  }, [status, s.answers, s.symptoms, s.redFlag, nights, useSample]);
+  }, [status, s.answers, s.symptoms, s.redFlag, s.partner, nights, useSample]);
 
   const shareText = async () => {
     if (!built || built === 'error') return;
@@ -46,7 +51,7 @@ export default function SummaryScreen() {
     try {
       await Share.share({ message: summaryToPlainText(built.summary, built.sampleOnly), title: 'SleepSmooth summary (not a diagnosis)' });
     } catch {
-      setShareError('The summary could not be shared. Nothing was sent.');
+      setShareError(WEB_SHARE_NOTE ?? 'The summary could not be shared. Nothing was sent.');
     }
   };
 
@@ -61,7 +66,7 @@ export default function SummaryScreen() {
       uri = r.uri;
       await Sharing.shareAsync(uri, { mimeType: 'application/pdf', UTI: 'com.adobe.pdf', dialogTitle: 'SleepSmooth summary (not a diagnosis)' });
     } catch {
-      setShareError('The PDF could not be made or shared. You can share the text version instead.');
+      setShareError(WEB_SHARE_NOTE ?? 'The PDF could not be made or shared. You can share the text version instead.');
     } finally {
       // The temporary PDF holds health information, so it is removed once the share sheet closes.
       try {
@@ -109,6 +114,8 @@ export default function SummaryScreen() {
                 </View>
               </Surface>
             ))}
+
+            <LimitsPanel />
 
             {shareError ? <StateCard tone="error" icon="exclamationmark.triangle" title="Not shared" body={shareError} testID="share-error" /> : null}
             <View style={{ gap: 8 }}>

@@ -13,9 +13,14 @@ import {
   NO_MODEL_LINE,
   SUMMARY_REGENERATE_CONFIRM,
   SAMPLE_AUDIO_NOT_USED,
+  DISCUSS_SOURCE_LINE,
+  DISCUSS_SUMMARY_LEAD,
+  DISCUSS_SUMMARY_TITLE,
 } from '../content/claims';
+import { selectedDiscussItems } from '../questionnaire/discussItems';
 import { activeInstrument } from '../questionnaire/registry';
 import { FREQUENCY_LABELS, SYMPTOM_ITEMS, type SymptomAnswers } from '../questionnaire/symptomChecklist';
+import { isPartnerEmpty, partnerSection, type PartnerObservations } from '../questionnaire/partner';
 import type { AudioAnalysis } from '../types/audio';
 import type { EvidenceSummary } from '../types/evidence';
 import type { CareSummary, CareSummarySection } from '../types/report';
@@ -25,6 +30,8 @@ export interface ReportInput {
   answers: Record<string, AnswerValue>;
   symptoms: SymptomAnswers;
   redFlag: boolean | null;
+  /** Optional bed-partner observations (user-reported, not scored). */
+  partner?: PartnerObservations | null;
   evidence: EvidenceSummary;
   audio: AudioAnalysis | null;
   isSynthetic: boolean;
@@ -50,6 +57,13 @@ function screeningText(i: ReportInput): string {
   const head = s.total === null ? `${activeInstrument.title}: ${s.band}.` : `${activeInstrument.title}: ${s.total} of 17. ${s.band}.`;
   const note = s.explanation.includes(NOSAS_OUTSIDE_VALIDATION_NOTE) ? [] : [NOSAS_OUTSIDE_VALIDATION_NOTE];
   return [head, s.explanation, ...note, `Source: ${NOSAS_CITATION}`].join('\n');
+}
+
+/** Optional guideline-backed items the person ticked. Null when none, so the section is omitted. Never scored. */
+function discussText(i: ReportInput): string | null {
+  const items = selectedDiscussItems(i.answers);
+  if (items.length === 0) return null;
+  return [DISCUSS_SUMMARY_LEAD, bullets(items.map((x) => `${x.text} (${x.source})`)), DISCUSS_SOURCE_LINE].join('\n');
 }
 
 function audioText(a: AudioAnalysis | null): string {
@@ -93,7 +107,9 @@ export function generateCareSummary(i: ReportInput): CareSummary {
   });
   const sections: CareSummarySection[] = [
     mk('reported', SUMMARY_SECTION_TITLES.reported, 'user-reported', reportedText(i), syn),
+    ...(isPartnerEmpty(i.partner) ? [] : [{ ...partnerSection(i.partner), ...(syn ? { isSynthetic: true as const } : {}) }]),
     mk('screening', SUMMARY_SECTION_TITLES.screening, 'user-reported', screeningText(i), syn),
+    ...(discussText(i) === null ? [] : [mk('discuss', DISCUSS_SUMMARY_TITLE, 'user-reported', discussText(i) as string, syn)]),
     mk('audio', SUMMARY_SECTION_TITLES.audio, i.audio && i.audio.status === 'done' ? 'audio-observation' : 'missing', sampleLead(i) + audioText(i.audio), syn && !!i.audio),
     mk('guidance', SUMMARY_SECTION_TITLES.guidance, 'app-guidance', guidanceText(i.evidence), syn),
     mk('questions', SUMMARY_SECTION_TITLES.questions, 'app-guidance', bullets(CLINICIAN_QUESTIONS), false),

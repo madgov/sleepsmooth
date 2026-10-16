@@ -7,10 +7,10 @@ import { AppText } from './AppText';
 import { hourBuckets, type HourBucket } from './hourBuckets';
 
 /** Weather-file hourly capsule size. */
-export const CAPSULE = { width: 60, height: 146 } as const;
+export const CAPSULE = { width: 44, height: 108 } as const;
 
 /**
- * v2 hourly capsule (60 x 146). Inactive = glass outline. Observed = calm purple fill rising from the bottom
+ * v2 hourly capsule (44 x 108). Inactive = glass outline. Observed = calm purple fill rising from the bottom
  * (no glow, no gradient animation, no neon). The fill is minutes estimated asleep in that hour; a lighter band above it
  * is minutes marked uncertain. The numbers are also printed under each capsule, so colour is never the only signal.
  */

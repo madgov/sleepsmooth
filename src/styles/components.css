@@ -326,3 +326,19 @@ textarea { max-width: 75ch; }
 .swatch-line { height: 0; border-top: 3px solid var(--chart-line); }
 .swatch-gap { border: 1px dashed var(--chart-gap); background: repeating-linear-gradient(45deg, var(--chart-gap) 0 1.5px, transparent 1.5px 5px); }
 .swatch-snore { height: 0.5rem; background: var(--chart-snore); }
+
+/* Next-steps pathway guide */
+.pathway-steps { padding-left: var(--space-4); }
+.pathway-steps li { margin-bottom: var(--space-3); }
+.script-text { margin: var(--space-3) 0; padding: var(--space-2) var(--space-4); border-left: 3px solid var(--border); background: var(--surface); border-radius: var(--radius); }
+.script-text p { margin: var(--space-2) 0; }
+
+/* Round 2: limits panel and clinician-discussion checklist. Neutral surface only; never a success or warning colour. */
+.limits-panel { margin: var(--space-4) 0; padding: var(--space-3) var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); color: var(--muted); font-size: 0.95rem; }
+.limits-panel h3 { margin: 0 0 var(--space-2); font-size: 1.05rem; color: var(--fg); }
+.limits-panel ul { margin: 0 0 var(--space-2); padding-left: 1.25rem; line-height: 1.5; }
+.limits-panel summary { cursor: pointer; color: var(--fg); }
+.discuss-list { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); margin: var(--space-4) 0; }
+.discuss-list legend { font-weight: 600; padding: 0 var(--space-1); }
+.discuss-list .choice { display: block; margin: var(--space-2) 0; }
+.discuss-src { display: block; margin-left: 1.75rem; font-size: 0.85rem; color: var(--muted); }

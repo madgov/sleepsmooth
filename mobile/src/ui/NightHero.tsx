@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { View } from 'react-native';
 import { formatDuration, spokenDuration } from '@core/mobileLogic/index';
-import { DISCLAIMER_NOT_DIAGNOSIS } from '@core/content/claims';
 import type { NightListItem } from '../data/nightSource';
 import { AppText } from './AppText';
 import { Chip } from './Chip';
+import { DisclaimerNote } from './DisclaimerNote';
 import { GlassCard } from './GlassCard';
 import { Ring } from './Ring';
 import { SourceBadge } from './SourceBadge';
@@ -39,7 +39,7 @@ export function NightHero({ night, scheduledMin }: { night: NightListItem; sched
               <AppText variant="subheadline" tone="secondary" weight="600">
                 {night.isSample ? 'Sample night' : 'Last night'}
               </AppText>
-              <AppText variant="title3" numberOfLines={1}>
+              <AppText variant="title3">
                 {dateLabel}
               </AppText>
             </View>
@@ -49,7 +49,7 @@ export function NightHero({ night, scheduledMin }: { night: NightListItem; sched
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18 }}>
             <Ring size={136} stroke={13} progress={share} id="heroRing" accessibilityLabel={`Recorded ${spokenDuration(night.recordedMinutes)} of a ${spokenDuration(scheduledMin)} window.`}>
               <View style={{ alignItems: 'center' }}>
-                <AppText variant="title2" tabular weight="700" maxFontSizeMultiplier={1.2}>
+                <AppText variant="title1" tabular weight="700" maxFontSizeMultiplier={1.2}>
                   {hm(night.recordedMinutes)}
                 </AppText>
                 <AppText variant="caption1" tone="secondary" maxFontSizeMultiplier={1.3}>
@@ -63,13 +63,8 @@ export function NightHero({ night, scheduledMin }: { night: NightListItem; sched
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-            <Chip label={q.label} icon={q.icon} tone={q.tone} />
-            <Chip label="Not a diagnosis" icon="info.circle" tone="info" />
-          </View>
-          <AppText variant="footnote" tone="secondary">
-            {DISCLAIMER_NOT_DIAGNOSIS}
-          </AppText>
+          <Chip label={q.label} icon={q.icon} tone={q.tone} />
+          <DisclaimerNote testID="hero-disclaimer">Not a diagnosis. It cannot confirm or rule out sleep apnea.</DisclaimerNote>
         </View>
       </GlassCard>
     </View>
@@ -79,8 +74,8 @@ export function NightHero({ night, scheduledMin }: { night: NightListItem; sched
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <View accessible accessibilityLabel={`${label}: ${value}`}>
-      <AppText variant="caption1" tone="secondary" weight="600" maxFontSizeMultiplier={1.4} style={{ letterSpacing: 0.3 }}>
-        {label.toUpperCase()}
+      <AppText variant="caption1" tone="secondary" weight="600" maxFontSizeMultiplier={1.4}>
+        {label}
       </AppText>
       <AppText variant="headline" tabular maxFontSizeMultiplier={1.4}>
         {value}

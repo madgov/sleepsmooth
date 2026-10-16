@@ -1,0 +1,1867 @@
+{
+ "label": "DEVELOPMENT folds 1-4 out-of-fold; fold 5 not used",
+ "threshold": 0.6494545434975308,
+ "windows": 13116,
+ "positives": 279,
+ "tp": 218,
+ "fp": 426,
+ "fn": {
+  "total": 61,
+  "positives": 279,
+  "recall": 0.7813620071684588,
+  "categories": {
+   "quiet window (RMS <= -41.4 dBFS, bottom quartile of snoring windows)": {
+    "windows": 70,
+    "fn": 24,
+    "missRate": 0.34285714285714286
+   },
+   "brief snore (< 25% of the window within 12 dB of the clip peak level)": {
+    "windows": 102,
+    "fn": 41,
+    "missRate": 0.4019607843137255
+   },
+   "snore on steady background (clip dynamic range p95-p10 < 20 dB)": {
+    "windows": 81,
+    "fn": 7,
+    "missRate": 0.08641975308641975
+   },
+   "loud, sustained, high-contrast (none of the above)": {
+    "windows": 103,
+    "fn": 12,
+    "missRate": 0.11650485436893204
+   }
+  },
+  "note": "Categories are proxies computed from signal level, not listening labels; they overlap. Quiet-quartile cut is relative to this dataset.",
+  "perClip": [
+   {
+    "clip": "esc50/3-130998-A-28",
+    "fold": 3,
+    "windows": 9,
+    "missed": 7,
+    "meanRms": -26.198170892858446,
+    "maxScore": 0.9884860752860991
+   },
+   {
+    "clip": "esc50/3-124795-A-28",
+    "fold": 3,
+    "windows": 6,
+    "missed": 4,
+    "meanRms": -48.89846558732916,
+    "maxScore": 0.9812014016526105
+   },
+   {
+    "clip": "esc50/2-114609-B-28",
+    "fold": 2,
+    "windows": 9,
+    "missed": 5,
+    "meanRms": -27.850711151037853,
+    "maxScore": 0.9917321060210302
+   },
+   {
+    "clip": "esc50/1-47923-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 4,
+    "meanRms": -33.37483678188917,
+    "maxScore": 0.9353047792429529
+   },
+   {
+    "clip": "esc50/2-114609-A-28",
+    "fold": 2,
+    "windows": 9,
+    "missed": 4,
+    "meanRms": -33.71604992076795,
+    "maxScore": 0.9956964409590339
+   },
+   {
+    "clip": "esc50/2-52001-A-28",
+    "fold": 2,
+    "windows": 9,
+    "missed": 4,
+    "meanRms": -46.76914024195352,
+    "maxScore": 0.9962568930541227
+   },
+   {
+    "clip": "esc50/3-130998-B-28",
+    "fold": 3,
+    "windows": 9,
+    "missed": 4,
+    "meanRms": -18.77635747160124,
+    "maxScore": 0.9979839864914651
+   },
+   {
+    "clip": "esc50/3-151557-A-28",
+    "fold": 3,
+    "windows": 9,
+    "missed": 4,
+    "meanRms": -34.80231633144102,
+    "maxScore": 0.996500965875118
+   },
+   {
+    "clip": "esc50/1-20545-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 3,
+    "meanRms": -34.62677253135173,
+    "maxScore": 0.9964164831936577
+   },
+   {
+    "clip": "esc50/1-39937-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 3,
+    "meanRms": -34.4285780677193,
+    "maxScore": 0.9966015574006489
+   },
+   {
+    "clip": "esc50/2-110417-A-28",
+    "fold": 2,
+    "windows": 6,
+    "missed": 2,
+    "meanRms": -52.02384727308024,
+    "maxScore": 0.9940447283700637
+   },
+   {
+    "clip": "esc50/2-110417-B-28",
+    "fold": 2,
+    "windows": 6,
+    "missed": 2,
+    "meanRms": -46.33201628489752,
+    "maxScore": 0.9944808888955958
+   },
+   {
+    "clip": "esc50/1-53444-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 2,
+    "meanRms": -16.650620188457765,
+    "maxScore": 0.9980262060542213
+   },
+   {
+    "clip": "esc50/2-117330-A-28",
+    "fold": 2,
+    "windows": 9,
+    "missed": 2,
+    "meanRms": -36.706510963083986,
+    "maxScore": 0.9973279061872845
+   },
+   {
+    "clip": "esc50/3-124958-A-28",
+    "fold": 3,
+    "windows": 9,
+    "missed": 2,
+    "meanRms": -29.57596295448589,
+    "maxScore": 0.9937713713093493
+   },
+   {
+    "clip": "esc50/3-151255-A-28",
+    "fold": 3,
+    "windows": 9,
+    "missed": 2,
+    "meanRms": -36.09731034411513,
+    "maxScore": 0.9964953044007917
+   },
+   {
+    "clip": "esc50/4-180337-A-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 2,
+    "meanRms": -24.63901310102606,
+    "maxScore": 0.9969171689168864
+   },
+   {
+    "clip": "esc50/4-197454-B-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 2,
+    "meanRms": -36.25784927174122,
+    "maxScore": 0.9926288861304123
+   },
+   {
+    "clip": "esc50/1-27403-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 1,
+    "meanRms": -30.49087990852003,
+    "maxScore": 0.9969080653612122
+   },
+   {
+    "clip": "esc50/2-80313-A-28",
+    "fold": 2,
+    "windows": 9,
+    "missed": 1,
+    "meanRms": -29.98757404895851,
+    "maxScore": 0.9978518300534855
+   },
+   {
+    "clip": "esc50/3-151557-B-28",
+    "fold": 3,
+    "windows": 9,
+    "missed": 1,
+    "meanRms": -28.257375113556666,
+    "maxScore": 0.9958294443849433
+   },
+   {
+    "clip": "esc50/1-27405-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -41.356730613868535,
+    "maxScore": 0.9969368110793289
+   },
+   {
+    "clip": "esc50/1-40621-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -40.10025036471658,
+    "maxScore": 0.998190794494466
+   },
+   {
+    "clip": "esc50/1-40967-A-28",
+    "fold": 1,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -50.120265674105816,
+    "maxScore": 0.9952793384841674
+   },
+   {
+    "clip": "esc50/2-52001-B-28",
+    "fold": 2,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -36.150707209820844,
+    "maxScore": 0.9983269844094981
+   },
+   {
+    "clip": "esc50/3-123086-A-28",
+    "fold": 3,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -37.497988403594306,
+    "maxScore": 0.9951096581671888
+   },
+   {
+    "clip": "esc50/4-183882-A-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -26.858101078644424,
+    "maxScore": 0.9976277996319463
+   },
+   {
+    "clip": "esc50/4-183882-B-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -31.905863565951222,
+    "maxScore": 0.9979721940768072
+   },
+   {
+    "clip": "esc50/4-184235-A-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -45.57800744009031,
+    "maxScore": 0.9953158988955128
+   },
+   {
+    "clip": "esc50/4-184237-A-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -32.002980905144724,
+    "maxScore": 0.9978150267015674
+   },
+   {
+    "clip": "esc50/4-191297-A-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -20.07492953426471,
+    "maxScore": 0.994075386250298
+   },
+   {
+    "clip": "esc50/4-197454-A-28",
+    "fold": 4,
+    "windows": 9,
+    "missed": 0,
+    "meanRms": -32.5415872961546,
+    "maxScore": 0.996539372552739
+   }
+  ],
+  "clipsFullyMissed": 0,
+  "clipsWithAnyFlag": 32,
+  "positiveClips": 32
+ },
+ "tn": 12411,
+ "pooledOofAuc": 0.9713075973545332,
+ "precision": 0.3385093167701863,
+ "recall": 0.7813620071684588,
+ "fpr": 0.03318532367375555,
+ "perFold": {
+  "1": {
+   "tp": 59,
+   "fp": 137,
+   "positives": 72,
+   "positiveClips": 8
+  },
+  "2": {
+   "tp": 46,
+   "fp": 75,
+   "positives": 66,
+   "positiveClips": 8
+  },
+  "3": {
+   "tp": 45,
+   "fp": 110,
+   "positives": 69,
+   "positiveClips": 8
+  },
+  "4": {
+   "tp": 68,
+   "fp": 104,
+   "positives": 72,
+   "positiveClips": 8
+  }
+ },
+ "byClass": [
+  {
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "negWindows": 229,
+   "fp": 64,
+   "rate": 0.2794759825327511,
+   "clips": 32,
+   "clipsWithFp": 19,
+   "share": 0.15023474178403756
+  },
+  {
+   "cls": "sneezing",
+   "type": "breathing/respiratory",
+   "negWindows": 161,
+   "fp": 33,
+   "rate": 0.20496894409937888,
+   "clips": 32,
+   "clipsWithFp": 18,
+   "share": 0.07746478873239436
+  },
+  {
+   "cls": "can_opening",
+   "type": "transient/impact",
+   "negWindows": 206,
+   "fp": 28,
+   "rate": 0.13592233009708737,
+   "clips": 32,
+   "clipsWithFp": 13,
+   "share": 0.06572769953051644
+  },
+  {
+   "cls": "fireworks",
+   "type": "transient/impact",
+   "negWindows": 286,
+   "fp": 27,
+   "rate": 0.0944055944055944,
+   "clips": 32,
+   "clipsWithFp": 12,
+   "share": 0.06338028169014084
+  },
+  {
+   "cls": "drinking_sipping",
+   "type": "weather/water/other ambient",
+   "negWindows": 239,
+   "fp": 24,
+   "rate": 0.100418410041841,
+   "clips": 32,
+   "clipsWithFp": 11,
+   "share": 0.056338028169014086
+  },
+  {
+   "cls": "door_wood_knock",
+   "type": "transient/impact",
+   "negWindows": 182,
+   "fp": 23,
+   "rate": 0.12637362637362637,
+   "clips": 32,
+   "clipsWithFp": 14,
+   "share": 0.0539906103286385
+  },
+  {
+   "cls": "cat",
+   "type": "animal",
+   "negWindows": 257,
+   "fp": 19,
+   "rate": 0.07392996108949416,
+   "clips": 32,
+   "clipsWithFp": 8,
+   "share": 0.04460093896713615
+  },
+  {
+   "cls": "coughing",
+   "type": "breathing/respiratory",
+   "negWindows": 185,
+   "fp": 18,
+   "rate": 0.0972972972972973,
+   "clips": 32,
+   "clipsWithFp": 14,
+   "share": 0.04225352112676056
+  },
+  {
+   "cls": "cow",
+   "type": "animal",
+   "negWindows": 259,
+   "fp": 17,
+   "rate": 0.06563706563706563,
+   "clips": 32,
+   "clipsWithFp": 5,
+   "share": 0.03990610328638498
+  },
+  {
+   "cls": "mouse_click",
+   "type": "transient/impact",
+   "negWindows": 235,
+   "fp": 16,
+   "rate": 0.06808510638297872,
+   "clips": 32,
+   "clipsWithFp": 10,
+   "share": 0.03755868544600939
+  },
+  {
+   "cls": "water_drops",
+   "type": "transient/impact",
+   "negWindows": 235,
+   "fp": 15,
+   "rate": 0.06382978723404255,
+   "clips": 32,
+   "clipsWithFp": 9,
+   "share": 0.035211267605633804
+  },
+  {
+   "cls": "door_wood_creaks",
+   "type": "transient/impact",
+   "negWindows": 264,
+   "fp": 13,
+   "rate": 0.04924242424242424,
+   "clips": 32,
+   "clipsWithFp": 8,
+   "share": 0.03051643192488263
+  },
+  {
+   "cls": "laughing",
+   "type": "speech-like vocal",
+   "negWindows": 257,
+   "fp": 13,
+   "rate": 0.05058365758754864,
+   "clips": 32,
+   "clipsWithFp": 7,
+   "share": 0.03051643192488263
+  },
+  {
+   "cls": "insects",
+   "type": "animal",
+   "negWindows": 274,
+   "fp": 12,
+   "rate": 0.043795620437956206,
+   "clips": 32,
+   "clipsWithFp": 4,
+   "share": 0.028169014084507043
+  },
+  {
+   "cls": "thunderstorm",
+   "type": "weather/water/other ambient",
+   "negWindows": 288,
+   "fp": 9,
+   "rate": 0.03125,
+   "clips": 32,
+   "clipsWithFp": 7,
+   "share": 0.02112676056338028
+  },
+  {
+   "cls": "chainsaw",
+   "type": "mechanical/fan",
+   "negWindows": 288,
+   "fp": 8,
+   "rate": 0.027777777777777776,
+   "clips": 32,
+   "clipsWithFp": 6,
+   "share": 0.018779342723004695
+  },
+  {
+   "cls": "rooster",
+   "type": "animal",
+   "negWindows": 187,
+   "fp": 7,
+   "rate": 0.0374331550802139,
+   "clips": 32,
+   "clipsWithFp": 3,
+   "share": 0.01643192488262911
+  },
+  {
+   "cls": "airplane",
+   "type": "mechanical/fan",
+   "negWindows": 288,
+   "fp": 6,
+   "rate": 0.020833333333333332,
+   "clips": 32,
+   "clipsWithFp": 3,
+   "share": 0.014084507042253521
+  },
+  {
+   "cls": "brushing_teeth",
+   "type": "weather/water/other ambient",
+   "negWindows": 283,
+   "fp": 6,
+   "rate": 0.02120141342756184,
+   "clips": 32,
+   "clipsWithFp": 5,
+   "share": 0.014084507042253521
+  },
+  {
+   "cls": "frog",
+   "type": "animal",
+   "negWindows": 288,
+   "fp": 6,
+   "rate": 0.020833333333333332,
+   "clips": 32,
+   "clipsWithFp": 4,
+   "share": 0.014084507042253521
+  },
+  {
+   "cls": "glass_breaking",
+   "type": "transient/impact",
+   "negWindows": 157,
+   "fp": 6,
+   "rate": 0.03821656050955414,
+   "clips": 32,
+   "clipsWithFp": 5,
+   "share": 0.014084507042253521
+  },
+  {
+   "cls": "keyboard_typing",
+   "type": "transient/impact",
+   "negWindows": 284,
+   "fp": 6,
+   "rate": 0.02112676056338028,
+   "clips": 32,
+   "clipsWithFp": 4,
+   "share": 0.014084507042253521
+  },
+  {
+   "cls": "sheep",
+   "type": "animal",
+   "negWindows": 285,
+   "fp": 6,
+   "rate": 0.021052631578947368,
+   "clips": 32,
+   "clipsWithFp": 3,
+   "share": 0.014084507042253521
+  },
+  {
+   "cls": "crickets",
+   "type": "animal",
+   "negWindows": 279,
+   "fp": 4,
+   "rate": 0.014336917562724014,
+   "clips": 31,
+   "clipsWithFp": 3,
+   "share": 0.009389671361502348
+  },
+  {
+   "cls": "crow",
+   "type": "animal",
+   "negWindows": 261,
+   "fp": 4,
+   "rate": 0.01532567049808429,
+   "clips": 32,
+   "clipsWithFp": 3,
+   "share": 0.009389671361502348
+  },
+  {
+   "cls": "hen",
+   "type": "animal",
+   "negWindows": 269,
+   "fp": 4,
+   "rate": 0.01486988847583643,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.009389671361502348
+  },
+  {
+   "cls": "pig",
+   "type": "animal",
+   "negWindows": 283,
+   "fp": 4,
+   "rate": 0.014134275618374558,
+   "clips": 32,
+   "clipsWithFp": 3,
+   "share": 0.009389671361502348
+  },
+  {
+   "cls": "pouring_water",
+   "type": "weather/water/other ambient",
+   "negWindows": 264,
+   "fp": 4,
+   "rate": 0.015151515151515152,
+   "clips": 32,
+   "clipsWithFp": 3,
+   "share": 0.009389671361502348
+  },
+  {
+   "cls": "car_horn",
+   "type": "tonal",
+   "negWindows": 230,
+   "fp": 3,
+   "rate": 0.013043478260869565,
+   "clips": 32,
+   "clipsWithFp": 3,
+   "share": 0.007042253521126761
+  },
+  {
+   "cls": "clock_alarm",
+   "type": "tonal",
+   "negWindows": 273,
+   "fp": 3,
+   "rate": 0.01098901098901099,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.007042253521126761
+  },
+  {
+   "cls": "toilet_flush",
+   "type": "weather/water/other ambient",
+   "negWindows": 287,
+   "fp": 3,
+   "rate": 0.010452961672473868,
+   "clips": 32,
+   "clipsWithFp": 2,
+   "share": 0.007042253521126761
+  },
+  {
+   "cls": "chirping_birds",
+   "type": "animal",
+   "negWindows": 288,
+   "fp": 2,
+   "rate": 0.006944444444444444,
+   "clips": 32,
+   "clipsWithFp": 2,
+   "share": 0.004694835680751174
+  },
+  {
+   "cls": "crying_baby",
+   "type": "speech-like vocal",
+   "negWindows": 282,
+   "fp": 2,
+   "rate": 0.0070921985815602835,
+   "clips": 32,
+   "clipsWithFp": 2,
+   "share": 0.004694835680751174
+  },
+  {
+   "cls": "vacuum_cleaner",
+   "type": "mechanical/fan",
+   "negWindows": 288,
+   "fp": 2,
+   "rate": 0.006944444444444444,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.004694835680751174
+  },
+  {
+   "cls": "washing_machine",
+   "type": "mechanical/fan",
+   "negWindows": 287,
+   "fp": 2,
+   "rate": 0.006968641114982578,
+   "clips": 32,
+   "clipsWithFp": 2,
+   "share": 0.004694835680751174
+  },
+  {
+   "cls": "wind",
+   "type": "weather/water/other ambient",
+   "negWindows": 288,
+   "fp": 2,
+   "rate": 0.006944444444444444,
+   "clips": 32,
+   "clipsWithFp": 2,
+   "share": 0.004694835680751174
+  },
+  {
+   "cls": "clapping",
+   "type": "transient/impact",
+   "negWindows": 281,
+   "fp": 1,
+   "rate": 0.0035587188612099642,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.002347417840375587
+  },
+  {
+   "cls": "engine",
+   "type": "mechanical/fan",
+   "negWindows": 277,
+   "fp": 1,
+   "rate": 0.0036101083032490976,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.002347417840375587
+  },
+  {
+   "cls": "hand_saw",
+   "type": "mechanical/fan",
+   "negWindows": 279,
+   "fp": 1,
+   "rate": 0.0035842293906810036,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.002347417840375587
+  },
+  {
+   "cls": "helicopter",
+   "type": "mechanical/fan",
+   "negWindows": 280,
+   "fp": 1,
+   "rate": 0.0035714285714285713,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.002347417840375587
+  },
+  {
+   "cls": "sea_waves",
+   "type": "weather/water/other ambient",
+   "negWindows": 286,
+   "fp": 1,
+   "rate": 0.0034965034965034965,
+   "clips": 32,
+   "clipsWithFp": 1,
+   "share": 0.002347417840375587
+  },
+  {
+   "cls": "church_bells",
+   "type": "tonal",
+   "negWindows": 288,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  },
+  {
+   "cls": "clock_tick",
+   "type": "transient/impact",
+   "negWindows": 287,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  },
+  {
+   "cls": "crackling_fire",
+   "type": "transient/impact",
+   "negWindows": 281,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  },
+  {
+   "cls": "dog",
+   "type": "animal",
+   "negWindows": 246,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  },
+  {
+   "cls": "footsteps",
+   "type": "transient/impact",
+   "negWindows": 279,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  },
+  {
+   "cls": "rain",
+   "type": "weather/water/other ambient",
+   "negWindows": 288,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  },
+  {
+   "cls": "siren",
+   "type": "tonal",
+   "negWindows": 281,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  },
+  {
+   "cls": "train",
+   "type": "mechanical/fan",
+   "negWindows": 288,
+   "fp": 0,
+   "rate": 0.0,
+   "clips": 32,
+   "clipsWithFp": 0,
+   "share": 0.0
+  }
+ ],
+ "byType": [
+  {
+   "type": "transient/impact",
+   "negWindows": 2977,
+   "fp": 135,
+   "rate": 0.04534766543500168,
+   "share": 0.31690140845070425,
+   "clips": 384,
+   "clipsWithFp": 76,
+   "classes": [
+    "can_opening",
+    "clapping",
+    "clock_tick",
+    "crackling_fire",
+    "door_wood_creaks",
+    "door_wood_knock",
+    "fireworks",
+    "footsteps",
+    "glass_breaking",
+    "keyboard_typing",
+    "mouse_click",
+    "water_drops"
+   ]
+  },
+  {
+   "type": "breathing/respiratory",
+   "negWindows": 575,
+   "fp": 115,
+   "rate": 0.2,
+   "share": 0.2699530516431925,
+   "clips": 96,
+   "clipsWithFp": 51,
+   "classes": [
+    "breathing",
+    "coughing",
+    "sneezing"
+   ]
+  },
+  {
+   "type": "animal",
+   "negWindows": 3176,
+   "fp": 85,
+   "rate": 0.0267632241813602,
+   "share": 0.19953051643192488,
+   "clips": 383,
+   "clipsWithFp": 39,
+   "classes": [
+    "cat",
+    "chirping_birds",
+    "cow",
+    "crickets",
+    "crow",
+    "dog",
+    "frog",
+    "hen",
+    "insects",
+    "pig",
+    "rooster",
+    "sheep"
+   ]
+  },
+  {
+   "type": "weather/water/other ambient",
+   "negWindows": 2223,
+   "fp": 49,
+   "rate": 0.022042285200179937,
+   "share": 0.11502347417840375,
+   "clips": 256,
+   "clipsWithFp": 31,
+   "classes": [
+    "brushing_teeth",
+    "drinking_sipping",
+    "pouring_water",
+    "rain",
+    "sea_waves",
+    "thunderstorm",
+    "toilet_flush",
+    "wind"
+   ]
+  },
+  {
+   "type": "mechanical/fan",
+   "negWindows": 2275,
+   "fp": 21,
+   "rate": 0.009230769230769232,
+   "share": 0.04929577464788732,
+   "clips": 256,
+   "clipsWithFp": 15,
+   "classes": [
+    "airplane",
+    "chainsaw",
+    "engine",
+    "hand_saw",
+    "helicopter",
+    "train",
+    "vacuum_cleaner",
+    "washing_machine"
+   ]
+  },
+  {
+   "type": "speech-like vocal",
+   "negWindows": 539,
+   "fp": 15,
+   "rate": 0.027829313543599257,
+   "share": 0.035211267605633804,
+   "clips": 64,
+   "clipsWithFp": 9,
+   "classes": [
+    "crying_baby",
+    "laughing"
+   ]
+  },
+  {
+   "type": "tonal",
+   "negWindows": 1072,
+   "fp": 6,
+   "rate": 0.005597014925373134,
+   "share": 0.014084507042253521,
+   "clips": 128,
+   "clipsWithFp": 4,
+   "classes": [
+    "car_horn",
+    "church_bells",
+    "clock_alarm",
+    "siren"
+   ]
+  }
+ ],
+ "bedroomNegFpr": 0.04338046272493573,
+ "fpConcentration": {
+  "fpWindows": 426,
+  "clipsWithFp": 225,
+  "clipsFor50pct": 59,
+  "clipsFor80pct": 140,
+  "negativeClips": 1567
+ },
+ "listening": [
+  {
+   "list": "false_positive",
+   "rank": 1,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-171937-A-34.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "can_opening",
+   "type": "transient/impact",
+   "fold": 3,
+   "oof_score": 0.9969,
+   "rms_dbfs": -55.1
+  },
+  {
+   "list": "false_positive",
+   "rank": 2,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-99955-C-7.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "insects",
+   "type": "animal",
+   "fold": 2,
+   "oof_score": 0.9961,
+   "rms_dbfs": -41.7
+  },
+  {
+   "list": "false_positive",
+   "rank": 3,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-205526-B-23.wav",
+   "offset_s": 3.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 4,
+   "oof_score": 0.9958,
+   "rms_dbfs": -29.7
+  },
+  {
+   "list": "false_positive",
+   "rank": 4,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-99955-C-7.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "insects",
+   "type": "animal",
+   "fold": 2,
+   "oof_score": 0.9952,
+   "rms_dbfs": -48.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 5,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-84965-A-23.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 2,
+   "oof_score": 0.9945,
+   "rms_dbfs": -34.6
+  },
+  {
+   "list": "false_positive",
+   "rank": 6,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-67230-A-29.wav",
+   "offset_s": 0.5,
+   "duration_s": 1.0,
+   "cls": "drinking_sipping",
+   "type": "weather/water/other ambient",
+   "fold": 1,
+   "oof_score": 0.9943,
+   "rms_dbfs": -31.9
+  },
+  {
+   "list": "false_positive",
+   "rank": 7,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-143119-A-21.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "sneezing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9938,
+   "rms_dbfs": -55.5
+  },
+  {
+   "list": "false_positive",
+   "rank": 8,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-202111-A-3.wav",
+   "offset_s": 0.5,
+   "duration_s": 1.0,
+   "cls": "cow",
+   "type": "animal",
+   "fold": 1,
+   "oof_score": 0.9937,
+   "rms_dbfs": -15.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 9,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-30709-A-23.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 1,
+   "oof_score": 0.993,
+   "rms_dbfs": -20.9
+  },
+  {
+   "list": "false_positive",
+   "rank": 10,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-202111-A-3.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "cow",
+   "type": "animal",
+   "fold": 1,
+   "oof_score": 0.9873,
+   "rms_dbfs": -21.1
+  },
+  {
+   "list": "false_positive",
+   "rank": 11,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-171937-A-34.wav",
+   "offset_s": 3.0,
+   "duration_s": 1.0,
+   "cls": "can_opening",
+   "type": "transient/impact",
+   "fold": 3,
+   "oof_score": 0.9865,
+   "rms_dbfs": -54.2
+  },
+  {
+   "list": "false_positive",
+   "rank": 12,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-205526-B-23.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 4,
+   "oof_score": 0.9847,
+   "rms_dbfs": -29.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 13,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-188191-A-29.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "drinking_sipping",
+   "type": "weather/water/other ambient",
+   "fold": 4,
+   "oof_score": 0.9827,
+   "rms_dbfs": -36.9
+  },
+  {
+   "list": "false_positive",
+   "rank": 14,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-149940-B-5.wav",
+   "offset_s": 2.0,
+   "duration_s": 1.0,
+   "cls": "cat",
+   "type": "animal",
+   "fold": 4,
+   "oof_score": 0.9806,
+   "rms_dbfs": -35.3
+  },
+  {
+   "list": "false_positive",
+   "rank": 15,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-91912-B-33.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "door_wood_creaks",
+   "type": "transient/impact",
+   "fold": 2,
+   "oof_score": 0.9802,
+   "rms_dbfs": -20.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 16,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-205526-A-23.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 4,
+   "oof_score": 0.9792,
+   "rms_dbfs": -33.8
+  },
+  {
+   "list": "false_positive",
+   "rank": 17,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-84965-A-23.wav",
+   "offset_s": 0.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 2,
+   "oof_score": 0.9762,
+   "rms_dbfs": -36.8
+  },
+  {
+   "list": "false_positive",
+   "rank": 18,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-144128-A-23.wav",
+   "offset_s": 0.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9748,
+   "rms_dbfs": -27.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 19,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-122763-A-29.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "drinking_sipping",
+   "type": "weather/water/other ambient",
+   "fold": 2,
+   "oof_score": 0.9735,
+   "rms_dbfs": -44.5
+  },
+  {
+   "list": "false_positive",
+   "rank": 20,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-47819-A-5.wav",
+   "offset_s": 3.5,
+   "duration_s": 1.0,
+   "cls": "cat",
+   "type": "animal",
+   "fold": 1,
+   "oof_score": 0.9696,
+   "rms_dbfs": -54.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 21,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-144128-B-23.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9661,
+   "rms_dbfs": -31.7
+  },
+  {
+   "list": "false_positive",
+   "rank": 22,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-47819-C-5.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "cat",
+   "type": "animal",
+   "fold": 1,
+   "oof_score": 0.964,
+   "rms_dbfs": -54.3
+  },
+  {
+   "list": "false_positive",
+   "rank": 23,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-68391-A-41.wav",
+   "offset_s": 0.5,
+   "duration_s": 1.0,
+   "cls": "chainsaw",
+   "type": "mechanical/fan",
+   "fold": 2,
+   "oof_score": 0.9629,
+   "rms_dbfs": -35.7
+  },
+  {
+   "list": "false_positive",
+   "rank": 24,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-77945-A-41.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "chainsaw",
+   "type": "mechanical/fan",
+   "fold": 2,
+   "oof_score": 0.9603,
+   "rms_dbfs": -20.8
+  },
+  {
+   "list": "false_positive",
+   "rank": 25,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-151206-A-23.wav",
+   "offset_s": 3.0,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9547,
+   "rms_dbfs": -45.5
+  },
+  {
+   "list": "false_positive",
+   "rank": 26,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-155650-A-24.wav",
+   "offset_s": 3.5,
+   "duration_s": 1.0,
+   "cls": "coughing",
+   "type": "breathing/respiratory",
+   "fold": 4,
+   "oof_score": 0.9527,
+   "rms_dbfs": -51.5
+  },
+  {
+   "list": "false_positive",
+   "rank": 27,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-67230-A-29.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "drinking_sipping",
+   "type": "weather/water/other ambient",
+   "fold": 1,
+   "oof_score": 0.9524,
+   "rms_dbfs": -35.2
+  },
+  {
+   "list": "false_positive",
+   "rank": 28,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-60676-A-34.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "can_opening",
+   "type": "transient/impact",
+   "fold": 1,
+   "oof_score": 0.9518,
+   "rms_dbfs": -53.7
+  },
+  {
+   "list": "false_positive",
+   "rank": 29,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-68595-B-15.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "water_drops",
+   "type": "transient/impact",
+   "fold": 2,
+   "oof_score": 0.9514,
+   "rms_dbfs": -49.8
+  },
+  {
+   "list": "false_positive",
+   "rank": 30,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-253649-A-6.wav",
+   "offset_s": 3.5,
+   "duration_s": 1.0,
+   "cls": "hen",
+   "type": "animal",
+   "fold": 4,
+   "oof_score": 0.9464,
+   "rms_dbfs": -24.2
+  },
+  {
+   "list": "false_positive",
+   "rank": 31,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-119647-A-48.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "fireworks",
+   "type": "transient/impact",
+   "fold": 4,
+   "oof_score": 0.946,
+   "rms_dbfs": -45.8
+  },
+  {
+   "list": "false_positive",
+   "rank": 32,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-47819-A-5.wav",
+   "offset_s": 3.0,
+   "duration_s": 1.0,
+   "cls": "cat",
+   "type": "animal",
+   "fold": 1,
+   "oof_score": 0.9445,
+   "rms_dbfs": -54.6
+  },
+  {
+   "list": "false_positive",
+   "rank": 33,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-85292-A-24.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "coughing",
+   "type": "breathing/respiratory",
+   "fold": 2,
+   "oof_score": 0.9421,
+   "rms_dbfs": -40.5
+  },
+  {
+   "list": "false_positive",
+   "rank": 34,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-85123-A-31.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "mouse_click",
+   "type": "transient/impact",
+   "fold": 1,
+   "oof_score": 0.9417,
+   "rms_dbfs": -25.3
+  },
+  {
+   "list": "false_positive",
+   "rank": 35,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-210000-A-23.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 4,
+   "oof_score": 0.9409,
+   "rms_dbfs": -55.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 36,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-87795-A-24.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "coughing",
+   "type": "breathing/respiratory",
+   "fold": 2,
+   "oof_score": 0.9404,
+   "rms_dbfs": -55.5
+  },
+  {
+   "list": "false_positive",
+   "rank": 37,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-188191-A-29.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "drinking_sipping",
+   "type": "weather/water/other ambient",
+   "fold": 4,
+   "oof_score": 0.9397,
+   "rms_dbfs": -34.2
+  },
+  {
+   "list": "false_positive",
+   "rank": 38,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-47819-C-5.wav",
+   "offset_s": 3.5,
+   "duration_s": 1.0,
+   "cls": "cat",
+   "type": "animal",
+   "fold": 1,
+   "oof_score": 0.934,
+   "rms_dbfs": -54.6
+  },
+  {
+   "list": "false_positive",
+   "rank": 39,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-166125-B-23.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9313,
+   "rms_dbfs": -41.9
+  },
+  {
+   "list": "false_positive",
+   "rank": 40,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-105270-A-47.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "airplane",
+   "type": "mechanical/fan",
+   "fold": 2,
+   "oof_score": 0.93,
+   "rms_dbfs": -37.3
+  },
+  {
+   "list": "false_positive",
+   "rank": 41,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-43807-C-47.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "airplane",
+   "type": "mechanical/fan",
+   "fold": 1,
+   "oof_score": 0.9244,
+   "rms_dbfs": -25.9
+  },
+  {
+   "list": "false_positive",
+   "rank": 42,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-36393-A-23.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 1,
+   "oof_score": 0.9219,
+   "rms_dbfs": -32.2
+  },
+  {
+   "list": "false_positive",
+   "rank": 43,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-68391-A-41.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "chainsaw",
+   "type": "mechanical/fan",
+   "fold": 2,
+   "oof_score": 0.9206,
+   "rms_dbfs": -36.5
+  },
+  {
+   "list": "false_positive",
+   "rank": 44,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-144128-B-23.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9198,
+   "rms_dbfs": -28.4
+  },
+  {
+   "list": "false_positive",
+   "rank": 45,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-87795-A-24.wav",
+   "offset_s": 3.5,
+   "duration_s": 1.0,
+   "cls": "coughing",
+   "type": "breathing/respiratory",
+   "fold": 2,
+   "oof_score": 0.9188,
+   "rms_dbfs": -50.6
+  },
+  {
+   "list": "false_positive",
+   "rank": 46,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-108160-A-23.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9131,
+   "rms_dbfs": -32.3
+  },
+  {
+   "list": "false_positive",
+   "rank": 47,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-15689-B-4.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "frog",
+   "type": "animal",
+   "fold": 1,
+   "oof_score": 0.9117,
+   "rms_dbfs": -48.1
+  },
+  {
+   "list": "false_positive",
+   "rank": 48,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-115545-A-48.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "fireworks",
+   "type": "transient/impact",
+   "fold": 1,
+   "oof_score": 0.9091,
+   "rms_dbfs": -55.3
+  },
+  {
+   "list": "false_positive",
+   "rank": 49,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-144128-A-23.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "breathing",
+   "type": "breathing/respiratory",
+   "fold": 3,
+   "oof_score": 0.9084,
+   "rms_dbfs": -30.6
+  },
+  {
+   "list": "false_positive",
+   "rank": 50,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-12654-B-15.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "water_drops",
+   "type": "transient/impact",
+   "fold": 1,
+   "oof_score": 0.9068,
+   "rms_dbfs": -54.7
+  },
+  {
+   "list": "false_negative",
+   "rank": 1,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-130998-B-28.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.0082,
+   "rms_dbfs": -22.4
+  },
+  {
+   "list": "false_negative",
+   "rank": 2,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-151557-A-28.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.0152,
+   "rms_dbfs": -42.6
+  },
+  {
+   "list": "false_negative",
+   "rank": 3,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-114609-B-28.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 2,
+   "oof_score": 0.026,
+   "rms_dbfs": -31.7
+  },
+  {
+   "list": "false_negative",
+   "rank": 4,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-151557-B-28.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.0265,
+   "rms_dbfs": -39.0
+  },
+  {
+   "list": "false_negative",
+   "rank": 5,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-114609-A-28.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 2,
+   "oof_score": 0.028,
+   "rms_dbfs": -47.7
+  },
+  {
+   "list": "false_negative",
+   "rank": 6,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-53444-A-28.wav",
+   "offset_s": 2.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 1,
+   "oof_score": 0.0402,
+   "rms_dbfs": -29.8
+  },
+  {
+   "list": "false_negative",
+   "rank": 7,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-114609-B-28.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 2,
+   "oof_score": 0.0437,
+   "rms_dbfs": -44.3
+  },
+  {
+   "list": "false_negative",
+   "rank": 8,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-53444-A-28.wav",
+   "offset_s": 1.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 1,
+   "oof_score": 0.0475,
+   "rms_dbfs": -32.2
+  },
+  {
+   "list": "false_negative",
+   "rank": 9,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-151557-A-28.wav",
+   "offset_s": 0.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.0504,
+   "rms_dbfs": -42.5
+  },
+  {
+   "list": "false_negative",
+   "rank": 10,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-130998-A-28.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.0559,
+   "rms_dbfs": -29.8
+  },
+  {
+   "list": "false_negative",
+   "rank": 11,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-130998-B-28.wav",
+   "offset_s": 3.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.0623,
+   "rms_dbfs": -25.7
+  },
+  {
+   "list": "false_negative",
+   "rank": 12,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-151255-A-28.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.0698,
+   "rms_dbfs": -52.9
+  },
+  {
+   "list": "false_negative",
+   "rank": 13,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-47923-A-28.wav",
+   "offset_s": 0.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 1,
+   "oof_score": 0.0799,
+   "rms_dbfs": -27.5
+  },
+  {
+   "list": "false_negative",
+   "rank": 14,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-39937-A-28.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 1,
+   "oof_score": 0.1538,
+   "rms_dbfs": -36.6
+  },
+  {
+   "list": "false_negative",
+   "rank": 15,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-180337-A-28.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 4,
+   "oof_score": 0.2017,
+   "rms_dbfs": -23.7
+  },
+  {
+   "list": "false_negative",
+   "rank": 16,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-130998-A-28.wav",
+   "offset_s": 2.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.2038,
+   "rms_dbfs": -22.2
+  },
+  {
+   "list": "false_negative",
+   "rank": 17,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-114609-A-28.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 2,
+   "oof_score": 0.2212,
+   "rms_dbfs": -48.4
+  },
+  {
+   "list": "false_negative",
+   "rank": 18,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-39937-A-28.wav",
+   "offset_s": 3.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 1,
+   "oof_score": 0.2812,
+   "rms_dbfs": -36.7
+  },
+  {
+   "list": "false_negative",
+   "rank": 19,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-197454-B-28.wav",
+   "offset_s": 1.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 4,
+   "oof_score": 0.3478,
+   "rms_dbfs": -40.8
+  },
+  {
+   "list": "false_negative",
+   "rank": 20,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/1-20545-A-28.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 1,
+   "oof_score": 0.3555,
+   "rms_dbfs": -43.9
+  },
+  {
+   "list": "false_negative",
+   "rank": 21,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/3-124795-A-28.wav",
+   "offset_s": 2.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 3,
+   "oof_score": 0.383,
+   "rms_dbfs": -62.4
+  },
+  {
+   "list": "false_negative",
+   "rank": 22,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-52001-A-28.wav",
+   "offset_s": 3.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 2,
+   "oof_score": 0.3845,
+   "rms_dbfs": -58.2
+  },
+  {
+   "list": "false_negative",
+   "rank": 23,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/2-52001-A-28.wav",
+   "offset_s": 4.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 2,
+   "oof_score": 0.3852,
+   "rms_dbfs": -50.2
+  },
+  {
+   "list": "false_negative",
+   "rank": 24,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-180337-A-28.wav",
+   "offset_s": 0.5,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 4,
+   "oof_score": 0.4091,
+   "rms_dbfs": -24.8
+  },
+  {
+   "list": "false_negative",
+   "rank": 25,
+   "esc50_file": "data/raw/esc50/ESC-50-master/audio/4-197454-B-28.wav",
+   "offset_s": 2.0,
+   "duration_s": 1.0,
+   "cls": "snoring",
+   "type": "snoring (missed)",
+   "fold": 4,
+   "oof_score": 0.4263,
+   "rms_dbfs": -19.5
+  }
+ ],
+ "topFpByType": {
+  "animal": 11,
+  "breathing/respiratory": 20,
+  "mechanical/fan": 5,
+  "speech-like vocal": 0,
+  "tonal": 0,
+  "transient/impact": 9,
+  "weather/water/other ambient": 5
+ }
+}

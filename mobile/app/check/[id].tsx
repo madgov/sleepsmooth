@@ -1,4 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+import { useSafeRouter } from '../../src/nav/useSafeRouter';
 import { useMemo } from 'react';
 import { Linking, View } from 'react-native';
 import {
@@ -22,6 +23,7 @@ import { Chip } from '../../src/ui/Chip';
 import { EvidenceCard } from '../../src/ui/EvidenceCard';
 import { GlassCard } from '../../src/ui/GlassCard';
 import { IconTile } from '../../src/ui/IconTile';
+import { CHECK_TINT } from '../../src/ui/checkTint';
 import { InsetGroup, ListRow } from '../../src/ui/InsetGroup';
 import { PrimaryButton } from '../../src/ui/PrimaryButton';
 import { SampleRow } from '../../src/ui/SampleRow';
@@ -32,7 +34,7 @@ import { Surface } from '../../src/ui/Surface';
 
 export default function CheckDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const router = useRouter();
+  const router = useSafeRouter();
   const s = useSettings();
   const { nights } = useRealNights();
   const checks = useMemo(() => buildChecks(overviewSummary(s, nights).items, s, nights), [s, nights]);
@@ -54,9 +56,9 @@ export default function CheckDetail() {
         <GlassCard radius={30} padding={22}>
           <View style={{ gap: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-              <IconTile name={c.icon} size={64} />
+              <IconTile name={c.icon} size={64} tint={CHECK_TINT[c.id]} />
               <View style={{ flex: 1, gap: 8 }}>
-                <AppText variant="title2" style={{ letterSpacing: -0.3 }}>
+                <AppText variant="title2">
                   {c.title}
                 </AppText>
                 <Chip label={c.status} tone={c.tone} icon="info.circle" />
@@ -71,7 +73,7 @@ export default function CheckDetail() {
 
       <Stagger i={1} style={{ gap: 10 }}>
         <SectionHeader title="What it shows" />
-        {c.item ? <EvidenceCard item={c.item} /> : null}
+        {c.item ? <EvidenceCard item={c.item} hideLimitations={[DISCLAIMER_CANNOT_RULE_OUT]} /> : null}
         {!c.item && c.id === 'warning' ? (
           <Surface radius="xl" padding={18}>
             <View style={{ gap: 6 }}>

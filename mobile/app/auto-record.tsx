@@ -1,7 +1,8 @@
 import * as Haptics from 'expo-haptics';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
+
 import { useState } from 'react';
-import { Linking, ScrollView, View } from 'react-native';
+import { Linking, Platform, ScrollView, View } from 'react-native';
 import { autoRecordRowValue, outcomeNote } from '@core/mobileLogic/autoRecord';
 import { AUTO } from '../src/content/copy';
 import { updateSettings, useSettings } from '../src/state/settings';
@@ -23,7 +24,7 @@ const STEPS = [
 
 /** The 3-step guide for making the Shortcuts automation. iOS only lets the user create it, so this app cannot. */
 export default function AutoRecordGuide() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors } = useTheme();
   const s = useSettings();
   const [ack, setAck] = useState(s.autoRecord.standingAckAt !== null);
@@ -33,6 +34,11 @@ export default function AutoRecordGuide() {
 
   const openShortcuts = async () => {
     setOpenFailed(false);
+    if (Platform.OS === 'web') {
+      // A browser cannot open the iOS Shortcuts app; say so instead of doing nothing.
+      setOpenFailed(true);
+      return;
+    }
     try {
       await Linking.openURL('shortcuts://');
     } catch {

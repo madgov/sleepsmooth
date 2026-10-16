@@ -5,6 +5,16 @@
 **Shipped:** v1 (clean-only training). A v2 with augmentation was trained and evaluated and not shipped (see "v1 vs v2").
 **Status:** prototype. Not clinically validated. Numbers come from `model/metrics.json` (combined), `metrics.v1.json` and `metrics.v2.json`.
 
+
+> ## Status and limitations (Oct 2026)
+> - **0.986 AUC is not 98.6% accuracy.** AUC measures ranking, not how often a flag is right.
+> - **About 62% of v3 flags were wrong on the test fold** (fold 5: 63 true positives against 101 false positives at the shipped threshold). More false flags than correct ones.
+> - **Only 8 positive test clips**, and the windows inside a clip overlap and are correlated, so the confidence intervals are wide and optimistic. Fold 5 has been looked at several times and is no longer a fresh test set.
+> - **Not validated on real phone recordings.** All data is ESC-50 (5 s clips). Nothing here shows how it behaves on a real night of audio.
+> - **Parity unverified.** v3 was trained on the NumPy YAMNet re-implementation; it has not been compared with the official TFLite model the phone would run (`scripts/yamnet/parity.py` exists; no TFLite runtime was available to run it).
+> - **The app currently runs v1**, not v3.
+> - Window-level development numbers, error analysis and the synthetic-night results: `docs/MODEL_ERROR_REPORT.md`. Real-data protocol: `docs/EVAL_PROTOCOL.md`.
+
 ## Intended use
 Flag a 1 s audio window as having a **snore-like acoustic pattern** (yes/no against a validation-chosen threshold).
 Scores are internal and are never shown as a percentage or "confidence". Windows quieter than
@@ -194,3 +204,16 @@ License marked "Unknown, non-commercial research use only, to verify".
 with clinician-scored events and metadata, evaluated per person. Until then v3 is a prototype snore-like detector, not a clinical tool.
 
 **Reproduce v3.** `npm run yamnet:all` (about 40 minutes; Python 3.12 + NumPy/SciPy only, run with `python3 -I`).
+
+## v3 segment-level results on SYNTHETIC nights (not real-world performance)
+Source: `docs/MODEL_ERROR_REPORT.md`, `model/segment_eval.synthetic.json`. 20 synthetic 2 h nights (40 h) assembled from ESC-50 development clips (real snore bursts placed rhythmically over bedroom backgrounds with distractors), scored with out-of-fold heads and a port of the app's level gate. The operating point was chosen by a rule written down before any night was generated; it was selected on 10 tuning nights and re-scored once on 10 other nights.
+
+| Segment rule | Tuning false segments/h | Tuning segment recall | Check false segments/h | Check segment recall | Check segment precision |
+|---|---|---|---|---|---|
+| App rule today (t = 0.6495, >= 5 flagged windows, gap <= 10 s) | 9.15 | 0.98 (46/47) | 12.90 | 0.91 (43/47) | 0.24 |
+| Candidate (t = 0.98, 2 flagged windows within 7 s, >= 3 such windows) | 0.85 | 0.91 (43/47) | 0.00 | 0.85 (40/47) | 1.00 |
+
+- Window AUC on these nights is 0.84 (tuning) and 0.78 (check), versus 0.97 on clean clips.
+- The check half contains no breathing-background night; the breathing background alone gives 3.75 false segments/h at the candidate point. Pooled over all 40 h the candidate gives 0.42 false segments/h and misses 6 more quiet or brief bouts than the app rule.
+- Caveats: 32 distinct snoring clips back all bouts, the rhythm is imposed by the generator, the candidate sits at the edge of the tested threshold grid, and v3 parity with the TFLite model is unverified. The candidate is not adopted in the app.
+

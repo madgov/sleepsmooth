@@ -2,6 +2,7 @@
 // Holds consent, sleep hours, onboarding completion and the user's own screening answers.
 import { File, Paths } from 'expo-file-system';
 import { useSyncExternalStore } from 'react';
+import { emptyPartner, normalizePartner, type PartnerObservations } from '@core/questionnaire/partner';
 import type { SymptomAnswers } from '@core/questionnaire/symptomChecklist';
 import type { AnswerValue } from '@core/types/questionnaire';
 import { defaultAutoRecord, mergeAutoRecord, type AutoRecordState } from '@core/mobileLogic/autoRecord';
@@ -21,10 +22,14 @@ export interface Settings {
   answers: Record<string, AnswerValue>;
   symptoms: SymptomAnswers;
   redFlag: boolean | null;
+  /** Optional bed-partner observations. User-reported (partner), never scored. */
+  partner: PartnerObservations;
   /** Whether the user finished the questionnaire at least once (drives "Added" / "Answered"). */
   questionnaireSavedAt: string | null;
   /** Ids of the next-steps rows the user ticked. Removed by "Delete my data". */
   nextStepsTicks: string[];
+  /** One optional user-set follow-up reminder (ISO). The notification itself is local only; see platform/reminder.ts. */
+  followUpReminderAt: string | null;
   /** Automatic recording at bedtime (Shortcuts). Never implies the automation is active; see autoRecord.ts. */
   autoRecord: AutoRecordState;
   /** Opt-in short sound clips. Default off: with it off no audio is written. */
@@ -48,8 +53,10 @@ export const defaultSettings = (): Settings => ({
   answers: {},
   symptoms: {},
   redFlag: null,
+  partner: emptyPartner(),
   questionnaireSavedAt: null,
   nextStepsTicks: [],
+  followUpReminderAt: null,
   autoRecord: defaultAutoRecord(),
   clips: defaultClipSettings(),
   primerShownVersion: 0,
@@ -88,7 +95,9 @@ function merge(raw: unknown): Settings {
     sleep: { ...d.sleep, ...(r.sleep ?? {}) },
     answers: { ...(r.answers ?? {}) },
     symptoms: { ...(r.symptoms ?? {}) },
+    partner: normalizePartner(r.partner),
     nextStepsTicks: Array.isArray(r.nextStepsTicks) ? r.nextStepsTicks.filter((x) => typeof x === 'string') : [],
+    followUpReminderAt: typeof r.followUpReminderAt === 'string' && Number.isFinite(Date.parse(r.followUpReminderAt)) ? r.followUpReminderAt : null,
     autoRecord: mergeAutoRecord(r.autoRecord),
     clips: mergeClipSettings(r.clips),
     primerShownVersion: typeof r.primerShownVersion === 'number' && r.primerShownVersion >= 0 ? Math.floor(r.primerShownVersion) : 0,

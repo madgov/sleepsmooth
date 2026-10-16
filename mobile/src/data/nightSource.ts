@@ -9,9 +9,12 @@
 // Conclusions are never computed here or in the UI. Evidence comes from nightRulesInput() via state/evidence.ts.
 import { useCallback, useEffect, useState } from 'react';
 import { NIGHT_REASON_TOO_SHORT } from '@core/content/claims';
-import { buildSampleNightView, type NightView } from '@core/night';
+import { buildSampleNightView, summarizeNight, type EpochRecord, type NightView } from '@core/night';
+import { computeCoverage, type Coverage } from '@core/mobileLogic/coverage';
+import { newDiagnostics, addGap, pushEvent, startRun, stopRun, type NightDiagnostics } from '@core/mobileLogic/diagnostics';
 import { viewForStored } from '@core/mobileLogic/nightSession';
 import { captureController } from '../capture/controller';
+import { devStressNightCount } from '../dev/devParams';
 import { getNightStore } from './nightStoreInstance';
 
 export type NightAudioState = 'snore-like-observed' | 'few-observations' | 'not-assessed' | 'model-not-applicable' | 'no-model' | 'not-recorded';
@@ -33,6 +36,12 @@ export interface NightListItem {
   signals: { used: string[]; unavailable: string[]; total: number };
   sensitivity: { likelyAsleep: number; includingUncertain: number } | null;
   snoreWindows: { snoreLike: number; assessable: number; tooQuiet: number } | null;
+  /** Recording coverage of the scheduled hours (recorded / assessable / too quiet / not recorded / outside). Audio only; not a sleep estimate. */
+  coverage: Coverage;
+  /** Snore-like windows over all captured in-window time, including time the phone guessed was awake (unvalidated). */
+  snoreLikeAnyTime: number | null;
+  /** Technical record of the capture. null for sample nights and for nights recorded before it existed. */
+  diagnostics: NightDiagnostics | null;
   /** The core's night view. Evidence is derived from it by nightRulesInput(); the UI never interprets it. */
   view: NightView;
 }
@@ -78,7 +87,7 @@ function nightDateISO(view: NightView): string {
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString();
 }
 
-export function toNightListItem(view: NightView): NightListItem {
+export function toNightListItem(view: NightView, diagnostics: NightDiagnostics | null = null): NightListItem {
   const s = view.summary;
   const utc = s.isSynthetic;
   const assessed = s.nightState !== 'not-assessed' && s.nightState !== 'not-recorded';
@@ -104,6 +113,9 @@ export function toNightListItem(view: NightView): NightListItem {
       assessed && s.nightState !== 'no-model' && s.nightState !== 'model-not-applicable'
         ? { snoreLike: s.snoreLikeWindows, assessable: s.assessableWindows, tooQuiet: s.unscoredWindows.tooQuiet }
         : null,
+    coverage: computeCoverage(view.epochs, view.schedule),
+    snoreLikeAnyTime: assessed ? s.sensitivity.allInWindow.snoreLikeWindows : null,
+    diagnostics: s.isSynthetic && !diagnostics?.devPreview ? null : diagnostics,
     view,
   };
 }
@@ -128,13 +140,56 @@ function buildSample(variant: NightAudioState): NightListItem {
   return variant === 'not-assessed' || variant === 'not-recorded' ? { ...item, epochs: [], estimatedWindow: null, sensitivity: null, snoreWindows: null } : item;
 }
 
+/** Dev-only (web preview, `?nights=N`): N clones of the sample view with distinct ids and dates, to stress long lists. */
+function stressNights(n: number): NightListItem[] {
+  const base = buildSample('snore-like-observed');
+  return Array.from({ length: n }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i - 1);
+    const item = { ...base, id: `stress-${i}`, isSample: false, dateISO: new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString() };
+    // Night 0 is a generated layout preview with a recording gap, a quiet stretch and an early stop, so every
+    // coverage kind and the diagnostics section can be reviewed. It is labelled in diagnostics (devPreview).
+    return i === 0 ? previewWithGaps(item) : item;
+  });
+}
+
+/** Dev-only. Removes a stretch of epochs (a gap), marks another stretch too quiet to score, and cuts the end. */
+function previewWithGaps(item: NightListItem): NightListItem {
+  const v = item.view;
+  const epochs: EpochRecord[] = [];
+  v.epochs.forEach((e, k) => {
+    if (k >= 360 && k < 390) return; // 15 min gap
+    if (k >= 900) return; // stopped 30 min early
+    if (k >= 560 && k < 680) {
+      epochs.push({ ...e, win: { ...e.win, scored: 0, snoreLike: 0, tooQuiet: e.win.total, belowGate: 0 }, scoredMask: undefined, snoreBits: undefined, scoreQ: undefined });
+      return;
+    }
+    epochs.push(e);
+  });
+  const view = summarizeNight(v.record, epochs, v.schedule);
+  const sched = v.schedule;
+  let d = newDiagnostics({ nightId: v.record.id, device: { model: 'Preview (not a device)', os: 'n/a', app: 'dev' }, scheduledStartMs: sched?.startMs ?? null, scheduledEndMs: sched?.endMs ?? null });
+  const gapStart = (epochs[0]?.t ?? 0) + 360 * 30_000;
+  d = startRun(d, epochs[0]?.t ?? 0, { atMs: epochs[0]?.t ?? 0, pct: 82, charging: false, lowPowerMode: false });
+  d = pushEvent(d, { atMs: gapStart, kind: 'interruption-began', detail: 'shouldResume=true' });
+  d = pushEvent(d, { atMs: gapStart + 840_000, kind: 'interruption-ended', detail: 'shouldResume=true' });
+  d = pushEvent(d, { atMs: gapStart + 850_000, kind: 'resume-attempt', detail: 'interruption-ended #1' });
+  d = pushEvent(d, { atMs: gapStart + 900_000, kind: 'resume-ok', detail: 'interruption-ended' });
+  d = addGap(d, { startMs: gapStart, endMs: gapStart + 900_000, cause: 'interruption' });
+  d = stopRun(d, (epochs[epochs.length - 1]?.t ?? 0) + 30_000, 'user-stop', { atMs: (epochs[epochs.length - 1]?.t ?? 0) + 30_000, pct: 69, charging: false, lowPowerMode: false });
+  d = { ...d, devPreview: true };
+  return { ...toNightListItem(view, d), id: item.id, isSample: false, dateISO: item.dateISO };
+}
+
 async function loadStored(): Promise<NightListItem[]> {
+  const stress = devStressNightCount();
+  if (stress !== null) return stressNights(stress);
   await captureController.finalizePaused();
   const stored = await getNightStore().list(captureController.activeNightId() ? [captureController.activeNightId() as string] : []);
   const items: NightListItem[] = [];
   for (const n of stored) {
     try {
-      items.push(toNightListItem(viewForStored(n)));
+      items.push(toNightListItem(viewForStored(n), n.diagnostics));
     } catch {
       // A night that cannot be summarized is left out rather than shown wrong.
     }

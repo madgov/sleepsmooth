@@ -33,9 +33,12 @@ export function EvidenceCard({ item, hideLimitations = [], testID }: EvidenceCar
           <SourceBadge kind={item.source as BadgeKind} size="compact" />
           {item.isSynthetic ? <SourceBadge kind="sample" size="compact" /> : null}
         </View>
-        <AppText variant="caption1" tone="secondary">
-          {STATE_TEXT[item.state]}
-        </AppText>
+        {/* The Missing badge already says "not provided"; show the state line only when it adds something. */}
+        {item.state === 'missing' ? null : (
+          <AppText variant="caption1" tone="secondary">
+            {STATE_TEXT[item.state]}
+          </AppText>
+        )}
         <AppText variant="headline" accessibilityRole="header">
           {item.label}
         </AppText>

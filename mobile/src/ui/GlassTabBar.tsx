@@ -161,7 +161,7 @@ function TabItem({ name, focused, onPress, style }: { name: string; focused: boo
       accessibilityLabel={meta.label}
       accessibilityState={{ selected: focused }}
       onPress={onPress}
-      style={{ position: 'absolute', ...style, height: 56, alignItems: 'center' }}
+      style={({ pressed }) => ({ position: 'absolute', ...style, height: 56, alignItems: 'center', opacity: pressed ? 0.6 : 1 })}
       testID={`tab-${name}`}
     >
       <View style={{ width: TAB_BAR.tile, height: 40, alignItems: 'center', justifyContent: 'center' }} pointerEvents="none">
@@ -170,14 +170,14 @@ function TabItem({ name, focused, onPress, style }: { name: string; focused: boo
             colors={colors.accentGradient}
             start={{ x: 0.1, y: 0 }}
             end={{ x: 0.9, y: 1 }}
-            style={{ flex: 1, borderRadius: 16, borderCurve: 'continuous', transform: [{ skewX: '-6deg' }], boxShadow: '0px 10px 18px rgba(26,26,51,0.35)' }}
+            style={{ flex: 1, borderRadius: 16, borderCurve: 'continuous', boxShadow: '0px 10px 18px rgba(26,26,51,0.35)' }}
           />
         </Animated.View>
         <Animated.View style={iconLift}>
           <Icon name={focused ? meta.iconSelected : meta.icon} size={24} color={focused ? '#FFFFFF' : color} weight={focused ? 'semibold' : 'regular'} />
         </Animated.View>
       </View>
-      <AppText variant="caption2" weight={focused ? '600' : '500'} style={{ color, marginTop: 2 }} maxFontSizeMultiplier={1.3}>
+      <AppText variant="caption2" weight={focused ? '600' : '500'} style={{ color, marginTop: 2 }} maxFontSizeMultiplier={1.1}>
         {meta.label}
       </AppText>
     </Pressable>

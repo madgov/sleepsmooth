@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 // ER-8: forbidden strings in user-facing copy, checked over all string literals in src/**/*.ts(x).
 const ROOT = join(process.cwd(), 'src');
 const FORBIDDEN: { name: string; re: RegExp; allow: string[] }[] = [
-  { name: 'pause', re: /\bpauses?\b/i, allow: ['src/questionnaire/symptomChecklist.ts'] },
+  { name: 'pause', re: /\bpauses?\b/i, allow: ['src/questionnaire/symptomChecklist.ts', 'src/content/partner.ts'] },
   { name: 'apnea event', re: /apnea events?/i, allow: ['src/content/claims.ts'] },
   { name: 'severe apnea / apnea clip', re: /severe apnea|apnea clips?/i, allow: [] },
   { name: 'breathing stopped', re: /breathing stopped/i, allow: [] },

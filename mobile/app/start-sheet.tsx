@@ -1,5 +1,6 @@
 import * as Haptics from 'expo-haptics';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, ScrollView, View } from 'react-native';
 import { bystanderAckIsFresh } from '@core/mobileLogic/index';
@@ -21,7 +22,7 @@ import { StateCard } from '../src/ui/StateCard';
 const COUNTDOWN = 3;
 
 export default function StartSheet() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { source, mode } = useLocalSearchParams<{ source?: string; mode?: string }>();
   // First-entry primer: the same privacy, consent, bystander and microphone steps, shown once after onboarding. It never records.
   const firstEntry = mode === 'first-entry';

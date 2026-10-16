@@ -8,6 +8,26 @@ import {
   RED_FLAG_QUESTION,
   SYMPTOM_NOT_VALIDATED,
 } from '@core/content/claims';
+import {
+  PARTNER_ALONE_NOTE,
+  PARTNER_FREQUENCY_LABELS,
+  PARTNER_ITEM_LABELS,
+  PARTNER_NOTICED_HINT,
+  PARTNER_NOTICED_QUESTION,
+  PARTNER_PRESENCE_OPTIONS,
+  PARTNER_PRESENCE_QUESTION,
+  PARTNER_SOURCE_LABEL,
+  PARTNER_STEP_NOTE,
+} from '@core/content/partner';
+import {
+  PARTNER_FREQUENCIES,
+  PARTNER_ITEM_KEYS,
+  PARTNER_PRESENCE_VALUES,
+  setPartnerFrequency,
+  setPartnerNothing,
+  setPartnerPresence,
+} from '@core/questionnaire/partner';
+import { DISCUSS_HEADING, DISCUSS_INTRO, DISCUSS_ITEMS, DISCUSS_OPTIONAL, DISCUSS_SOURCE_LINE } from '@core/content/claims';
 import { formatClock, formatDuration, minutesInBed } from '@core/mobileLogic/index';
 import { FREQUENCIES, FREQUENCY_LABELS, SYMPTOM_ITEMS } from '@core/questionnaire/symptomChecklist';
 import type { SymptomFrequency } from '@core/types/questionnaire';
@@ -69,7 +89,7 @@ function NumberQuestion({ ctx, title, field, unit, icon, subtitle }: { ctx: Step
       title={title}
       subtitle={subtitle}
       hero={<Hero icon={icon} />}
-      footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={dontKnow && ctx.draft.neckUnknown ? false : !positive(v)} />}
+      footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={dontKnow && ctx.draft.neckUnknown ? false : !positive(v)} disabledReason="Enter a number to continue, or skip this question." />}
     >
       {field === 'height' || field === 'weight' || field === 'neck' ? <UnitsControl ctx={ctx} /> : null}
       {dontKnow && ctx.draft.neckUnknown ? null : (
@@ -105,7 +125,7 @@ function NumberQuestion({ ctx, title, field, unit, icon, subtitle }: { ctx: Step
 function YesNoQuestion({ ctx, title, value, onPick, icons, note, subtitle }: { ctx: StepCtx; title: string; value: boolean | null; onPick: (v: boolean) => void; icons: [SymbolName, SymbolName]; note?: string; subtitle?: string }) {
   const advance = useAutoAdvance(ctx.next);
   return (
-    <StepFrame title={title} subtitle={subtitle} hero={<Hero icon={icons[0]} />} footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={value === null} />}>
+    <StepFrame title={title} subtitle={subtitle} hero={<Hero icon={icons[0]} />} footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={value === null} disabledReason="Choose an answer to continue, or skip this question." />}>
       <ChoiceCard label={COPY.C.yes} icon={icons[0]} selected={value === true} onPress={() => { onPick(true); advance(); }} />
       <ChoiceCard label={COPY.C.no} icon={icons[1]} selected={value === false} onPress={() => { onPick(false); advance(); }} />
       {note ? (
@@ -121,7 +141,7 @@ function SexQuestion({ ctx }: { ctx: StepCtx }) {
   const advance = useAutoAdvance(ctx.next);
   const d = ctx.draft;
   return (
-    <StepFrame title={NOSAS_QUESTIONS.sex} hero={<Hero icon="person" />} footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={d.sex === null} />}>
+    <StepFrame title={NOSAS_QUESTIONS.sex} hero={<Hero icon="person" />} footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={d.sex === null} disabledReason="Choose an answer to continue, or skip this question." />}>
       <ChoiceCard label={COPY.C.male} icon="person" selected={d.sex === 'male'} onPress={() => { ctx.set({ sex: 'male' }); advance(); }} />
       <ChoiceCard label={COPY.C.female} icon="person" selected={d.sex === 'female'} onPress={() => { ctx.set({ sex: 'female' }); advance(); }} />
       <AppText variant="footnote" tone="secondary">
@@ -135,7 +155,7 @@ function SymptomQuestion({ ctx, itemKey, text, n, of }: { ctx: StepCtx; itemKey:
   const advance = useAutoAdvance(ctx.next);
   const cur = ctx.draft.symptoms[itemKey];
   return (
-    <StepFrame title={text} subtitle={`How often? Symptom ${n} of ${of}. ${SYMPTOM_NOT_VALIDATED}.`} hero={<Hero icon="checklist" />} footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={!cur} />}>
+    <StepFrame title={text} subtitle={`How often? Symptom ${n} of ${of}. ${SYMPTOM_NOT_VALIDATED}.`} hero={<Hero icon="checklist" />} footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={!cur} disabledReason="Choose how often to continue, or skip this question." />}>
       {FREQUENCIES.map((f) => (
         <ChoiceCard
           key={f}
@@ -148,6 +168,73 @@ function SymptomQuestion({ ctx, itemKey, text, n, of }: { ctx: StepCtx; itemKey:
           testID={`symptom-${itemKey}-${f}`}
         />
       ))}
+    </StepFrame>
+  );
+}
+
+/** Optional, user-reported (partner), never scored and kept apart from NoSAS. One scrollable step; details appear only for "Yes". */
+function PartnerQuestion({ ctx }: { ctx: StepCtx }) {
+  const p = ctx.draft.partner;
+  const set = (partner: typeof p) => ctx.set({ partner });
+  return (
+    <StepFrame
+      title={PARTNER_PRESENCE_QUESTION}
+      subtitle={PARTNER_STEP_NOTE}
+      hero={<Hero icon="person.2" />}
+      footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} disabled={p.presence === null} disabledReason="Choose an answer to continue, or skip this question." />}
+    >
+      {PARTNER_PRESENCE_VALUES.map((v) => (
+        <ChoiceCard key={v} label={PARTNER_PRESENCE_OPTIONS[v]} selected={p.presence === v} onPress={() => set(setPartnerPresence(p, v))} testID={`partner-presence-${v}`} />
+      ))}
+      {p.presence === 'alone' ? (
+        <AppText variant="footnote" tone="secondary" testID="partner-alone-note">
+          {PARTNER_ALONE_NOTE}
+        </AppText>
+      ) : null}
+      {p.presence === 'yes' ? (
+        <View style={{ gap: 14 }}>
+          <View style={{ gap: 4 }}>
+            <AppText variant="headline">{PARTNER_NOTICED_QUESTION}</AppText>
+            <AppText variant="footnote" tone="secondary">
+              {PARTNER_NOTICED_HINT} Source: {PARTNER_SOURCE_LABEL}.
+            </AppText>
+          </View>
+          {PARTNER_ITEM_KEYS.map((k) => {
+            const cur = p.observed[k];
+            return (
+              <View key={k} style={{ gap: 8 }}>
+                <AppText variant="body">{PARTNER_ITEM_LABELS[k]}</AppText>
+                <NeuSegmented
+                  accessibilityLabel={`${PARTNER_ITEM_LABELS[k]}, how often`}
+                  values={PARTNER_FREQUENCIES.map((f) => PARTNER_FREQUENCY_LABELS[f])}
+                  selectedIndex={cur ? PARTNER_FREQUENCIES.indexOf(cur) : -1}
+                  onChange={(i) => {
+                    void Haptics.selectionAsync();
+                    set(setPartnerFrequency(p, k, PARTNER_FREQUENCIES[i] ?? 'not-sure'));
+                  }}
+                />
+              </View>
+            );
+          })}
+          <ChoiceCard label={PARTNER_ITEM_LABELS.nothing} selected={p.nothingNoticed} accessibilityRole="checkbox" onPress={() => set(setPartnerNothing(p))} testID="partner-nothing" />
+        </View>
+      ) : null}
+    </StepFrame>
+  );
+}
+
+/** Optional, unscored, guideline-backed items to discuss with a clinician. Ticked items appear in the summary as user-reported. */
+function DiscussQuestion({ ctx }: { ctx: StepCtx }) {
+  const cur = ctx.draft.discuss;
+  const toggle = (id: string) => ctx.set({ discuss: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id] });
+  return (
+    <StepFrame title={`${DISCUSS_HEADING} (${DISCUSS_OPTIONAL.toLowerCase()})`} subtitle={DISCUSS_INTRO} hero={<Hero icon="stethoscope" />} footer={<FooterActions primary={COPY.C.continue} onPrimary={ctx.next} />}>
+      {DISCUSS_ITEMS.map((it) => (
+        <ChoiceCard key={it.id} label={it.text} caption={it.source} selected={cur.includes(it.id)} accessibilityRole="checkbox" onPress={() => toggle(it.id)} testID={`discuss-${it.id}`} />
+      ))}
+      <AppText variant="footnote" tone="secondary">
+        {DISCUSS_SOURCE_LINE}
+      </AppText>
     </StepFrame>
   );
 }
@@ -200,6 +287,8 @@ export function questionSteps(): StepDef[] {
     skippable: true,
     render: (ctx) => <YesNoQuestion ctx={ctx} title={RED_FLAG_QUESTION} value={ctx.draft.redFlag} onPick={(v) => ctx.set({ redFlag: v })} icons={['exclamationmark.triangle', 'xmark.circle']} note={RED_FLAG_NOTE} />,
   });
+  steps.push({ key: 'partner', label: PARTNER_PRESENCE_QUESTION, skippable: true, render: (ctx) => <PartnerQuestion ctx={ctx} /> });
+  steps.push({ key: 'discuss', label: DISCUSS_HEADING, skippable: true, render: (ctx) => <DiscussQuestion ctx={ctx} /> });
   return steps;
 }
 
@@ -214,6 +303,8 @@ export function ReviewStep({ ctx, saveLabel }: { ctx: StepCtx; saveLabel: string
     [NOSAS_QUESTIONS.sex, d.sex ? 'Answered' : 'Not answered'],
     ['Symptom checklist', answeredSymptoms > 0 ? `${answeredSymptoms} of ${SYMPTOM_ITEMS.length}` : 'Not answered'],
     ['Warning signs', d.redFlag === null ? 'Not answered' : 'Answered'],
+    ['Bed partner (optional, not scored)', d.partner.presence === null ? 'Not answered' : 'Answered'],
+    [`${DISCUSS_HEADING} (optional, not scored)`, d.discuss.length === 0 ? 'None ticked' : `${d.discuss.length} ticked`],
   ];
   return (
     <StepFrame title="Review your answers" subtitle={NOSAS_SCREENING_NOT_DIAGNOSIS} hero={<Hero icon="list.clipboard" />} footer={<FooterActions primary={saveLabel} onPrimary={ctx.finish} />}>
@@ -287,7 +378,7 @@ export function SleepStep({ ctx }: { ctx: StepCtx }) {
       hero={<Hero icon="clock" />}
       footer={<FooterActions primary={COPY.C.continue} onPrimary={() => { updateSettings((p) => ({ ...p, sleep: { ...p.sleep, userSet: true } })); ctx.next(); }} />}
     >
-      <NeuSegmented accessibilityLabel="Which time to set" values={[`Bedtime ${formatClock(bedMin)}`, `Wake ${formatClock(wakeMin)}`]} selectedIndex={which} onChange={(i) => { void Haptics.selectionAsync(); setWhich(i as 0 | 1); }} />
+      <NeuSegmented accessibilityLabel="Which time to set" values={[`Bedtime ${formatClock(bedMin)}`, `Wake ${formatClock(wakeMin)}`]} selectedIndex={which} onChange={(i) => setWhich(i as 0 | 1)} />
       <GlassCard radius={28} padding={8}>
         <TimeWheel label={which === 0 ? 'Bedtime' : 'Wake time'} minutes={which === 0 ? bedMin : wakeMin} onChange={set} />
       </GlassCard>

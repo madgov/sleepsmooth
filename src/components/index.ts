@@ -12,3 +12,6 @@ export { AppFooter, type AppFooterProps } from './AppFooter';
 export { Icon, type IconName } from './Icon';
 export { ErrorBoundary } from './ErrorBoundary';
 export { useFocusHeading } from './useFocusHeading';
+export { LimitsPanel } from './LimitsPanel';
+export { DiscussChecklist } from './DiscussChecklist';
+export { ModelCardNumbers } from './ModelCardNumbers';

@@ -4,9 +4,6 @@ import {
   MODEL_CARD_HEADING,
   MODEL_CARD_INTENDED,
   MODEL_CARD_LICENSE,
-  MODEL_CARD_METRICS_INTRO,
-  MODEL_CARD_METRICS_UNAVAILABLE,
-  MODEL_CARD_METRIC_LABELS,
   MODEL_CARD_NOT_FOR,
   MODEL_CARD_OTHER_LIMITS,
   MODEL_CARD_PHONE_WEAKNESS,
@@ -24,7 +21,7 @@ import {
   SOURCES_TITLE,
   SYMPTOM_CHECKLIST_NOTE,
 } from '../content/claims';
-import { formatRange, loadModelCardRanges } from '../audio/modelCardInfo';
+import { ModelCardNumbers } from '../components';
 import { loadShippedModel } from '../audio/model/infer';
 
 function Back() {
@@ -74,7 +71,6 @@ export function SourcesView() {
 }
 
 export function ModelCardView() {
-  const ranges = loadModelCardRanges();
   const model = loadShippedModel();
   return (
     <section aria-labelledby="mc-h">
@@ -90,26 +86,13 @@ export function ModelCardView() {
         <li>{MODEL_CARD_OTHER_LIMITS}</li>
       </ul>
       <h3>Test results</h3>
-      <p>{MODEL_CARD_METRICS_INTRO}</p>
-      {ranges ? (
-        <ul>
-          <li>
-            {MODEL_CARD_METRIC_LABELS.recall}: {formatRange(ranges.recall)}
-          </li>
-          <li>
-            {MODEL_CARD_METRIC_LABELS.precision}: {formatRange(ranges.precision)}
-          </li>
-          <li>
-            {MODEL_CARD_METRIC_LABELS.fpr}: {formatRange(ranges.fpr)}
-          </li>
-        </ul>
-      ) : (
-        <p>{MODEL_CARD_METRICS_UNAVAILABLE}</p>
-      )}
+      <ModelCardNumbers />
       <p>{MODEL_CARD_LICENSE}</p>
-      <p>
-        <a href="?parity">Technical verification</a>: checks in your browser that the audio processing code gives the same numbers as the training code.
-      </p>
+      {import.meta.env.DEV && (
+        <p>
+          <a href="?parity">Technical verification (development builds only)</a>: checks in your browser that the audio processing code gives the same numbers as the training code.
+        </p>
+      )}
       <p>{DISCLAIMER_NOT_DIAGNOSIS}</p>
       <Back />
     </section>

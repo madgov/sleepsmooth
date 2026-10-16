@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { Pressable, View } from 'react-native';
 import { useTheme } from '../theme/useTheme';
 import { AppText } from './AppText';
@@ -43,7 +44,11 @@ export function NeuSegmented({ values, selectedIndex, onChange, accessibilityLab
             accessibilityRole="radio"
             accessibilityLabel={v}
             accessibilityState={{ checked: on }}
-            onPress={() => !on && onChange(i)}
+            onPress={() => {
+              if (on) return;
+              void Haptics.selectionAsync();
+              onChange(i);
+            }}
             style={{
               flex: 1,
               minHeight: 44,
@@ -56,7 +61,7 @@ export function NeuSegmented({ values, selectedIndex, onChange, accessibilityLab
               boxShadow: on ? `-4px -4px 10px ${n.activeLight}, 4px 4px 10px ${n.activeDark}` : undefined,
             }}
           >
-            <AppText variant="callout" weight={on ? '700' : '400'} tone={on ? 'accent' : 'secondary'} style={{ letterSpacing: -0.3 }} center>
+            <AppText variant="callout" weight={on ? '700' : '400'} tone={on ? 'accent' : 'secondary'} center>
               {v}
             </AppText>
           </Pressable>

@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
+
 import { ScrollView, View } from 'react-native';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
 import { EXPO_GO } from '../src/content/copy';
 import { useTheme } from '../src/theme/useTheme';
 import { AppText } from '../src/ui/AppText';
@@ -9,7 +10,7 @@ import { SheetHeader } from '../src/ui/SheetHeader';
 
 /** Shown instead of the start sheet when the app runs inside Expo Go. No recording, no fake data. */
 export default function ExpoGoRecording() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors } = useTheme();
   return (
     <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, gap: 16 }} contentInsetAdjustmentBehavior="automatic" testID="expo-go-sheet">

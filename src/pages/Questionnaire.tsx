@@ -1,5 +1,8 @@
 import { useRef, useState, type ReactNode } from 'react';
 import {
+  DISCUSS_HEADING,
+  DISCUSS_OPTIONAL,
+  DISCUSS_REVIEW_NONE,
   FIELD_ERROR_POSITIVE,
   FORM_ERROR_SUMMARY,
   NOSAS_CITATION,
@@ -13,15 +16,36 @@ import {
   SYMPTOM_CHECKLIST_NOTE,
   SYMPTOM_NOT_VALIDATED,
 } from '../content/claims';
+import {
+  PARTNER_ALONE_NOTE,
+  PARTNER_FREQUENCY_LABELS,
+  PARTNER_ITEM_LABELS,
+  PARTNER_NOTICED_HINT,
+  PARTNER_NOTICED_QUESTION,
+  PARTNER_PRESENCE_OPTIONS,
+  PARTNER_PRESENCE_QUESTION,
+  PARTNER_SOURCE_LABEL,
+  PARTNER_STEP_NOTE,
+  PARTNER_STEP_TITLE,
+} from '../content/partner';
+import {
+  PARTNER_FREQUENCIES,
+  PARTNER_ITEM_KEYS,
+  PARTNER_PRESENCE_VALUES,
+  setPartnerFrequency,
+  setPartnerNothing,
+  setPartnerPresence,
+} from '../questionnaire/partner';
 import { activeInstrument } from '../questionnaire/registry';
 import { unitSystem } from '../questionnaire/instruments/noSas';
 import { FREQUENCIES, FREQUENCY_LABELS, SYMPTOM_ITEMS, type SymptomAnswers } from '../questionnaire/symptomChecklist';
 import type { AnswerValue } from '../types/questionnaire';
 import type { SymptomFrequency } from '../types/questionnaire';
 import { useSession } from '../state/session';
-import { DemoBanner, Icon, useFocusHeading } from '../components';
+import { DemoBanner, DiscussChecklist, Icon, useFocusHeading } from '../components';
+import { selectedDiscussItems, withDiscussItem } from '../questionnaire/discussItems';
 
-type Stage = 'nosas' | 'symptoms' | 'review';
+type Stage = 'nosas' | 'symptoms' | 'partner' | 'review';
 
 function isBad(value: AnswerValue | undefined): boolean {
   return typeof value === 'number' && !(value > 0);
@@ -100,7 +124,7 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
     return wrap(
       <section aria-labelledby="q-h">
         <h2 id="q-h">Your screening questions</h2>
-        <p>Step 1 of 3: {activeInstrument.title}, a published screening score. Skip anything you do not know; skipped items are listed as missing.</p>
+        <p>Step 1 of 4: {activeInstrument.title}, a published screening score. Skip anything you do not know; skipped items are listed as missing.</p>
         <details open>
           <summary>How this score works</summary>
           <div className="table-wrap">
@@ -183,7 +207,7 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
     return wrap(
       <section aria-labelledby="sym-h">
         <h2 id="sym-h">Your symptoms</h2>
-        <p>Step 2 of 3. Rate how often each of these happens.</p>
+        <p>Step 2 of 4. Rate how often each of these happens.</p>
         <p>
           <strong>{SYMPTOM_NOT_VALIDATED}.</strong> {SYMPTOM_CHECKLIST_NOTE}
         </p>
@@ -206,9 +230,63 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
           ))}
           <p>{RED_FLAG_NOTE}</p>
         </fieldset>
+        <DiscussChecklist answers={s.answers} onToggle={(id, on) => s.setAnswers(withDiscussItem(s.answers, id, on))} />
         <div className="actions nav-actions">
           <button type="button" className="btn btn-secondary" onClick={() => setStage('nosas')}>
             Back
+          </button>
+          <button type="button" className="btn" onClick={() => setStage('partner')}>
+            Next: bed partner (optional)
+          </button>
+        </div>
+      </section>,
+    );
+  }
+
+  if (stage === 'partner') {
+    const p = s.partner;
+    return wrap(
+      <section aria-labelledby="partner-h">
+        <h2 id="partner-h">{PARTNER_STEP_TITLE}</h2>
+        <p>Step 3 of 4. {PARTNER_STEP_NOTE}</p>
+        <fieldset>
+          <legend>{PARTNER_PRESENCE_QUESTION}</legend>
+          {PARTNER_PRESENCE_VALUES.map((v) => (
+            <label key={v} className="choice">
+              <input type="radio" name="partner-presence" checked={p.presence === v} onChange={() => s.setPartner(setPartnerPresence(p, v))} /> {PARTNER_PRESENCE_OPTIONS[v]}{' '}
+            </label>
+          ))}
+        </fieldset>
+        {p.presence === 'alone' && <p role="note">{PARTNER_ALONE_NOTE}</p>}
+        {p.presence === 'yes' && (
+          <>
+            <h3>{PARTNER_NOTICED_QUESTION}</h3>
+            <p>
+              {PARTNER_NOTICED_HINT} Source: {PARTNER_SOURCE_LABEL}.
+            </p>
+            {PARTNER_ITEM_KEYS.map((k) => (
+              <fieldset key={k}>
+                <legend>{PARTNER_ITEM_LABELS[k]}</legend>
+                {PARTNER_FREQUENCIES.map((f) => (
+                  <label key={f} className="choice">
+                    <input type="radio" name={`partner-${k}`} checked={p.observed[k] === f} onChange={() => s.setPartner(setPartnerFrequency(p, k, f))} /> {PARTNER_FREQUENCY_LABELS[f]}{' '}
+                  </label>
+                ))}
+              </fieldset>
+            ))}
+            <p>
+              <label className="choice">
+                <input type="checkbox" checked={p.nothingNoticed} onChange={() => s.setPartner(setPartnerNothing(p))} /> {PARTNER_ITEM_LABELS.nothing}
+              </label>
+            </p>
+          </>
+        )}
+        <div className="actions nav-actions">
+          <button type="button" className="btn btn-secondary" onClick={() => setStage('symptoms')}>
+            Back
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={() => setStage('review')}>
+            Skip this step
           </button>
           <button type="button" className="btn" onClick={() => setStage('review')}>
             Review my answers
@@ -221,7 +299,7 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
   return wrap(
     <section aria-labelledby="rev-h">
       <h2 id="rev-h">Review your answers</h2>
-      <p>Step 3 of 3. You can change any answer before continuing.</p>
+      <p>Step 4 of 4. You can change any answer before continuing.</p>
       <h3>{activeInstrument.title}</h3>
       <dl>
         {[
@@ -264,8 +342,30 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
           Edit symptoms
         </button>
       </p>
+      <h3>
+        {DISCUSS_HEADING} ({DISCUSS_OPTIONAL.toLowerCase()}, not scored)
+      </h3>
+      <p>{selectedDiscussItems(s.answers).length === 0 ? DISCUSS_REVIEW_NONE : selectedDiscussItems(s.answers).map((i) => i.text).join('; ')}</p>
+      <h3>{PARTNER_STEP_TITLE} (optional, not scored)</h3>
+      <dl>
+        <div>
+          <dt>{PARTNER_PRESENCE_QUESTION}</dt>
+          <dd>{s.partner.presence ? PARTNER_PRESENCE_OPTIONS[s.partner.presence] : 'Not answered'}</dd>
+        </div>
+        {PARTNER_ITEM_KEYS.filter((k) => s.partner.observed[k]).map((k) => (
+          <div key={k}>
+            <dt>{PARTNER_ITEM_LABELS[k]}</dt>
+            <dd>{PARTNER_FREQUENCY_LABELS[s.partner.observed[k] as keyof typeof PARTNER_FREQUENCY_LABELS]}</dd>
+          </div>
+        ))}
+      </dl>
+      <p>
+        <button type="button" className="btn btn-secondary" onClick={() => setStage('partner')}>
+          Edit bed partner answers
+        </button>
+      </p>
       <div className="actions nav-actions">
-        <button type="button" className="btn btn-secondary" onClick={() => setStage('symptoms')}>
+        <button type="button" className="btn btn-secondary" onClick={() => setStage('partner')}>
           Back
         </button>
         <button type="button" className="btn" onClick={onDone}>

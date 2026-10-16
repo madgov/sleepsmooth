@@ -1,7 +1,9 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
+import { useSafeRouter } from '../../src/nav/useSafeRouter';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Platform, View } from 'react-native';
-import { DISCLAIMER_NOT_DIAGNOSIS, DASHBOARD_EMPTY_MESSAGE, SNORE_NOT_APNEA_LINE } from '@core/content/claims';
+import { COVERAGE_HEADING, DASHBOARD_EMPTY_MESSAGE, ROUGH_ESTIMATE_LABEL, SNORE_NOT_APNEA_LINE } from '@core/content/claims';
+import { coverageHeadline, durationText } from '@core/mobileLogic/coverage';
 import { formatClock, formatDuration, minutesInBed } from '@core/mobileLogic/index';
 import { FIRST_ENTRY_PRIMER_VERSION, shouldOfferAutoRecord, shouldShowFirstEntryPrimer } from '@core/mobileLogic/autoRecord';
 import { COPY, EXPO_GO } from '../../src/content/copy';
@@ -18,7 +20,8 @@ import { AppText } from '../../src/ui/AppText';
 import { GlassCard } from '../../src/ui/GlassCard';
 import { Icon } from '../../src/ui/Icon';
 import { IconTile } from '../../src/ui/IconTile';
-import { HourCapsuleRow } from '../../src/ui/HourCapsule';
+import { LimitsPanel } from '../../src/ui/LimitsPanel';
+import { CoverageTimeline } from '../../src/ui/CoverageTimeline';
 import { MetricTile } from '../../src/ui/MetricTile';
 import { NightHero } from '../../src/ui/NightHero';
 import { PressScale } from '../../src/ui/Press';
@@ -37,7 +40,7 @@ const greeting = (): string => {
 };
 
 export default function Dashboard() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors } = useTheme();
   const s = useSettings();
   const rec = useRecordAction();
@@ -66,10 +69,12 @@ export default function Dashboard() {
   const summary = useOverviewSummary(s, nights);
   const toneFor = summary.conclusion === 'discuss-with-clinician' ? 'discuss' : summary.conclusion === 'inconclusive' ? 'info' : 'missing';
   const iconFor = summary.conclusion === 'discuss-with-clinician' ? 'person.crop.circle.badge.questionmark' : summary.conclusion === 'inconclusive' ? 'questionmark.circle' : 'circle.dashed';
+  // The empty state already carries the one primary action; do not show a second "Start tonight" below it.
+  const showTonightCta = rec.active || !(status === 'ready' && !real);
   const dateLine = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   return (
-    <Screen tab testID="screen-dashboard">
+    <Screen tab title="Dashboard" testID="screen-dashboard">
       <Stagger i={0}>
         <ScreenHeader eyebrow={dateLine} title={greeting()} subtitle="What the phone recorded, and what it cannot tell you." />
       </Stagger>
@@ -116,8 +121,6 @@ export default function Dashboard() {
       {hero ? (
         <>
           <Stagger i={2}>
-            {!real ? <SectionHeader title="Sample night" /> : null}
-            <View style={{ height: !real ? 10 : 0 }} />
             <NightHero night={hero} scheduledMin={scheduledMin} />
           </Stagger>
 
@@ -125,11 +128,10 @@ export default function Dashboard() {
             <View style={{ flexDirection: 'row', gap: 12 }}>
               <MetricTile
                 icon="clock"
-                label="Estimated window"
-                value={hero.estimatedWindow ? formatClock(hero.estimatedWindow.startMin).replace(/\s?[ap]m/, '') : '--'}
-                unit={hero.estimatedWindow ? `to ${formatClock(hero.estimatedWindow.endMin)}` : undefined}
-                caption={hero.estimatedWindow ? `${formatDuration(((hero.estimatedWindow.endMin - hero.estimatedWindow.startMin + 1440) % 1440) || 0)}, estimated` : 'Not enough to estimate'}
-                testID="tile-window"
+                label="Assessable time"
+                value={durationText(hero.coverage.seconds.assessable)}
+                caption={`of ${durationText(hero.coverage.seconds.recordedInWindow)} recorded`}
+                testID="tile-assessable"
               />
               <MetricTile
                 icon="waveform"
@@ -145,23 +147,27 @@ export default function Dashboard() {
             </AppText>
           </Stagger>
 
-          {hero.estimatedWindow && hero.epochs.length > 0 ? (
-            <Stagger i={4} style={{ gap: 10 }}>
-              <SectionHeader title="Hour by hour" />
-              <GlassCard radius={26} padding={16}>
-                <HourCapsuleRow epochs={hero.epochs} epochMinutesEach={hero.epochMinutes} startMin={hero.estimatedWindow.startMin} />
-                <AppText variant="footnote" tone="secondary" style={{ marginTop: 10 }}>
-                  {COPY.N61_ESTIMATE_LINE}
-                </AppText>
-              </GlassCard>
-            </Stagger>
-          ) : null}
+          <Stagger i={4} style={{ gap: 10 }}>
+            <SectionHeader title={COVERAGE_HEADING} />
+            <GlassCard radius={26} padding={16}>
+              <View style={{ gap: 12 }}>
+                <AppText variant="subheadline" testID="dashboard-coverage-headline">{coverageHeadline(hero.coverage)}</AppText>
+                <CoverageTimeline coverage={hero.coverage} utc={hero.view.summary.isSynthetic} testID="dashboard-coverage" />
+                {hero.estimatedWindow ? (
+                  <AppText variant="footnote" tone="secondary" testID="dashboard-rough-estimate">
+                    {`${ROUGH_ESTIMATE_LABEL}: ${formatClock(hero.estimatedWindow.startMin)} to ${formatClock(hero.estimatedWindow.endMin)}`}
+                  </AppText>
+                ) : null}
+              </View>
+            </GlassCard>
+          </Stagger>
         </>
       ) : null}
 
       <Stagger i={5} style={{ gap: 10 }}>
         <SectionHeader title="What this adds up to" action="See checks" onAction={() => router.navigate('/checks')} />
-        <StateCard tone={toneFor} icon={iconFor} title={summary.headline} body={DISCLAIMER_NOT_DIAGNOSIS} radius="xl" animated={false} testID="overview-card" />
+        <StateCard tone={toneFor} icon={iconFor} title={summary.headline} radius="xl" animated={false} testID="overview-card" />
+        <LimitsPanel />
       </Stagger>
 
       <Stagger i={6} style={{ gap: 10 }}>
@@ -170,7 +176,7 @@ export default function Dashboard() {
         <GlassCard radius={28} padding={20}>
           <View style={{ gap: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-              <IconTile name="moon.zzz" />
+              <IconTile name="moon.zzz" tint="violet" />
               <View style={{ flex: 1 }}>
                 <AppText variant="title3" tabular>{`${formatClock(s.sleep.bedMin)} to ${formatClock(s.sleep.wakeMin)}`}</AppText>
                 <AppText variant="subheadline" tone="secondary">
@@ -178,7 +184,9 @@ export default function Dashboard() {
                 </AppText>
               </View>
             </View>
-            <PrimaryButton label={rec.active ? 'Open recording' : 'Start tonight'} onPress={rec.active ? () => router.push('/recording') : rec.onPress} testID="tonight-start" />
+            {showTonightCta ? (
+              <PrimaryButton label={rec.active ? 'Open recording' : 'Start tonight'} onPress={rec.active ? () => router.push('/recording') : rec.onPress} testID="tonight-start" />
+            ) : null}
             <AppText variant="footnote" tone="secondary" center>
               {COPY.N27_BATTERY_TIP}
             </AppText>
@@ -247,7 +255,7 @@ function WeekStrip({ nights, sample, scheduledMin, onOpen }: { nights: NightList
               <AppText variant="caption1" tone={d.today ? 'label' : 'secondary'} weight={d.today ? '700' : '500'} maxFontSizeMultiplier={1.3}>
                 {d.letter}
               </AppText>
-              <AppText variant="caption2" tone="secondary" tabular maxFontSizeMultiplier={1.3} numberOfLines={1}>
+              <AppText variant="caption2" tone="secondary" tabular maxFontSizeMultiplier={1} numberOfLines={1}>
                 {d.night ? (d.night.isSample ? 'Sample' : `${Math.round(d.night.recordedMinutes / 60)}h`) : ' '}
               </AppText>
             </View>

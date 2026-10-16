@@ -65,7 +65,6 @@ export const COPY = {
   N63_SIGNALS: (used: string, n: number, total: number) => `Signals used: ${used} (${n} of ${total}).`,
   N64_SENSITIVITY: (a: number, b: number) => `Counting only likely-asleep time: ${a} windows. Including uncertain time: ${b} windows.`,
   N65_DELETE_NIGHT: 'Delete this night',
-  N67_SEE_OVERALL: 'See the overall view',
   N68_NO_ESTIMATE: 'No sleep-window estimate for this night.',
   N73_CONSENT_ROW: 'Overnight sound consent',
   N74_WITHDRAW: 'Withdraw consent',

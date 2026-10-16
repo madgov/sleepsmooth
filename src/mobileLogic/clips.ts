@@ -12,6 +12,7 @@
 import { SAMPLE_RATE } from '../audio/constants';
 import { LOUD_DB } from '../night/constants';
 import { StreamingResampler } from '../night/resample';
+import { NO_ADAPTATION, adaptedRank, snoreRunPasses, type ClipAdaptation } from './clipAdaptation';
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Categories (typed extension point)
@@ -91,8 +92,10 @@ export interface ClipSettings {
   enabled: boolean;
   retentionDays: RetentionDays;
   decidedAt: string | null;
+  /** "Reset" on the feedback adaptation note: feedback given at or before this time (ms) is ignored when picking clips. null = never reset. */
+  adaptResetAtMs: number | null;
 }
-export const defaultClipSettings = (): ClipSettings => ({ enabled: false, retentionDays: DEFAULT_RETENTION_DAYS, decidedAt: null });
+export const defaultClipSettings = (): ClipSettings => ({ enabled: false, retentionDays: DEFAULT_RETENTION_DAYS, decidedAt: null, adaptResetAtMs: null });
 export function mergeClipSettings(raw: unknown): ClipSettings {
   const d = defaultClipSettings();
   if (!raw || typeof raw !== 'object') return d;
@@ -101,6 +104,7 @@ export function mergeClipSettings(raw: unknown): ClipSettings {
     enabled: r.enabled === true,
     retentionDays: (RETENTION_OPTIONS as readonly number[]).includes(r.retentionDays as number) ? (r.retentionDays as RetentionDays) : d.retentionDays,
     decidedAt: typeof r.decidedAt === 'string' ? r.decidedAt : null,
+    adaptResetAtMs: typeof r.adaptResetAtMs === 'number' && Number.isFinite(r.adaptResetAtMs) ? r.adaptResetAtMs : null,
   };
 }
 
@@ -235,6 +239,8 @@ export interface WindowObs {
   floorDb?: number;
   snoreLike?: boolean;
   speechLike?: boolean;
+  /** The snore model's internal per-window score (0..1). Used only by the feedback adaptation; never displayed. */
+  score?: number;
 }
 
 export interface CandidateEvent {
@@ -246,12 +252,18 @@ export interface CandidateEvent {
   score: number;
   /** Seconds of quiet before a restart. Only for the restart tag. */
   restartGapSec: number | null;
+  /** Mean level above the room's noise floor over the run, dB (0..30). */
+  aboveFloorDb: number;
+  /** Mean per-window model score of a snore-like run, or null (loud sounds, or no score supplied). */
+  meanScore: number | null;
 }
 
 interface Run {
   firstK: number;
   lastK: number;
   sumAbove: number;
+  sumScore: number;
+  nScore: number;
   n: number;
   restartGapSec: number | null;
 }
@@ -268,6 +280,10 @@ export class ClipEventTracker {
   /** End (seconds) of the last snore-like window, or null when the time since then is not fully observed. */
   private lastSnoreEndSec: number | null = null;
   readonly speechWindowStarts: number[] = [];
+  /** Snore-like runs left out of the picks only because of the feedback adaptation. Observation counts are not touched. */
+  adaptSkipped = 0;
+
+  constructor(private readonly adaptation: ClipAdaptation = NO_ADAPTATION) {}
 
   /** Feed windows in order. Returns events that closed with this window. */
   observe(w: WindowObs): CandidateEvent[] {
@@ -309,16 +325,20 @@ export class ClipEventTracker {
           const gap = t0 - this.lastSnoreEndSec;
           if (gap >= CLIP_SCORING.restartMinGapSec && gap <= CLIP_SCORING.restartMaxGapSec) restartGap = gap;
         }
-        this.snore = { firstK: w.k, lastK: w.k, sumAbove: above, n: 1, restartGapSec: restartGap };
+        this.snore = { firstK: w.k, lastK: w.k, sumAbove: above, sumScore: 0, nScore: 0, n: 1, restartGapSec: restartGap };
       } else {
         this.snore.lastK = w.k;
         this.snore.sumAbove += above;
         this.snore.n++;
       }
+      if (typeof w.score === 'number' && Number.isFinite(w.score)) {
+        this.snore.sumScore += w.score;
+        this.snore.nScore++;
+      }
       this.lastSnoreEndSec = w.k * HOP + 1;
       if (runEndSec(this.snore) - runStartSec(this.snore) >= CLIP_SCORING.maxEventSec) this.closeSnore(out, true);
     } else if (isLoud) {
-      if (!this.loud) this.loud = { firstK: w.k, lastK: w.k, sumAbove: above, n: 1, restartGapSec: null };
+      if (!this.loud) this.loud = { firstK: w.k, lastK: w.k, sumAbove: above, sumScore: 0, nScore: 0, n: 1, restartGapSec: null };
       else {
         this.loud.lastK = w.k;
         this.loud.sumAbove += above;
@@ -349,7 +369,13 @@ export class ClipEventTracker {
     const restart = r.restartGapSec !== null;
     const score = dur * mean + (restart ? CLIP_SCORING.restartBonus : 0);
     if (score < CLIP_SCORING.minSnoreScore) return;
-    out.push({ category: 'snore-like', tag: restart ? 'snoring-stopped-restarted' : null, startSec: runStartSec(r), endSec: runEndSec(r), score, restartGapSec: r.restartGapSec });
+    const meanScore = r.nScore > 0 ? r.sumScore / r.nScore : null;
+    // Feedback adaptation: after repeated "Breathing" answers, a snore-like pick needs a higher per-window score. Pick only.
+    if (!snoreRunPasses(meanScore, this.adaptation)) {
+      this.adaptSkipped++;
+      return;
+    }
+    out.push({ category: 'snore-like', tag: restart ? 'snoring-stopped-restarted' : null, startSec: runStartSec(r), endSec: runEndSec(r), score, restartGapSec: r.restartGapSec, aboveFloorDb: mean, meanScore });
   }
 
   private closeLoud(out: CandidateEvent[]): void {
@@ -359,7 +385,7 @@ export class ClipEventTracker {
     const dur = runEndSec(r) - runStartSec(r);
     const score = dur * (r.sumAbove / r.n);
     if (score < CLIP_SCORING.minLoudScore) return;
-    out.push({ category: 'loud-other', tag: dur <= CLIP_SCORING.briefLoudSec ? 'brief-loud-sound' : null, startSec: runStartSec(r), endSec: runEndSec(r), score, restartGapSec: null });
+    out.push({ category: 'loud-other', tag: dur <= CLIP_SCORING.briefLoudSec ? 'brief-loud-sound' : null, startSec: runStartSec(r), endSec: runEndSec(r), score, restartGapSec: null, aboveFloorDb: r.sumAbove / r.n, meanScore: null });
   }
 
   /** True when a speech-like window overlaps [fromSec, toSec]. Speech-like stretches are never saved. */
@@ -377,6 +403,8 @@ export interface SelectableClip {
   score: number;
   /** Event start, audio-timeline seconds. */
   startSec: number;
+  /** Selection-only score after the feedback adaptation. Absent = `score`. Never shown. */
+  rank?: number;
 }
 export interface OfferPlan<T extends SelectableClip> {
   accept: boolean;
@@ -389,7 +417,9 @@ export class ClipSelector<T extends SelectableClip> {
 
   /** Higher score wins; on a tie the earlier clip wins (stable and deterministic). */
   private static better(a: SelectableClip, b: SelectableClip): boolean {
-    return a.score > b.score || (a.score === b.score && a.startSec < b.startSec);
+    const ra = a.rank ?? a.score;
+    const rb = b.rank ?? b.score;
+    return ra > rb || (ra === rb && a.startSec < b.startSec);
   }
 
   plan(c: T): OfferPlan<T> {
@@ -445,11 +475,17 @@ export interface ClipMeta {
   peaks: number[];
   /** Internal rank score. Never displayed. */
   score: number;
+  /** Event length in seconds (without pre/post roll), mean level above the room floor (dB) and, for snore-like clips, the mean model score. Used only to learn from the user's feedback. Absent on clips saved before this existed. */
+  eventSec?: number;
+  aboveFloorDb?: number;
+  meanWindowScore?: number;
 }
 
 export interface FinishedClip extends ClipMeta {
   /** Audio-timeline seconds of the event start; used only for selection. */
   startSec: number;
+  /** Selection-only score after the feedback adaptation (see clipAdaptation.ts). Not stored in the manifest. */
+  rank?: number;
 }
 
 export interface ClipRecorderStats {
@@ -470,7 +506,7 @@ interface Pending {
 
 export class ClipRecorder {
   private readonly ring = new PcmRing();
-  private readonly tracker = new ClipEventTracker();
+  private readonly tracker: ClipEventTracker;
   private readonly selector = new ClipSelector<FinishedClip>();
   private resampler: StreamingResampler | null = null;
   private rate = 0;
@@ -482,7 +518,15 @@ export class ClipRecorder {
   constructor(
     private readonly nightStartMs: number,
     private readonly sink: ClipTempSink,
-  ) {}
+    private readonly adaptation: ClipAdaptation = NO_ADAPTATION,
+  ) {
+    this.tracker = new ClipEventTracker(adaptation);
+  }
+
+  /** Snore-like runs skipped only by the feedback adaptation (for tests and the diagnostics). */
+  get adaptSkipped(): number {
+    return this.tracker.adaptSkipped;
+  }
 
   /** Same audio the pipeline gets, in source rate. Mirrors the pipeline's resampling so both stay on one timeline. */
   pushAudio(samples: Float32Array, sourceRate: number): void {
@@ -560,7 +604,11 @@ export class ClipRecorder {
       peaks: [],
       score: Math.round(p.ev.score * 10) / 10,
       startSec: p.ev.startSec,
+      eventSec: Math.round((p.ev.endSec - p.ev.startSec) * 10) / 10,
+      aboveFloorDb: Math.round(p.ev.aboveFloorDb * 10) / 10,
+      ...(p.ev.meanScore !== null ? { meanWindowScore: Math.round(p.ev.meanScore * 1000) / 1000 } : {}),
     };
+    cand.rank = adaptedRank(cand, this.adaptation);
     cand.file = `${cand.id}.wav`;
     // Decide before writing anything: a clip that would not be kept never touches the disk.
     if (!this.selector.plan(cand).accept) {

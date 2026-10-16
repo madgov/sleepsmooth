@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DemoBanner, SourceBadge, sourceLabel } from '../components';
+import { DemoBanner, LimitsPanel, SourceBadge, sourceLabel } from '../components';
 import {
   NOSAS_CITATION,
   SAMPLE_AUDIO_ATTRIBUTION,
@@ -71,6 +71,7 @@ export function Summary({ onNext, onBack }: { onNext: () => void; onBack: () => 
             <textarea id={`sec-${sec.id}`} rows={Math.min(14, sec.text.split('\n').length + 1)} value={sec.text} onChange={(e) => edit(sec.id, e.target.value)} />
           </div>
         ))}
+        <LimitsPanel />
         <p>Generated {dateText}</p>
         {confirming ? (
           <div role="alertdialog" aria-label="Confirm regenerate" className="card">

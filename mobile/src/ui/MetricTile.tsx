@@ -31,13 +31,13 @@ export function MetricTile({ label, value, unit, caption, icon, testID }: Metric
         <View style={{ flex: 1, padding: 16, justifyContent: 'space-between', gap: 8 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Icon name={icon} size={16} color={colors.labelSecondary} />
-            <AppText variant="caption1" weight="600" tone="secondary" style={{ letterSpacing: 0.4, flexShrink: 1 }} maxFontSizeMultiplier={1.3}>
-              {label.toUpperCase()}
+            <AppText variant="caption1" weight="600" tone="secondary" style={{ flexShrink: 1 }} maxFontSizeMultiplier={1.3}>
+              {label}
             </AppText>
           </View>
           <View style={{ gap: 2 }}>
             <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4, flexWrap: 'wrap' }}>
-              <AppText variant="largeTitle" tabular weight="700" maxFontSizeMultiplier={1.3} style={{ letterSpacing: -0.5 }}>
+              <AppText variant="largeTitle" tabular weight="700" maxFontSizeMultiplier={1.2}>
                 {value}
               </AppText>
               {unit ? (

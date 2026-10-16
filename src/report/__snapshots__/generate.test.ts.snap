@@ -20,8 +20,8 @@ exports[`generateCareSummary > snapshot (no audio, real user) 1`] = `
     {
       "id": "screening",
       "source": "user-reported",
-      "text": "NoSAS screening score: 5 of 17. Below the published cutoff of 8.
-Your NoSAS score is 5 of 17. In the studies that tested it, people scoring 8 or more were more likely to have clinically significant sleep-disordered breathing than people scoring lower. A lower score does not rule out sleep apnea. Talk to a clinician if you have symptoms. NoSAS (Marti-Soler et al., Lancet Respir Med 2016, doi:10.1016/S2213-2600(16)30075-3) is a screening score. It is not a diagnosis. This score is being applied outside the populations in which it was validated.
+      "text": "NoSAS screening score: 5 of 17. Below the published cutoff of 8 (this cannot rule out sleep apnea).
+Your NoSAS score is 5 of 17. In the studies that tested it, people scoring 8 or more were more likely to have clinically significant sleep-disordered breathing than people scoring lower. A lower score cannot rule out sleep apnea. Talk to a clinician if you have symptoms. NoSAS (Marti-Soler et al., Lancet Respir Med 2016, doi:10.1016/S2213-2600(16)30075-3) is a screening score. It is not a diagnosis. This score is being applied outside the populations in which it was validated.
 Source: Marti-Soler H, et al. The NoSAS score for screening of sleep-disordered breathing: a derivation and validation study. Lancet Respir Med 2016;4:742-748. doi:10.1016/S2213-2600(16)30075-3.",
       "title": "Screening score (NoSAS)",
     },

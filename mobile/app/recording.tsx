@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
+
 import { useEffect, useRef } from 'react';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
 import { captureController } from '../src/capture/controller';
 import { useCapture } from '../src/hooks/useCapture';
 import { useRecordAction } from '../src/hooks/useRecordAction';
@@ -7,7 +8,7 @@ import { RecordingView } from '../src/ui/RecordingView';
 
 /** Full-screen recording state. Dismisses itself once capture is no longer active. */
 export default function Recording() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const capture = useCapture();
   const { active, confirmStop } = useRecordAction();
   const seen = useRef(false);

@@ -180,6 +180,7 @@ export function summarizeNight(night: NightRecord, rawEpochs: readonly EpochReco
   let recordedSec = 0, inWindowSec = 0, asleepSec = 0, uncertainSec = 0, awakeSec = 0, notCapturedSec = 0, assessedSec = 0;
   let firstAsleep = -1, lastAsleep = -1;
   const analyzed: EpochRecord[] = [];
+  const inWindowCaptured: EpochRecord[] = [];
   const asleepOnly: EpochRecord[] = [];
   const unscored = { belowGate: 0, tooQuiet: 0, skipped: 0 };
   let captured = 0, digitalSilent = 0, loud = 0, clip = 0;
@@ -210,6 +211,7 @@ export function summarizeNight(night: NightRecord, rawEpochs: readonly EpochReco
       unscored.skipped += e.overload ?? 0;
     }
     if (e.cap > 0 && st !== 'outside-window') {
+      inWindowCaptured.push(e);
       captured++;
       floors.push(e.floor);
       clip += e.clipSamples ?? 0;
@@ -234,7 +236,11 @@ export function summarizeNight(night: NightRecord, rawEpochs: readonly EpochReco
 
   const assessableWindows = analyzed.reduce((a, e) => a + e.win.scored, 0);
   const snoreLikeWindows = analyzed.reduce((a, e) => a + e.win.snoreLike, 0);
-  const sens = { asleepOnly: sensitivity(asleepOnly, night.captureStart), withUncertain: sensitivity(analyzed, night.captureStart) };
+  const sens = {
+    asleepOnly: sensitivity(asleepOnly, night.captureStart),
+    withUncertain: sensitivity(analyzed, night.captureStart),
+    allInWindow: sensitivity(inWindowCaptured, night.captureStart),
+  };
   const { episodes, flaggedSec } = findEpisodes(flaggedWindowIndices(analyzed), night.captureStart);
   const inEpisodeFlagged = episodes.reduce((a, e) => a + e.flagged, 0);
 

@@ -1,3 +1,4 @@
+import { emptyPartner, normalizePartner, type PartnerObservations } from '../questionnaire/partner';
 import type { SymptomAnswers } from '../questionnaire/symptomChecklist';
 import type { CareSummary } from '../types/report';
 import type { AnswerValue, ConsentRecord } from '../types/questionnaire';
@@ -8,6 +9,7 @@ export interface PersistedSession {
   answers: Record<string, AnswerValue>;
   symptoms: SymptomAnswers;
   redFlag: boolean | null;
+  partner: PartnerObservations;
   isSynthetic: boolean;
   summary: CareSummary | null;
   editedIds: string[];
@@ -21,6 +23,7 @@ export const emptySession = (): PersistedSession => ({
   answers: {},
   symptoms: {},
   redFlag: null,
+  partner: emptyPartner(),
   isSynthetic: false,
   summary: null,
   editedIds: [],
@@ -44,6 +47,7 @@ function pick(p: Partial<PersistedSession>): Partial<PersistedSession> {
     answers: p.answers ?? {},
     symptoms: p.symptoms ?? {},
     redFlag: p.redFlag ?? null,
+    partner: normalizePartner(p.partner),
     isSynthetic: p.isSynthetic === true,
     summary: p.summary ?? null,
     editedIds: Array.isArray(p.editedIds) ? p.editedIds : [],

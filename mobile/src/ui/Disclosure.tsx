@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { useState, type ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
@@ -16,7 +17,10 @@ export function Disclosure({ title, children, defaultOpen = false }: { title: st
         accessibilityRole="button"
         accessibilityLabel={title}
         accessibilityState={{ expanded: open }}
-        onPress={() => setOpen((o) => !o)}
+        onPress={() => {
+          void Haptics.selectionAsync();
+          setOpen((o) => !o);
+        }}
         style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 44, paddingVertical: 12, paddingHorizontal: 16, backgroundColor: pressed ? colors.fill : 'transparent' })}
       >
         <View style={{ flex: 1 }}>

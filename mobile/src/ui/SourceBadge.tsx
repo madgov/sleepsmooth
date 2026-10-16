@@ -42,7 +42,7 @@ export function SourceBadge({ kind, size = 'regular' }: { kind: BadgeKind; size?
         gap: 4,
         paddingVertical: compact ? 2 : 4,
         paddingHorizontal: compact ? 8 : 10,
-        borderRadius: 999,
+        borderRadius: 8,
         borderCurve: 'continuous',
         backgroundColor: tone.bg,
         borderWidth: 1,

@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
+
 import { ScrollView, View } from 'react-native';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
 import { DISCLAIMER_AUDIO } from '@core/content/claims';
 import { COPY, privacyRows, privacyTitle } from '../src/content/copy';
 import { IS_EXPO_GO } from '../src/native/runtime';
@@ -13,7 +14,7 @@ import { SheetHeader } from '../src/ui/SheetHeader';
 
 /** Re-asks consent for overnight sound analysis (skipped or withdrawn earlier). Continues to the start sheet on agree. */
 export default function Consent() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors } = useTheme();
   const clipsOn = useSettings().clips.enabled;
   const agree = () => {

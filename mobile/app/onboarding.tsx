@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
+
 import { useMemo } from 'react';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
 import { commitDraft, type Draft } from '../src/flow/draft';
 import { Stepper } from '../src/flow/Stepper';
 import { AboutStep, FinishStep, SleepStep, questionSteps } from '../src/flow/steps';
@@ -8,7 +9,7 @@ import { COPY } from '../src/content/copy';
 import { updateSettings } from '../src/state/settings';
 
 export default function Onboarding() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const steps = useMemo<StepDef[]>(
     () => [
       { key: 'about', label: COPY.N17_ABOUT_TITLE, noBack: true, render: (c) => <AboutStep ctx={c} /> },

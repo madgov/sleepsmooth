@@ -1,4 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
 import { useMemo } from 'react';
 import { commitDraft, type Draft } from '../src/flow/draft';
 import { Stepper, type StepDef } from '../src/flow/Stepper';
@@ -6,7 +7,7 @@ import { questionSteps, ReviewStep } from '../src/flow/steps';
 
 /** Retake flow (modal): the same questions, pre-filled from saved answers, with a review step and an explicit save. */
 export default function Questionnaire() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { from } = useLocalSearchParams<{ from?: string }>();
   const steps = useMemo<StepDef[]>(() => {
     const q = questionSteps();

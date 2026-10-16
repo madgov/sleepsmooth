@@ -16,6 +16,7 @@ import {
   MISSING_NOSAS,
   MISSING_SYMPTOMS,
   NOSAS_CITATION,
+  NOSAS_BELOW_CANNOT_RULE_OUT,
   NOSAS_DETAIL,
   NOSAS_INCOMPLETE_AT_OR_ABOVE,
   NOSAS_LOWER_SCORE_CAVEAT,
@@ -73,6 +74,7 @@ export function evaluate(input: RulesInput, ctx: EvidenceContext = {}): Evidence
   };
   let nosasDetail: string = NOSAS_DETAIL[input.noSas];
   if (typeof ctx.noSasTotal === 'number') nosasDetail = nosasScoreStatement(ctx.noSasTotal);
+  if (input.noSas === 'below') nosasDetail = `${nosasDetail} ${NOSAS_BELOW_CANNOT_RULE_OUT}`;
   else if (input.noSas === 'atOrAbove') nosasDetail = `${NOSAS_DETAIL.atOrAbove} ${NOSAS_INCOMPLETE_AT_OR_ABOVE}`;
   items.push({
     id: 'noSas',

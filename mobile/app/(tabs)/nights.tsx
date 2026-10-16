@@ -1,4 +1,5 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
+import { useSafeRouter } from '../../src/nav/useSafeRouter';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { DISCLAIMER_CANNOT_RULE_OUT, ERROR_BOUNDARY_ACTION, ERROR_BOUNDARY_MESSAGE, ERROR_BOUNDARY_TITLE } from '@core/content/claims';
@@ -15,12 +16,13 @@ import { SampleRow } from '../../src/ui/SampleRow';
 import { Screen, Stagger } from '../../src/ui/Screen';
 import { ScreenHeader } from '../../src/ui/ScreenHeader';
 import { SectionHeader } from '../../src/ui/Section';
+import { DisclaimerNote } from '../../src/ui/DisclaimerNote';
 import { Skeleton } from '../../src/ui/Skeleton';
 import { StateCard } from '../../src/ui/StateCard';
 import { Surface } from '../../src/ui/Surface';
 
 export default function Nights() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const rec = useRecordAction();
   const { status, nights, reload } = useRealNights();
   useFocusEffect(
@@ -30,7 +32,7 @@ export default function Nights() {
   );
   const agg = aggregateNights(nights.map((n) => ({ nightState: n.state, isSynthetic: n.isSample })));
   return (
-    <Screen tab testID="screen-nights" gap={14}>
+    <Screen tab title="Nights" testID="screen-nights" gap={14}>
       <Stagger i={0}>
         <ScreenHeader title="Nights" subtitle="Every night recorded on this phone. Nothing leaves it." />
       </Stagger>
@@ -76,9 +78,9 @@ export default function Nights() {
         <Stagger i={nights.length + 2} style={{ gap: 10 }}>
           <SectionHeader title="Sample" />
           <SampleRow onPress={() => router.push('/night/sample')} />
-          <AppText variant="footnote" tone="secondary" style={{ paddingHorizontal: 4 }}>
-            {DISCLAIMER_CANNOT_RULE_OUT}
-          </AppText>
+          <View style={{ paddingHorizontal: 4 }}>
+            <DisclaimerNote testID="nights-disclaimer">{`Not a diagnosis. ${DISCLAIMER_CANNOT_RULE_OUT}`}</DisclaimerNote>
+          </View>
         </Stagger>
       ) : null}
     </Screen>

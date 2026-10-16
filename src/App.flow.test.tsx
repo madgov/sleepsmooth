@@ -45,7 +45,9 @@ describe('step navigation and focus', () => {
     expect(screen.getByRole('navigation', { name: 'Progress' })).toBeTruthy();
     click('Next: symptoms');
     expect(active()?.id).toBe('sym-h');
-    click('Review my answers');
+    click(/Next: bed partner/);
+    expect(active()?.id).toBe('partner-h');
+    click('Skip this step');
     expect(active()?.id).toBe('rev-h');
     click(/Continue to the recording step/);
     expect(active()?.id).toBe('audio-h');
@@ -210,12 +212,12 @@ describe('questionnaire progress across information views', () => {
     fireEvent.click(screen.getAllByRole('checkbox')[0] as HTMLElement);
     click('Start my own check');
     click('Next: symptoms');
-    expect(screen.getByRole('button', { name: 'Review my answers' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Next: bed partner (optional)' })).toBeTruthy();
     window.location.hash = '#/sources';
     fireEvent(window, new HashChangeEvent('hashchange'));
     expect(await screen.findByRole('heading', { name: 'Sources and claims' })).toBeTruthy();
     window.location.hash = '';
     fireEvent(window, new HashChangeEvent('hashchange'));
-    expect(screen.getByRole('button', { name: 'Review my answers' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Next: bed partner (optional)' })).toBeTruthy();
   });
 });

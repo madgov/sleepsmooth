@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
+
 import { View } from 'react-native';
+import { useSafeRouter } from '../nav/useSafeRouter';
 import { formatClock } from '@core/mobileLogic/index';
 import type { CaptureEndReason } from '@core/mobileLogic/capture';
 import { captureController } from '../capture/controller';
@@ -19,7 +20,7 @@ const REASON_TEXT: Record<Exclude<CaptureEndReason, 'user-stop'>, string> = {
 
 /** Capture outcomes (interrupted, error, ended early, summarizing, ready, failed). Same states and copy as before; shown on the Dashboard. */
 export function CaptureBanners() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const capture = useCapture();
   const { openStart } = useRecordAction();
   const endReason = capture.status === 'stopped' ? capture.endReason : null;

@@ -42,7 +42,10 @@ export async function requestNotifs(): Promise<NotifStatus> {
     return 'denied';
   }
 }
-export const openSystemSettings = () => void Linking.openSettings();
+export const openSystemSettings = () => {
+  // Linking.openSettings rejects where there is no Settings app (web preview). Nothing to recover; never an unhandled rejection.
+  Linking.openSettings().catch(() => undefined);
+};
 
 /** Re-checks the microphone permission whenever the app returns to the foreground (e.g. back from Settings). */
 export function useMicPermission(): { mic: MicStatus; refresh: () => Promise<void>; request: () => Promise<MicStatus> } {

@@ -61,11 +61,55 @@ const initialStats = (): CaptureStats => ({
 const mono = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 const iso = (ms: number) => new Date(ms).toISOString();
 
+/** Wall-clock span of missing audio, reported with the buffer that ends it. */
+export interface GapInfo {
+  startMs: number;
+  endMs: number;
+}
+
 /** Receives each PCM buffer after the spike's own bookkeeping. gapSec > 0 when the audio timeline jumped (samples missing). */
-export type PcmSink = (samples: Float32Array, sampleRate: number, gapSec: number, interruptions: number) => void;
+export type PcmSink = (samples: Float32Array, sampleRate: number, gapSec: number, interruptions: number, gap: GapInfo | null) => void;
+
+/**
+ * Audio-session events for the night diagnostics (the controller records them). Additive: the dev lab never sets a sink.
+ * NOT VERIFIED on a device: these come from iOS callbacks that have not been exercised on a real iPhone yet.
+ */
+export type SpikeEvent =
+  | { kind: 'interruption'; type: 'began' | 'ended'; shouldResume: boolean }
+  | { kind: 'route'; reason: string }
+  | { kind: 'recorder-error'; message: string }
+  | { kind: 'app-state'; state: string }
+  | { kind: 'resume-attempt'; reason: string; attempt: number }
+  | { kind: 'resume-ok'; reason: string }
+  | { kind: 'resume-failed'; reason: string; message: string };
+export type SpikeEventSink = (e: SpikeEvent) => void;
+
+/** Route-change reasons after which the recorder may have stopped delivering audio (headphones/AirPods in or out, session reconfigured). */
+const ROUTE_RESUME_REASONS = new Set(['NewDeviceAvailable', 'OldDeviceUnavailable', 'ConfigurationChange', 'NoSuitableRouteForCategory', 'CategoryChange', 'WakeFromSleep', 'Override']);
+/** Delays before each resume attempt, in ms. After the last one the night keeps going as a gap and the user is told. */
+const RESUME_DELAYS_MS = [500, 2_000, 8_000, 20_000, 45_000];
+const RESUME_CHECK_MS = 3_000;
+/** The tick watchdog asks for a resume when nothing has arrived for this long, at most once per cooldown. */
+export const WATCHDOG_QUIET_MS = 10_000;
+const WATCHDOG_COOLDOWN_MS = 90_000;
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export class CaptureSpike {
   private pcmSink: PcmSink | null = null;
+  private eventSink: SpikeEventSink | null = null;
+  private resuming = false;
+  private resyncPending = false;
+  private lastResumeMono = -Infinity;
+  setEventSink(sink: SpikeEventSink | null) {
+    this.eventSink = sink;
+  }
+  private emitEvent(e: SpikeEvent) {
+    try {
+      this.eventSink?.(e);
+    } catch {
+      /* diagnostics must never break capture */
+    }
+  }
   /** Additive hook for the app controller. The lab never sets it, so the lab behaves exactly as before. */
   setPcmSink(sink: PcmSink | null) {
     this.pcmSink = sink;
@@ -130,6 +174,9 @@ export class CaptureSpike {
     this.minRms = Infinity;
     this.maxRms = -Infinity;
     this.lastZero = false;
+    this.resuming = false;
+    this.resyncPending = false;
+    this.lastResumeMono = -Infinity;
     this.emit();
     this.log('START', `requested rate ${REQUESTED_SAMPLE_RATE} Hz, buffer ${BUFFER_LENGTH} frames, mono; category=${cfg.iosCategory} mode=${cfg.iosMode}; appState=${AppState.currentState}`);
     if (AppState.currentState !== 'active') this.log('WARN', 'Start was not requested while the app was active. iOS only allows starting capture in the foreground.');
@@ -148,10 +195,16 @@ export class CaptureSpike {
         AudioManager.addSystemEventListener('interruption', (e) => {
           this.stats = { ...this.stats, interruptions: this.stats.interruptions + (e.type === 'began' ? 1 : 0) };
           this.log('INTERRUPTION', `type=${e.type} shouldResume=${e.shouldResume} recorderIsRecording=${this.recorder?.isRecording() ?? 'n/a'}`);
+          this.emitEvent({ kind: 'interruption', type: e.type, shouldResume: e.shouldResume });
+          // NOT VERIFIED: after an interruption ends the recorder may be dead even when shouldResume is false. Always check.
+          if (e.type === 'ended') this.requestResume('interruption-ended');
           this.emit();
         }) ?? { remove() {} },
         AudioManager.addSystemEventListener('routeChange', (e) => {
           this.log('ROUTE', `reason=${e.reason}`);
+          this.emitEvent({ kind: 'route', reason: e.reason });
+          // NOT VERIFIED: AirPods connecting or disconnecting can stop the input. requestResume does nothing if audio keeps flowing.
+          if (ROUTE_RESUME_REASONS.has(e.reason)) this.requestResume(`route-${e.reason}`);
           this.emit();
         }) ?? { remove() {} },
         AppState.addEventListener('change', (s) => this.onAppState(s)),
@@ -161,7 +214,10 @@ export class CaptureSpike {
       this.recorder = rec;
       rec.onError((e) => {
         this.log('RECORDER_ERROR', e.message);
+        this.emitEvent({ kind: 'recorder-error', message: e.message });
         this.patch({ error: e.message });
+        // NOT VERIFIED: a media-services reset surfaces here as an error; try to bring the recorder back instead of ending the night.
+        this.requestResume('recorder-error');
       });
       const cb = rec.onAudioReady({ sampleRate: REQUESTED_SAMPLE_RATE, bufferLength: BUFFER_LENGTH, channelCount: 1 }, (ev) => this.onChunk(ev));
       if (cb.status === 'error') throw new Error(`onAudioReady: ${cb.message}`);
@@ -227,12 +283,87 @@ export class CaptureSpike {
     }
   }
 
+  // ---- resume (NOT VERIFIED on a device) -----------------------------------------------------------
+  /** Milliseconds since a buffer last arrived (monotonic). */
+  quietMs(): number {
+    return this.stats.phase === 'recording' ? mono() - this.lastArrivalMono : 0;
+  }
+
+  /** Called every second by the controller. Only asks for a resume when audio has been missing for a while. */
+  watchdog(): void {
+    if (this.stats.phase !== 'recording' || this.resuming) return;
+    if (this.quietMs() >= WATCHDOG_QUIET_MS && mono() - this.lastResumeMono >= WATCHDOG_COOLDOWN_MS) this.requestResume('watchdog');
+  }
+
+  /**
+   * Bring the input back if it stopped delivering audio. Does nothing while audio is flowing, never starts a second run
+   * at the same time, and gives up after RESUME_DELAYS_MS.length tries (the gap then stays a gap). It never starts a
+   * recording that the user did not start: it only runs while a run is active.
+   */
+  requestResume(reason: string): void {
+    if (this.resuming || this.stats.phase !== 'recording' || !this.recorder) return;
+    void this.runResume(reason);
+  }
+
+  private async runResume(reason: string): Promise<void> {
+    this.resuming = true;
+    this.lastResumeMono = mono();
+    const chunksAtTrigger = this.stats.chunks;
+    const flowing = () => this.stats.chunks > chunksAtTrigger;
+    try {
+      for (let i = 0; i < RESUME_DELAYS_MS.length; i++) {
+        await sleep(RESUME_DELAYS_MS[i] as number);
+        if (this.stats.phase !== 'recording' || !this.recorder) return;
+        if (flowing()) {
+          this.log('RESUME', `audio is flowing again without a restart (${reason})`);
+          if (i > 0) this.emitEvent({ kind: 'resume-ok', reason });
+          return;
+        }
+        this.emitEvent({ kind: 'resume-attempt', reason, attempt: i + 1 });
+        this.log('RESUME', `attempt ${i + 1}/${RESUME_DELAYS_MS.length} (${reason}); recorder isRecording=${this.recorder.isRecording()} isPaused=${this.recorder.isPaused()}`);
+        try {
+          await AudioManager.setAudioSessionActivity(true);
+          const rec = this.recorder;
+          if (rec.isPaused()) {
+            rec.resume();
+          } else {
+            // The recorder may still believe it is recording while nothing arrives: stop it and start it again.
+            if (rec.isRecording()) await rec.stop();
+            rec.clearOnAudioReady();
+            const cb = rec.onAudioReady({ sampleRate: REQUESTED_SAMPLE_RATE, bufferLength: BUFFER_LENGTH, channelCount: 1 }, (ev) => this.onChunk(ev));
+            if (cb.status === 'error') throw new Error(`onAudioReady: ${cb.message}`);
+            const started = await rec.start();
+            if (started.status === 'error') throw new Error(`start: ${started.message}`);
+          }
+          this.resyncPending = true;
+        } catch (e) {
+          this.log('RESUME', `attempt ${i + 1} failed: ${e instanceof Error ? e.message : String(e)}`);
+          continue;
+        }
+        await sleep(RESUME_CHECK_MS);
+        if (flowing()) {
+          this.log('RESUME', `recording resumed (${reason}, attempt ${i + 1})`);
+          this.emitEvent({ kind: 'resume-ok', reason });
+          return;
+        }
+      }
+      this.log('RESUME', `gave up after ${RESUME_DELAYS_MS.length} attempts (${reason}). The gap stays a gap.`);
+      this.emitEvent({ kind: 'resume-failed', reason, message: 'no audio after the last attempt' });
+    } finally {
+      this.resuming = false;
+      this.resyncPending = false;
+    }
+  }
+
   // ---- callbacks ---------------------------------------------------------------------------------
   private onAppState(s: AppStateStatus) {
     const t = mono();
     if (s !== 'active' && this.bgSince === null) this.bgSince = t;
     if (s === 'active') this.closeBackground();
     this.log('APPSTATE', s);
+    this.emitEvent({ kind: 'app-state', state: s });
+    // Coming back to the foreground is the one moment iOS lets us restart a stopped input for sure.
+    if (s === 'active' && this.stats.phase === 'recording') this.requestResume('app-active');
     this.patch({ appState: s });
   }
   private closeBackground() {
@@ -264,6 +395,20 @@ export class CaptureSpike {
         this.log('TIMELINE', `audio timeline discontinuity ${jumpMs.toFixed(0)} ms (below gap threshold) at ${iso(wall)}`);
       }
     }
+    // After a recorder restart the audio timeline may start over, so the gap is taken from the wall clock instead.
+    let gapInfo: GapInfo | null = null;
+    if (this.resyncPending) {
+      this.resyncPending = false;
+      if (!first) {
+        const lostSec = Math.max(0, arrivalDelta / 1000 - ev.numFrames / sr);
+        if (lostSec > gapSec) {
+          gapSec = lostSec;
+          this.log('GAP_AUDIO', `recorder restarted: about ${(lostSec * 1000).toFixed(0)} ms of audio missing (taken from the wall clock) at ${iso(wall)}`);
+          this.stats = { ...this.stats, audioGaps: this.stats.audioGaps + 1, maxAudioGapMs: Math.max(this.stats.maxAudioGapMs, lostSec * 1000) };
+        }
+      }
+    }
+    if (gapSec > 0) gapInfo = { startMs: this.lastArrivalWall, endMs: this.lastArrivalWall + Math.round(gapSec * 1000) };
     this.expectedWhen = ev.when + ev.numFrames / sr;
     this.lastArrivalMono = t;
     this.lastArrivalWall = wall;
@@ -293,7 +438,7 @@ export class CaptureSpike {
     // Hand the buffer to the sink synchronously (it only queues; nothing is retained here or written).
     if (this.pcmSink) {
       try {
-        this.pcmSink(data, sr, gapSec, this.stats.interruptions);
+        this.pcmSink(data, sr, gapSec, this.stats.interruptions, gapInfo);
       } catch (e) {
         this.log('SINK_ERROR', e instanceof Error ? e.message : String(e));
       }

@@ -53,12 +53,12 @@ export function NightRow({ night, onPress, testID }: { night: NightListItem; onP
   const spoken = `${night.isSample ? 'Sample data. ' : ''}${d.toLocaleDateString('en-US', LONG_FMT)}, recorded ${spokenDuration(night.recordedMinutes)}, ${p.line} ${COPY.N01_NOT_A_DIAGNOSIS}.`;
   return (
     <PressScale testID={testID} accessibilityLabel={spoken} onPress={onPress}>
-      <Surface radius="xl" padding={16} level={p.border === 'discuss' ? 'L3' : 'L2'} tone={p.border === 'discuss' ? 'discuss' : 'default'} source={night.isSample ? 'sample' : p.border === 'missing' ? 'missing' : undefined}>
+      <Surface radius="xl" padding={16} level="L2" source={night.isSample ? 'sample' : p.border === 'missing' ? 'missing' : undefined}>
         <View style={{ gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
             <View style={{ width: 54, height: 58, borderRadius: 16, borderCurve: 'continuous', backgroundColor: colors.accentFill, alignItems: 'center', justifyContent: 'center' }} accessible={false}>
               <AppText variant="caption1" weight="700" tone="accent" maxFontSizeMultiplier={1.2}>
-                {d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase()}
+                {d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })}
               </AppText>
               <AppText variant="title2" tabular weight="700" maxFontSizeMultiplier={1.2}>
                 {d.getUTCDate()}

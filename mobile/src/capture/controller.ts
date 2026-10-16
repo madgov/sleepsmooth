@@ -16,12 +16,24 @@ import modelJson from '@core/audio/model/model.json';
 import { NightSession, PUMP_SLICE_WINDOWS, viewForStored, type SessionEnv } from '@core/mobileLogic/nightSession';
 import { ClipRecorder } from '@core/mobileLogic/clips';
 import { clearClipTemp, clipTempSink, finalizeClips } from '../clips/clipFiles';
+import { loadClipAdaptation } from '../clips/clipAdaptationStore';
+import { NO_ADAPTATION } from '@core/mobileLogic/clipAdaptation';
 import { getNightStore } from '../data/nightStoreInstance';
 import { getSettings, updateSettings } from '../state/settings';
 import { hardStopMs, detectWakeSignal, onRecordingStarted, recordMorning, shouldAutoStop, type RecentEpoch } from '@core/mobileLogic/morningLearning';
 import { resolveScheduleWindow, type EpochRecord } from '@core/night';
 import { MotionSensor } from './motion';
-import { CaptureSpike } from './captureSpike';
+import {
+  addGap,
+  newDiagnostics,
+  pushEvent,
+  startRun,
+  stopRun,
+  type BatterySample,
+  type GapCause,
+  type NightDiagnostics,
+} from '@core/mobileLogic/diagnostics';
+import { CaptureSpike, type GapInfo, type SpikeEvent } from './captureSpike';
 
 const MODEL = modelJson as unknown as ModelJson;
 const hhmm = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
@@ -83,10 +95,101 @@ class CaptureController {
   /** Recent epochs for the morning signal, newest last. In memory only. */
   private recent: RecentEpoch[] = [];
   private windowStartMs = 0;
+  /** Night diagnostics (docs: mobile/DEVICE_TEST.md). Timings and events only, never audio. Saved to the night's folder. */
+  private diag: NightDiagnostics | null = null;
+  private diagTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastDiagSaveMs = 0;
+  private lastBatteryEventMs = 0;
+  private audioSecAcc = 0;
+  /** The latest audio-session event, used to name the cause of the next gap. */
+  private gapHint: { cause: GapCause; atMs: number } | null = null;
 
   constructor() {
     this.spike.subscribe(() => this.onSpike());
-    this.spike.setPcmSink((x, rate, gapSec, interruptions) => this.onPcm(x, rate, gapSec, interruptions));
+    this.spike.setPcmSink((x, rate, gapSec, interruptions, gap) => this.onPcm(x, rate, gapSec, interruptions, gap));
+    this.spike.setEventSink((e) => this.onSpikeEvent(e));
+  }
+
+  // ---- diagnostics ------------------------------------------------------------------------------------------------
+
+  private async sampleBattery(): Promise<BatterySample | null> {
+    try {
+      const [st, lvl, lp] = await Promise.all([Battery.getBatteryStateAsync(), Battery.getBatteryLevelAsync(), Battery.isLowPowerModeEnabledAsync().catch(() => null)]);
+      return {
+        atMs: Date.now(),
+        pct: lvl >= 0 ? Math.round(lvl * 100) : null,
+        charging: st === Battery.BatteryState.CHARGING || st === Battery.BatteryState.FULL ? true : st === Battery.BatteryState.UNPLUGGED ? false : null,
+        lowPowerMode: lp,
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  private diagUpdate(f: (d: NightDiagnostics) => NightDiagnostics) {
+    if (!this.diag) return;
+    this.diag = f(this.diag);
+    if (this.diagTimer) return;
+    this.diagTimer = setTimeout(() => {
+      this.diagTimer = null;
+      this.saveDiag();
+    }, 2000);
+  }
+
+  private saveDiag() {
+    const n = this.night;
+    if (!n || !this.diag) return;
+    this.lastDiagSaveMs = Date.now();
+    try {
+      getNightStore().writeDiagnostics(n.id, { ...this.diag, audioSecDelivered: Math.round(this.audioSecAcc) });
+    } catch {
+      /* diagnostics are best effort and never stop a night */
+    }
+  }
+
+  private dropDiag() {
+    if (this.diagTimer) clearTimeout(this.diagTimer);
+    this.diagTimer = null;
+    this.diag = null;
+  }
+
+  private onSpikeEvent(e: SpikeEvent) {
+    const atMs = Date.now();
+    switch (e.kind) {
+      case 'interruption':
+        if (e.type === 'began') this.gapHint = { cause: 'interruption', atMs };
+        this.diagUpdate((d) => pushEvent(d, { atMs, kind: e.type === 'began' ? 'interruption-began' : 'interruption-ended', detail: `shouldResume=${e.shouldResume}` }));
+        break;
+      case 'route':
+        this.gapHint = { cause: 'route-change', atMs };
+        this.diagUpdate((d) => pushEvent(d, { atMs, kind: 'route-change', detail: e.reason }));
+        break;
+      case 'recorder-error':
+        this.gapHint = { cause: 'recorder-error', atMs };
+        this.diagUpdate((d) => pushEvent(d, { atMs, kind: 'recorder-error', detail: e.message }));
+        break;
+      case 'app-state':
+        this.diagUpdate((d) => pushEvent(d, { atMs, kind: 'app-state', detail: e.state }));
+        break;
+      case 'resume-attempt':
+        this.diagUpdate((d) => pushEvent(d, { atMs, kind: 'resume-attempt', detail: `${e.reason} #${e.attempt}` }));
+        break;
+      case 'resume-ok':
+        this.diagUpdate((d) => pushEvent(d, { atMs, kind: 'resume-ok', detail: e.reason }));
+        break;
+      case 'resume-failed':
+        this.diagUpdate((d) => pushEvent(d, { atMs, kind: 'resume-failed', detail: `${e.reason}: ${e.message}` }));
+        break;
+    }
+  }
+
+  /** Name the cause of a gap from the audio-session events seen around it. Unknown stays 'late-buffers'. */
+  private noteGap(info: GapInfo | null, interruptionsNow: number, sec: number) {
+    const startMs = info?.startMs ?? Date.now() - sec * 1000;
+    const endMs = info?.endMs ?? startMs + sec * 1000;
+    const hint = this.gapHint && this.gapHint.atMs >= startMs - 5000 && this.gapHint.atMs <= endMs + 5000 ? this.gapHint.cause : null;
+    const cause: GapCause = interruptionsNow > this.interruptionsAtLastChunk ? 'interruption' : (hint ?? 'late-buffers');
+    this.diagUpdate((d) => addGap(d, { startMs, endMs, cause }));
   }
 
   subscribe = (l: () => void) => {
@@ -118,6 +221,7 @@ class CaptureController {
   async start(wakeMin: number): Promise<void> {
     if (this.snap.status === 'starting' || this.snap.status === 'recording') return;
     const now = Date.now();
+    const prevEndReason = this.session?.endReason ?? null;
     const plan = planStart(this.session, now);
     const appended = plan.kind === 'append' && this.session !== null;
     if (plan.kind === 'append' && this.session) {
@@ -130,7 +234,7 @@ class CaptureController {
     this.interruptionsAtLastChunk = 0;
     // A restart soon after an automatic stop means the user did not want it to stop: learning starts over.
     updateSettings((p) => ({ ...p, morning: onRecordingStarted(p.morning, now) }));
-    await this.openNight(plan, now);
+    await this.openNight(plan, now, prevEndReason);
     this.set({
       status: 'starting',
       summary: 'none',
@@ -148,6 +252,11 @@ class CaptureController {
     });
     await this.spike.start({ iosCategory: 'playAndRecord', iosMode: 'measurement' });
     this.timer ??= setInterval(() => this.tick(), 1000);
+    if (this.spike.getStats().phase !== 'error') {
+      const b = await this.sampleBattery();
+      this.diagUpdate((d) => startRun(d, now, b));
+      this.lastBatteryEventMs = now;
+    }
   }
 
   async stop(reason: CaptureEndReason = 'user-stop', auto = false): Promise<void> {
@@ -156,6 +265,11 @@ class CaptureController {
     this.set({ status: 'stopping' });
     await this.spike.stop();
     this.finish(reason);
+    const b = await this.sampleBattery();
+    this.diagUpdate((d) => stopRun(d, Date.now(), reason, b));
+    if (this.diagTimer) clearTimeout(this.diagTimer);
+    this.diagTimer = null;
+    this.saveDiag(); // final write while the night's folder still exists
     await this.endNight(reason);
   }
 
@@ -201,20 +315,24 @@ class CaptureController {
 
   // ---- night lifecycle --------------------------------------------------------------------------------------------
 
-  private async openNight(plan: ReturnType<typeof planStart>, now: number) {
+  private async openNight(plan: ReturnType<typeof planStart>, now: number, prevEndReason: CaptureEndReason | null = null) {
     const open = this.night && !this.night.isDone ? this.night : null;
     if (plan.kind === 'append' && open) {
       // Same night continues. The time with no audio is recorded as a gap (a night's epochs stay on one timeline).
       const gapSec = Math.max(0, (plan.gap.toMs - plan.gap.fromMs) / 1000);
       open.markGap(gapSec, 'interrupted-call-or-alarm');
       this.clips?.markGap(gapSec);
+      const cause: GapCause = prevEndReason === 'interrupted-call-or-alarm' ? 'interruption' : prevEndReason === 'mic-lost' ? 'recorder-error' : 'restart-by-user';
+      this.diagUpdate((d) => addGap(d, { startMs: plan.gap.fromMs, endMs: plan.gap.toMs, cause }));
       this.attachContext(open);
       return;
     }
     if (open) await this.endNight(this.session?.endReason ?? 'os-killed-or-crash-recovered', true);
     const settings = getSettings();
     // Clip saving is opt-in and off by default. With it off, no recorder exists and no audio is ever written.
-    this.clips = settings.clips.enabled ? new ClipRecorder(now, clipTempSink) : null;
+    // The recorder only decides which clips are kept. A feedback-based adaptation may change that choice, never the night's counts.
+    const adaptation = settings.clips.enabled ? await loadClipAdaptation(settings.clips.adaptResetAtMs) : NO_ADAPTATION;
+    this.clips = settings.clips.enabled ? new ClipRecorder(now, clipTempSink, adaptation) : null;
     const clips = this.clips;
     this.night = NightSession.open({
       store: getNightStore(),
@@ -229,7 +347,12 @@ class CaptureController {
       ...(clips ? { onWindow: (w) => clips.onWindow(w) } : {}),
     });
     this.recent = [];
-    this.windowStartMs = resolveScheduleWindow(now, { bedtimeLocal: hhmm(settings.sleep.bedMin), wakeLocal: hhmm(settings.sleep.wakeMin) }, ENV.utcOffsetMinutes(now)).startMs;
+    const sched = resolveScheduleWindow(now, { bedtimeLocal: hhmm(settings.sleep.bedMin), wakeLocal: hhmm(settings.sleep.wakeMin) }, ENV.utcOffsetMinutes(now));
+    this.windowStartMs = sched.startMs;
+    this.dropDiag();
+    this.audioSecAcc = 0;
+    this.gapHint = null;
+    this.diag = newDiagnostics({ nightId: this.night.id, device: { model: ENV.deviceModel, os: ENV.osVersion, app: ENV.appVersion }, scheduledStartMs: sched.startMs, scheduledEndMs: sched.endMs });
     this.attachContext(this.night);
   }
 
@@ -258,6 +381,9 @@ class CaptureController {
       if (ok) n.setContext({ motionAvailable: true });
     });
     this.ctxSubs.push(Battery.addBatteryStateListener(() => void apply()), Battery.addBatteryLevelListener(() => void apply()));
+    this.ctxSubs.push(
+      Battery.addLowPowerModeListener(({ lowPowerMode }) => this.diagUpdate((d) => pushEvent(d, { atMs: Date.now(), kind: 'low-power-mode', detail: lowPowerMode ? 'on' : 'off' }))),
+    );
   }
   private detachContext() {
     this.motion.stop();
@@ -323,6 +449,7 @@ class CaptureController {
     this.clips?.discard();
     this.clips = null;
     clearClipTemp();
+    this.dropDiag();
     this.night = null;
     this.session = null;
     this.set({ ...idle });
@@ -330,12 +457,14 @@ class CaptureController {
 
   // ---- audio path -------------------------------------------------------------------------------------------------
 
-  private onPcm(x: Float32Array, rate: number, gapSec: number, interruptions: number) {
+  private onPcm(x: Float32Array, rate: number, gapSec: number, interruptions: number, gap: GapInfo | null) {
     const n = this.night;
     if (!n || n.isDone) return;
+    this.audioSecAcc += x.length / rate;
     if (gapSec > 0) {
       n.markGap(gapSec, interruptions > this.interruptionsAtLastChunk ? 'interrupted-call-or-alarm' : 'late-buffers');
       this.clips?.markGap(gapSec);
+      this.noteGap(gap, interruptions, gapSec);
     }
     n.enqueue(x, rate);
     this.clips?.pushAudio(x, rate);
@@ -396,6 +525,7 @@ class CaptureController {
     }
     this.clips?.discard();
     this.clips = null;
+    this.dropDiag();
     this.night = null;
   }
 
@@ -422,6 +552,12 @@ class CaptureController {
     }
     if (this.night && !this.night.isDone && this.motion.isRunning) this.night.addMotionSeconds(this.motion.drain());
     this.tickMorning(now);
+    this.spike.watchdog(); // asks for a resume only when audio has been missing for a while (NOT VERIFIED on a device)
+    if (now - this.lastBatteryEventMs >= 1_800_000) {
+      this.lastBatteryEventMs = now;
+      void this.sampleBattery().then((b) => b && this.diagUpdate((d) => pushEvent(d, { atMs: b.atMs, kind: 'battery', detail: `${b.pct ?? '?'}% ${b.charging === null ? '' : b.charging ? 'charging' : 'unplugged'}`.trim() })));
+    }
+    if (now - this.lastDiagSaveMs >= 300_000) this.saveDiag();
     const s = this.spike.getStats();
     const liveness = classifyLiveness({ nowMs: now, lastChunkMs: this.lastChunkMs, interruptions: s.interruptions, interruptionsAtLastChunk: this.interruptionsAtLastChunk });
     if (liveness === 'ended-by-interruption' && AppState.currentState === 'active') {

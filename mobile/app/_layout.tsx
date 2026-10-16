@@ -67,7 +67,7 @@ function Routes() {
         <Stack.Screen name="intro" options={{ animation: 'fade', gestureEnabled: false }} />
         <Stack.Screen name="onboarding" options={{ animation: 'slide_from_right', gestureEnabled: false }} />
         <Stack.Screen name="(tabs)" options={{ animation: 'fade', gestureEnabled: false }} />
-        <Stack.Screen name="recording" options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="recording" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom', gestureEnabled: false }} />
         <Stack.Screen name="start-sheet" options={tall} />
         <Stack.Screen name="consent" options={fit} />
         <Stack.Screen name="auto-record" options={tall} />

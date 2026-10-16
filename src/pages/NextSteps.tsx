@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Disclaimer } from '../components';
 import { useSession } from '../state/session';
+import { PathwayGuide } from './PathwayGuide';
 import {
   DISCLAIMER_SEEK_CARE,
   NEXT_STEPS_DROWSY_HEADING,
@@ -65,6 +66,7 @@ export function NextSteps({ onBack }: { onBack: () => void }) {
         <h3>{NEXT_STEPS_DROWSY_HEADING}</h3>
         <p>{RED_FLAG_NOTE}</p>
       </div>
+      <PathwayGuide />
       <p>{NEXT_STEPS_NOT_REASSURANCE}</p>
       <p>{DISCLAIMER_SEEK_CARE}</p>
       <Disclaimer />

@@ -199,9 +199,11 @@ describe('storage budget and retention', () => {
     expect(clipsToPrune(nights, now, 7)).toEqual(['old', 'edge']);
   });
   it('merges clip settings defensively; saving is off by default', () => {
-    expect(mergeClipSettings(undefined)).toEqual({ enabled: false, retentionDays: 30, decidedAt: null });
+    expect(mergeClipSettings(undefined)).toEqual({ enabled: false, retentionDays: 30, decidedAt: null, adaptResetAtMs: null });
     expect(mergeClipSettings({ enabled: 'yes', retentionDays: 5 }).enabled).toBe(false);
-    expect(mergeClipSettings({ enabled: true, retentionDays: 90, decidedAt: 'x' })).toEqual({ enabled: true, retentionDays: 90, decidedAt: 'x' });
+    expect(mergeClipSettings({ enabled: true, retentionDays: 90, decidedAt: 'x' })).toEqual({ enabled: true, retentionDays: 90, decidedAt: 'x', adaptResetAtMs: null });
+    expect(mergeClipSettings({ adaptResetAtMs: 5 }).adaptResetAtMs).toBe(5);
+    expect(mergeClipSettings({ adaptResetAtMs: 'x' }).adaptResetAtMs).toBeNull();
   });
 });
 

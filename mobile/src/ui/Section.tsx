@@ -6,7 +6,7 @@ import { PressScale } from './Press';
 export function SectionHeader({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', paddingHorizontal: 4 }}>
-      <AppText variant="title3" accessibilityRole="header" style={{ letterSpacing: -0.3 }}>
+      <AppText variant="title3" accessibilityRole="header">
         {title}
       </AppText>
       {action && onAction ? (

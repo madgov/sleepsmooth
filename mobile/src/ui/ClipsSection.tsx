@@ -12,15 +12,23 @@ import {
   CLIP_SAMPLE_NOTE,
   CLIP_SECTION_HEADING,
   CLIP_SNORE_HEADING,
+  FEEDBACK_NOTE,
+  FEEDBACK_NOTE_NO_UPLOAD,
+  feedbackCountLine,
+  partnerClipsLine,
 } from '@core/content/claims';
+import { partnerTaggedCount, reviewedCount } from '@core/mobileLogic/clipFeedback';
 import { clipSections } from '@core/mobileLogic/clips';
+import { CLAIMS_VERIFIED } from '../content/flags';
 import { clipPlayer } from '../clips/clipPlayer';
 import { usePlayerState } from '../clips/playerStore';
+import { useClipFeedback } from '../clips/useClipFeedback';
 import { loadClipSamples, useNightClips } from '../clips/useNightClips';
 import { useCapture } from '../hooks/useCapture';
 import { updateSettings, useSettings } from '../state/settings';
 import { useTheme } from '../theme/useTheme';
 import { AppText } from './AppText';
+import { ClipAdaptNote } from './ClipAdaptNote';
 import { ClipPlayerRow } from './ClipPlayerRow';
 import { Skeleton } from './Skeleton';
 import { SourceBadge } from './SourceBadge';
@@ -36,6 +44,7 @@ export interface ClipsSectionProps {
 /** "Clips to listen to" on the night detail. Three honest states: saving off, none picked, and the clips themselves. */
 export function ClipsSection({ nightId, isSample, nightStartMs }: ClipsSectionProps) {
   const load = useNightClips(nightId, isSample, nightStartMs);
+  const fb = useClipFeedback(nightId, isSample);
   const settings = useSettings();
   const player = usePlayerState(clipPlayer);
   const capture = useCapture();
@@ -65,7 +74,12 @@ export function ClipsSection({ nightId, isSample, nightStartMs }: ClipsSectionPr
       );
     }
     if (load.state === 'none-picked') {
-      return <StateCard tone="info" icon="waveform" title={CLIP_NONE_TITLE} body={CLIP_NONE_BODY} animated={false} testID="clips-none" />;
+      return (
+        <View style={{ gap: 8 }}>
+          <StateCard tone="info" icon="waveform" title={CLIP_NONE_TITLE} body={CLIP_NONE_BODY} animated={false} testID="clips-none" />
+          {isSample ? null : <ClipAdaptNote refreshKey={fb.file.entries.length} padded />}
+        </View>
+      );
     }
     const { snore, other } = clipSections(load.clips);
     const row = (c: (typeof load.clips)[number]) => (
@@ -79,6 +93,9 @@ export function ClipsSection({ nightId, isSample, nightStartMs }: ClipsSectionPr
         error={player.id === c.id && player.status === 'error' ? player.message : null}
         disabledReason={recording ? CLIP_PLAYBACK_BLOCKED_WHILE_RECORDING : undefined}
         onToggle={() => void clipPlayer.toggle(c.id, () => loadClipSamples(nightId, c, load.sample))}
+        feedback={fb.file.entries.find((e) => e.clipId === c.id) ?? null}
+        onVerdict={(v) => fb.verdict(c.id, v)}
+        onKind={(k) => fb.kind(c.id, k)}
       />
     );
     return (
@@ -100,6 +117,17 @@ export function ClipsSection({ nightId, isSample, nightStartMs }: ClipsSectionPr
           </View>
         ) : null}
         {load.sample ? <AppText variant="footnote" tone="secondary">{CLIP_SAMPLE_NOTE}</AppText> : null}
+        <View style={{ gap: 4 }}>
+          <AppText variant="footnote" tone="secondary" testID="clips-feedback-note">{CLAIMS_VERIFIED.noUploadNoTrackingVerified ? `${FEEDBACK_NOTE} ${FEEDBACK_NOTE_NO_UPLOAD}` : FEEDBACK_NOTE}</AppText>
+          {reviewedCount(fb.file, load.clips.map((c) => c.id)) > 0 ? (
+            <AppText variant="footnote" weight="600" testID="clips-reviewed-count">{feedbackCountLine(reviewedCount(fb.file, load.clips.map((c) => c.id)))}</AppText>
+          ) : null}
+          {partnerTaggedCount(fb.file, load.clips.map((c) => c.id)) > 0 ? (
+            <AppText variant="footnote" weight="600" testID="clips-partner-count">{partnerClipsLine(partnerTaggedCount(fb.file, load.clips.map((c) => c.id)))}</AppText>
+          ) : null}
+          {!fb.saved ? <AppText variant="footnote" tone="secondary">Your choice could not be saved on this phone.</AppText> : null}
+          {load.sample ? null : <ClipAdaptNote refreshKey={fb.file.entries.length} />}
+        </View>
         <AppText variant="footnote" tone={{ color: colors.labelSecondary }}>
           {CLIP_FOOTNOTE}
         </AppText>

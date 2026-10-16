@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import type { PartnerObservations } from '../questionnaire/partner';
 import type { SymptomAnswers } from '../questionnaire/symptomChecklist';
 import type { AudioAnalysis } from '../types/audio';
 import type { CareSummary } from '../types/report';
@@ -14,6 +15,7 @@ export interface SessionApi extends PersistedSession {
   setAnswers(a: Record<string, AnswerValue>): void;
   setSymptoms(s: SymptomAnswers): void;
   setRedFlag(v: boolean | null): void;
+  setPartner(p: PartnerObservations): void;
   setAudio(a: AudioAnalysis | null, label?: string | null): void;
   setSummary(s: CareSummary | null, editedIds: string[]): void;
   /** Load a complete illustrative case (marked synthetic). */
@@ -48,6 +50,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setAnswers: (answers) => patch({ answers }),
       setSymptoms: (symptoms) => patch({ symptoms }),
       setRedFlag: (redFlag) => patch({ redFlag }),
+      setPartner: (partner) => patch({ partner }),
       setAudio,
       setSummary: (summary, editedIds) => patch({ summary, editedIds }),
       loadCase: (c) => {

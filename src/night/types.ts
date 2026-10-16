@@ -180,7 +180,12 @@ export type NightSummary = {
   episodeQualifiedFraction: number;
   bandwidthApplicable: boolean;
   effectiveBandwidthHz: number | null;
-  sensitivity: { asleepOnly: SensitivityLine; withUncertain: SensitivityLine };
+  /**
+   * asleepOnly: likely-asleep epochs. withUncertain: likely-asleep + uncertain (the default view and the verdict input).
+   * allInWindow: every captured epoch inside the scheduled window, including epochs the unvalidated estimate labels
+   * likely-awake. Shown as a separate, additional line so audio is never silently dropped by the sleep-state guess.
+   */
+  sensitivity: { asleepOnly: SensitivityLine; withUncertain: SensitivityLine; allInWindow: SensitivityLine };
   quality: NightQuality;
   nightState: NightAudioState;
   notAssessedReasons: string[];

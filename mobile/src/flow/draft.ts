@@ -1,5 +1,7 @@
 // The questionnaire draft shared by onboarding and "Retake the questionnaire". Scoring is not here: answers are written to
 // settings in the shape the shared core (@core/questionnaire) already reads, and the core scores them.
+import { normalizePartner, type PartnerObservations } from '@core/questionnaire/partner';
+import { discussIds, discussToAnswers } from '@core/questionnaire/discussItems';
 import type { SymptomAnswers } from '@core/questionnaire/symptomChecklist';
 import type { AnswerValue } from '@core/types/questionnaire';
 import { getSettings, updateSettings } from '../state/settings';
@@ -17,6 +19,9 @@ export interface Draft {
   sex: 'male' | 'female' | null;
   symptoms: SymptomAnswers;
   redFlag: boolean | null;
+  /** Optional "worth discussing with a clinician" items (ids from DISCUSS_ITEMS). Stored in answers as discuss_<id>. */
+  discuss: string[];
+  partner: PartnerObservations;
 }
 
 const str = (v: AnswerValue | undefined) => (typeof v === 'number' ? String(v) : '');
@@ -35,6 +40,8 @@ export function initialDraft(): Draft {
     sex: a.sex === 'male' || a.sex === 'female' ? a.sex : null,
     symptoms: { ...s.symptoms },
     redFlag: s.redFlag,
+    discuss: discussIds(a),
+    partner: normalizePartner(s.partner),
   };
 }
 
@@ -57,10 +64,10 @@ export function toAnswers(d: Draft): Record<string, AnswerValue> {
   if (d.snoring !== null) a.snoring = d.snoring;
   if (age !== null) a.age = age;
   if (d.sex) a.sex = d.sex;
-  return a;
+  return { ...a, ...discussToAnswers(d.discuss) };
 }
 
 /** Writes the draft to local settings. Unanswered items stay unanswered (never zero points). */
 export function commitDraft(d: Draft): void {
-  updateSettings((p) => ({ ...p, answers: toAnswers(d), symptoms: d.symptoms, redFlag: d.redFlag, questionnaireSavedAt: new Date().toISOString() }));
+  updateSettings((p) => ({ ...p, answers: toAnswers(d), symptoms: d.symptoms, redFlag: d.redFlag, partner: d.partner, questionnaireSavedAt: new Date().toISOString() }));
 }

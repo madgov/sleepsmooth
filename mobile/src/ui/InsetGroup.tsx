@@ -97,8 +97,8 @@ export function ListRow(p: ListRowProps) {
 /** iOS grouped-list section header: caps footnote in the secondary colour. One style for every section. */
 export function GroupHeader({ children }: { children: string }) {
   return (
-    <AppText variant="footnote" tone="secondary" accessibilityRole="header" style={{ paddingHorizontal: 16, letterSpacing: 0.3 }}>
-      {children.toUpperCase()}
+    <AppText variant="footnote" tone="secondary" accessibilityRole="header" style={{ paddingHorizontal: 16 }}>
+      {children}
     </AppText>
   );
 }

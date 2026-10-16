@@ -10,9 +10,6 @@ import {
   RESULTS_EMPTY_TITLE,
   MODEL_CARD_HEADING,
   MODEL_CARD_INTENDED,
-  MODEL_CARD_METRICS_INTRO,
-  MODEL_CARD_METRICS_UNAVAILABLE,
-  MODEL_CARD_METRIC_LABELS,
   MODEL_CARD_NOT_FOR,
   MODEL_CARD_OTHER_LIMITS,
   MODEL_CARD_PATH,
@@ -25,11 +22,10 @@ import {
   snoreWindowsLine,
   tooQuietLine,
 } from '../content/claims';
-import { formatRange, loadModelCardRanges } from '../audio/modelCardInfo';
 import { loadShippedModel } from '../audio/model/infer';
 import { isModelNotApplicable } from '../evidence/audioState';
 import type { AudioAnalysis } from '../types/audio';
-import { LoudnessChart, QualityPanel, ConflictCard, DemoBanner, Disclaimer, EmptyState, EvidenceCard, SourceBadge } from '../components';
+import { LimitsPanel, LoudnessChart, QualityPanel, ConflictCard, DemoBanner, Disclaimer, EmptyState, EvidenceCard, SourceBadge } from '../components';
 import { useSession } from '../state/session';
 import { useDerived } from '../state/derived';
 import type { Source } from '../types/evidence';
@@ -42,7 +38,6 @@ const COLUMNS: { title: string; id: string; sources: Source[]; empty: string }[]
 
 /** Snore-pattern results for a finished analysis (M6). Counts and words only: no scores, no percentages. */
 export function SnoreResults({ audio, modelShipped }: { audio: AudioAnalysis; modelShipped: boolean }) {
-  const ranges = loadModelCardRanges();
   const notApplicable = isModelNotApplicable(audio);
   const noModel = !modelShipped || audio.modelVersion === null;
   const snoreLike = audio.windows.filter((w) => w.snoreLike).length;
@@ -74,22 +69,9 @@ export function SnoreResults({ audio, modelShipped }: { audio: AudioAnalysis; mo
             <li>{MODEL_CARD_PHONE_WEAKNESS}</li>
             <li>{MODEL_CARD_OTHER_LIMITS}</li>
           </ul>
-          <p>{MODEL_CARD_METRICS_INTRO}</p>
-          {ranges ? (
-            <ul>
-              <li>
-                {MODEL_CARD_METRIC_LABELS.recall}: {formatRange(ranges.recall)}
-              </li>
-              <li>
-                {MODEL_CARD_METRIC_LABELS.precision}: {formatRange(ranges.precision)}
-              </li>
-              <li>
-                {MODEL_CARD_METRIC_LABELS.fpr}: {formatRange(ranges.fpr)}
-              </li>
-            </ul>
-          ) : (
-            <p>{MODEL_CARD_METRICS_UNAVAILABLE}</p>
-          )}
+          <p>
+            Tested numbers, the small size of the test and what has not been tested yet are on the <a href="#/model-card">model card</a>.
+          </p>
           <p>Full details: {MODEL_CARD_PATH} in the project files.</p>
         </details>
       )}
@@ -171,6 +153,8 @@ export function Results({ onNext, onBack, onEdit, audioSlot }: { onNext: () => v
         {audioSlot ?? defaultSlot ?? <p>{AUDIO_SLOT_EMPTY}</p>}
         <p>{DISCLAIMER_AUDIO}</p>
       </div>
+
+      <LimitsPanel />
 
       <details className="limits-details">
         <summary>{RESULTS_DETAILS_HEADING}</summary>

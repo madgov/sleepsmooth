@@ -21,6 +21,7 @@
     "../src/types",
     "../src/content/claims.ts",
     "../src/mobileLogic/index.ts",
+    "../src/mobileLogic/navGuard.ts",
     "../src/evidence/*.ts",
     "../src/questionnaire/**/*.ts",
     "../src/audio/constants.ts",

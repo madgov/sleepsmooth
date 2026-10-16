@@ -16,6 +16,7 @@ import { Icon } from '../src/ui/Icon';
 import { BackBar } from '../src/ui/ScreenHeader';
 import { Screen } from '../src/ui/Screen';
 import { InsetGroup, ListRow } from '../src/ui/InsetGroup';
+import { PathwayGuide } from '../src/ui/PathwayGuide';
 
 export default function NextSteps() {
   const { colors } = useTheme();
@@ -71,6 +72,7 @@ export default function NextSteps() {
             <AppText variant="body">{RED_FLAG_NOTE}</AppText>
           </View>
         ) : null}
+        <PathwayGuide />
         <View style={{ gap: 8 }}>
           <AppText variant="subheadline" weight="600">
             {NEXT_STEPS_NOT_REASSURANCE}

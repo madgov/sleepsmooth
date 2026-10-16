@@ -28,7 +28,7 @@ export const NOSAS_ACCURACY_CAVEAT = 'results vary by setting and how sleep apne
 
 /** May-say 4. */
 export const NOSAS_LOWER_SCORE_CAVEAT =
-  'A lower score does not rule out sleep apnea. Talk to a clinician if you have symptoms.';
+  'A lower score cannot rule out sleep apnea. Talk to a clinician if you have symptoms.';
 
 /** May-say 5 (wording is ours; the SOURCES.md entry only requires a note of this kind). */
 export const NOSAS_OUTSIDE_VALIDATION_NOTE =
@@ -61,7 +61,7 @@ export const SYNTHETIC_LABEL = 'Synthetic / illustrative';
 export const NOSAS_CUTOFF = 8;
 export const NOSAS_CUTOFF_TEXT = 'Published cutoff: a total of 8 or more (the total ranges from 0 to 17).';
 export const NOSAS_BAND_AT_OR_ABOVE = 'At or above the published cutoff of 8';
-export const NOSAS_BAND_BELOW = 'Below the published cutoff of 8';
+export const NOSAS_BAND_BELOW = 'Below the published cutoff of 8 (this cannot rule out sleep apnea)';
 export const NOSAS_BAND_INCOMPLETE = 'Incomplete';
 export const NOSAS_BAND_NOT_ANSWERED = 'Not answered';
 export const NOSAS_NOT_ANSWERED_EXPLANATION = 'No NoSAS questions have been answered yet.';
@@ -171,7 +171,7 @@ export const AUDIO_DETAIL = {
 export const NOSAS_DETAIL = {
   notAnswered: 'The NoSAS questions were not answered.',
   incompleteBelow: 'The score is incomplete, so it cannot be read as low or high.',
-  below: 'The score is below the published cutoff. This is not reassurance.',
+  below: 'The score is below the published cutoff. This cannot rule out sleep apnea.',
   atOrAbove: 'The score is at or above the published cutoff.',
 } as const;
 export const SYMPTOM_DETAIL = {
@@ -400,7 +400,7 @@ export const CLIP_NONE_BODY = "That doesn't rule anything out. Clips are only pi
 export const CLIP_SAMPLE_NOTE = 'These clips are synthetic tones made for this preview. They are not recordings of anyone.';
 export const CLIP_PLAYBACK_BLOCKED_WHILE_RECORDING = 'Clips can be played once the recording has stopped.';
 export const CLIP_TOGGLE_TITLE = 'Save a few short clips each night';
-export const CLIP_TOGGLE_BODY = 'So you can listen back. Clips stay on this iPhone. Nothing is uploaded or shared unless you choose to.';
+export const CLIP_TOGGLE_BODY = 'So you can listen back. Clips are saved on this iPhone, and you can delete them at any time.';
 export const CLIP_TOGGLE_DETAIL = 'Up to 5 clips of at most 15 seconds each, about 2.4 MB per night at most. Turning this off stops new clips. It does not delete the ones already saved.';
 export const CLIP_RETENTION_TITLE = 'Keep clips for';
 export const CLIP_DELETE_ALL = 'Delete all clips';
@@ -448,3 +448,133 @@ export const HEALTH_NO_RECORDS = 'No sleep records were found in Apple Health fo
 export const HEALTH_SIDE_NOTE = 'From Apple Health. It is a separate source, shown next to SleepSmooth\'s own estimate and not combined with it. A match does not confirm either one.';
 export const HEALTH_PLIST_USAGE = 'SleepSmooth reads your sleep and step history to suggest your usual sleep hours. It never writes to Health.';
 export const MOTION_PLIST_USAGE = 'SleepSmooth reads how long your iPhone was still overnight, only when you tap Find my routine, to suggest your usual sleep hours.';
+
+// ---- Reliability pass: coverage, diagnostics, clip feedback. Appended; nothing above was changed. ----------------------
+export const COVERAGE_HEADING = 'How much of the night was checked';
+export const COVERAGE_LEGEND = {
+  assessable: 'Recorded and assessable',
+  notAssessable: 'Recorded, too quiet to assess',
+  gap: 'Not recorded (gap)',
+  outside: 'Outside your sleep hours',
+} as const;
+export const coverageSentence = (recorded: string, scheduled: string, assessable: string): string =>
+  `Recorded ${recorded} of ${scheduled}. ${assessable} could be assessed.`;
+export const COVERAGE_NOTHING_RECORDED = (scheduled: string): string => `Nothing was recorded in your ${scheduled} sleep hours. Nothing could be assessed.`;
+export const COVERAGE_NOTHING_ASSESSABLE = 'None of the recorded time could be assessed.';
+export const coverageOutsideNote = (outside: string): string => `A further ${outside} was recorded outside your sleep hours.`;
+export const NO_SNORE_IN_ASSESSABLE = 'Nothing snore-like was found in the assessable time. That does not rule out sleep apnea, and it says nothing about the time that could not be assessed.';
+export const COULD_NOT_ASSESS_LINE = 'Could not assess. The recording was too quiet, too short or too incomplete to check for snore-like sounds. This is not a sign that all is well.';
+export const COVERAGE_DETAILS_HEADING = 'Details';
+export const COVERAGE_EXACT_HEADING = 'Exact numbers';
+export const COVERAGE_ALT_PREFIX = 'Coverage timeline across the night.';
+export const awakeWindowsLine = (n: number): string =>
+  `${n} more snore-like ${n === 1 ? 'window was' : 'windows were'} found in time the phone guessed you were awake. They are not in the totals above, but they were not discarded.`;
+export const ROUGH_ESTIMATE_LABEL = 'Rough estimate (unvalidated)';
+export const ROUGH_ESTIMATE_NOTE = 'A guess from the phone, not a measurement. It never decides what is analysed on its own: uncertain time is still checked.';
+
+export const DIAG_HEADING = 'Diagnostics';
+export const DIAG_INTRO = 'Technical record of how this recording ran. For testing the app. It is not a health result and is not used in your summary.';
+export const DIAG_NOT_VERIFIED = 'NOT VERIFIED on a device: interruption and route-change handling has not been tested on a real iPhone yet.';
+export const DIAG_EXPORT = 'Export test log';
+export const DIAG_EXPORT_NOTE = 'Creates a text file with timings, gaps, battery and your clip feedback. It contains no audio. You choose where it goes.';
+export const DIAG_EXPORT_WEB = 'Export works in the iPhone app. This preview cannot share files.';
+export const DIAG_EXPORT_FAILED = 'The test log could not be shared. Try again.';
+export const DIAG_DEV_PREVIEW = 'Preview data for layout only. Not from a real recording.';
+export const TEST_LOG_NOTE = 'Technical test log. Contains no audio. Not a health result and not a diagnosis. Thresholds in "criteria" are provisional engineering targets.';
+export const DIAG_NO_RECORD = 'No diagnostics were saved for this night. It was recorded before this record existed.';
+
+export const FEEDBACK_HEADING = 'Is this right?';
+export const FEEDBACK_NOTE = 'Your own feedback helps spot mistakes. It is not a medical check. It is saved on this iPhone, and it leaves only if you export a test log yourself.';
+/** Shown only when CLAIMS_VERIFIED.noUploadNoTrackingVerified is true (a device check has passed). */
+export const FEEDBACK_NOTE_NO_UPLOAD = 'Nothing is uploaded.';
+export const FEEDBACK_RIGHT = 'Sounds right';
+export const FEEDBACK_NOT_SNORING = 'Not snoring';
+export const FEEDBACK_NOT_THIS = 'Not this sound';
+export const FEEDBACK_WHAT_WAS_IT = 'What was it?';
+export const FEEDBACK_KINDS = {
+  breathing: 'Breathing',
+  'fan-ac': 'Fan or AC',
+  partner: 'Partner',
+  'movement-bedding': 'Movement or bedding',
+  pet: 'Pet',
+  talking: 'Talking',
+  other: 'Other',
+} as const;
+export const FEEDBACK_CLEAR = 'Clear';
+export const feedbackCountLine = (n: number): string => `${n} ${n === 1 ? 'clip' : 'clips'} reviewed`;
+
+// ---------------------------------------------------------------------------
+// Round 2 (limits panel, honest model card, clinician-discussion checklist).
+// Every figure below is copied from docs/research/02_COMMERCIAL_LANDSCAPE.md, docs/research/03_CLINICAL_PATHWAY.md or
+// model/MODEL_CARD.md. Nothing here is a new claim about this app's accuracy.
+// ---------------------------------------------------------------------------
+
+/** "What this cannot tell you" panel (results/dashboard and summary screens). */
+export const LIMITS_PANEL_TITLE = 'What this cannot tell you';
+export const LIMITS_PANEL_ITEMS: readonly string[] = [
+  'This is not a diagnosis. Only a clinician can diagnose sleep apnea, usually after a sleep test.',
+  'Sound cannot measure airflow or blood oxygen. This app only notices sound patterns.',
+  'No flags does not mean no sleep apnea. A quiet recording or a lower score cannot rule it out.',
+  'A questionnaire cannot diagnose it either. The AASM 2017 guideline advises against using questionnaires to diagnose without a sleep test, and NICE NG202 says a sleepiness questionnaire alone should not decide referral.',
+];
+/** Others' published miss rates. Samsung: instructions for use (167/202). Apple: secondary source only. */
+export const LIMITS_PANEL_WATCH_LINE =
+  'Even FDA-cleared or authorized watch features miss many cases. Samsung\'s instructions for use report that its feature flagged 167 of 202 people (82.7%) whose sleep study showed moderate-to-severe sleep apnea. Apple\'s is reported at about 66%, but that comes from a secondary summary that we have not checked against the FDA record. Both say that no alert does not mean no sleep apnea.';
+export const LIMITS_PANEL_SOURCES =
+  'Sources: AASM clinical practice guideline for diagnostic testing in adults (Kapur et al., J Clin Sleep Med 2017;13(3):479-504); NICE NG202 (2021); Samsung Sleep Apnea feature instructions for use (images.samsung.com/samsung-health/ifu/IFU_SLEEP-APNEA_US.pdf); Apple figure from a secondary source (not verified).';
+export const LIMITS_PANEL_MORE = 'Sources and the watch figures';
+
+/** A below-cutoff NoSAS result must always say "cannot rule out" (no reassurance, no green). */
+export const NOSAS_BELOW_CANNOT_RULE_OUT = 'A score below the cutoff cannot rule out sleep apnea.';
+
+/** Optional guideline-backed "worth discussing with a clinician" checklist (user-reported, not scored). */
+export const DISCUSS_HEADING = 'Worth discussing with a clinician';
+export const DISCUSS_OPTIONAL = 'Optional';
+export const DISCUSS_INTRO =
+  'Guidelines suggest discussing a sleep evaluation with a clinician if any of these apply to you. This is not a score, a risk estimate or triage, and leaving all of them unticked tells you nothing either way. Tick only what you want to share.';
+export const DISCUSS_ITEMS: readonly { id: string; text: string; source: string }[] = [
+  { id: 'resistant_hypertension', text: 'High blood pressure that stays high despite treatment', source: 'AHA scientific statement on sleep apnea and heart disease, 2021' },
+  { id: 'atrial_fibrillation', text: 'Atrial fibrillation (AF) that came back after cardioversion or ablation', source: 'AHA scientific statement on sleep apnea and heart disease, 2021' },
+  { id: 'heart_failure', text: 'Heart failure', source: 'AHA scientific statement on sleep apnea and heart disease, 2021' },
+  { id: 'stroke', text: 'A past stroke', source: 'AASM 2017 guideline: affects which sleep test a clinician chooses' },
+  { id: 'opioids', text: 'Regular use of opioid pain medicine', source: 'AASM 2017 guideline: affects which sleep test a clinician chooses' },
+  { id: 'drowsy_driving', text: 'Sleepiness that affects your driving', source: 'NICE NG202 (2021), citing UK DVLA guidance' },
+];
+export const DISCUSS_SOURCE_LINE =
+  'Sources: AHA scientific statement on obstructive sleep apnea and cardiovascular disease (2021); AASM clinical practice guideline for diagnostic testing in adults (2017); NICE NG202 (2021), which cites UK DVLA guidance. General information to help you prepare for a conversation, not medical advice.';
+export const DISCUSS_ANSWER_PREFIX = 'discuss_';
+export const DISCUSS_SUMMARY_TITLE = 'Items I would like to discuss';
+export const DISCUSS_SUMMARY_LEAD = 'I ticked these in the app. Guidelines suggest discussing a sleep evaluation if they apply.';
+export const DISCUSS_REVIEW_NONE = 'None ticked';
+
+/**
+ * Model card, v1 (the model this build actually runs). Hand-written constants, checked against model/MODEL_CARD.md
+ * and model/metrics.json by src/audio/modelCardInfo.test.ts. Do not edit one without the other.
+ */
+export const MODEL_CARD_RUNNING_LINE = 'This app runs the first version (v1) of the snore-pattern model.';
+export const MODEL_CARD_SOURCE_LINE =
+  'Numbers are copied from model/MODEL_CARD.md (test fold 5 of ESC-50, window level, 95% ranges from resampling whole clips). Prototype; not clinically validated.';
+export const MODEL_CARD_SMALL_TEST =
+  'The test had only 8 snoring clips (71 one-second windows), so the ranges are wide and results could change a lot with different clips.';
+export const MODEL_CARD_PRECISION_PLAIN =
+  'Because snoring is rare in the test set, roughly three of four flagged windows were not snoring (44 correct flags and 147 wrong ones).';
+export const MODEL_CARD_AUC_PLAIN = 'AUC is a ranking score (1.0 is perfect, 0.5 is chance). It is not the share of flags that are right.';
+export const MODEL_CARD_NO_REAL_PHONE = 'It has not been tested on recordings made overnight on real phones. All test data are short sound-effect clips.';
+export const MODEL_CARD_PHONE_QUALITY =
+  'On 8 kHz phone-call-quality audio (a stand-in for narrowband audio) its recall was 0.00: it flagged none of the snoring. Such recordings are treated as not assessable.';
+export const MODEL_CARD_V3_HEADING = 'A newer model (v3), not in this app yet';
+export const MODEL_CARD_V3_STATUS =
+  'A newer model (v3) has been evaluated offline but is NOT in this app. It is not used in anything you see here, and it has not been compared with the exact version that would run on a phone.';
+export const MODEL_CARD_V3_SMALL =
+  'Its offline numbers use the same 8 snoring test clips, and that test set has been looked at several times, so they are likely a bit optimistic. About 3 in 5 of its flags were still wrong in that test.';
+
+// ---- Round 2: clip adaptation, partner-tagged clips, pauses in snore-like sound. Appended; nothing above was changed. ----
+export const CLIP_ADAPT_NOTE = (n: number): string =>
+  `Clip picks adjust to your feedback (${n} reviewed). This only changes which clips are saved, not the night summary.`;
+export const CLIP_ADAPT_PENDING = (n: number): string =>
+  `${n} ${n === 1 ? 'clip' : 'clips'} reviewed so far. Clip picks start adjusting after a few similar answers. This only changes which clips are saved, not the night summary.`;
+export const CLIP_ADAPT_RESET = 'Reset';
+export const CLIP_ADAPT_RESET_DONE = 'Your feedback no longer changes which clips are picked.';
+export const partnerClipsLine = (n: number): string => `${n} ${n === 1 ? 'clip' : 'clips'} you marked as a partner's sound (your label, not a measurement).`;
+export const snorePausesLine = (n: number): string =>
+  `Snore-like sound paused and then restarted ${n} ${n === 1 ? 'time' : 'times'}. This pattern can happen with or without sleep apnea, and phone audio can't tell which. Worth mentioning to a clinician if it happens often.`;

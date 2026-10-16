@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
+
 import { View } from 'react-native';
+import { useSafeRouter } from '../nav/useSafeRouter';
 import { AUTO } from '../content/copy';
 import { updateSettings } from '../state/settings';
 import { AppText } from './AppText';
@@ -9,7 +10,7 @@ import { PrimaryButton } from './PrimaryButton';
 
 /** One-time offer on the Dashboard. "Not now" stores the decision so it is never shown again. */
 export function AutoRecordCard() {
-  const router = useRouter();
+  const router = useSafeRouter();
   return (
     <GlassCard radius={28} padding={20} testID="auto-record-card">
       <View style={{ gap: 14 }}>

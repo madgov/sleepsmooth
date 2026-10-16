@@ -1,0 +1,5569 @@
+{
+ "label": "SYNTHETIC nights (stand-in for real overnight recordings). DEVELOPMENT data (ESC-50 folds 1-4). Not real-world performance.",
+ "nights": {
+  "total": 20,
+  "hours": 40.0,
+  "tuning": 10,
+  "check": 10,
+  "bouts": {
+   "tuning": 47,
+   "check": 47
+  },
+  "distinctSnoringSourceClips": 32
+ },
+ "rule": {
+  "fpBudgetPerHour": 2.0,
+  "note": "",
+  "doc": "docs/MODEL_ERROR_REPORT.md section 0"
+ },
+ "grid": {
+  "thr": [
+   0.6495,
+   0.75,
+   0.85,
+   0.9,
+   0.95,
+   0.98
+  ],
+  "n": [
+   3,
+   5,
+   7,
+   10
+  ],
+  "K": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   8,
+   10
+  ],
+  "M": [
+   3,
+   5,
+   8
+  ],
+  "rho": [
+   null,
+   0.2,
+   0.3,
+   0.4
+  ],
+  "policies": [
+   "strict",
+   "lenient"
+  ],
+  "configs": 2898
+ },
+ "baselineApp": {
+  "cfg": {
+   "thr": 0.6495,
+   "n": 0,
+   "K": 1,
+   "M": 5,
+   "rho": null,
+   "policy": "-"
+  },
+  "tuning": {
+   "fp": 183,
+   "tp": 77,
+   "hours": 20.0,
+   "fpPerHour": 9.15,
+   "recall": 0.9787234042553191,
+   "precision": 0.29615384615384616,
+   "bouts": {
+    "brief": 17,
+    "all": 47,
+    "normal": 23,
+    "quiet": 10
+   },
+   "caught": {
+    "brief": 17,
+    "all": 46,
+    "normal": 23,
+    "quiet": 9
+   },
+   "tagRecall": {
+    "brief": 1.0,
+    "all": 0.9787234042553191,
+    "normal": 1.0,
+    "quiet": 0.9
+   },
+   "nSegments": 260
+  },
+  "check": {
+   "fp": 258,
+   "tp": 82,
+   "hours": 20.0,
+   "fpPerHour": 12.9,
+   "recall": 0.9148936170212766,
+   "precision": 0.2411764705882353,
+   "bouts": {
+    "quiet": 9,
+    "all": 47,
+    "normal": 30,
+    "brief": 11
+   },
+   "caught": {
+    "quiet": 7,
+    "all": 43,
+    "normal": 30,
+    "brief": 8
+   },
+   "tagRecall": {
+    "quiet": 0.7777777777777778,
+    "all": 0.9148936170212766,
+    "normal": 1.0,
+    "brief": 0.7272727272727273
+   },
+   "nSegments": 340
+  },
+  "windowTuning": {
+   "windowPrecision": 0.4435374149659864,
+   "windowRecallAllWindows": 0.631608081926377,
+   "flaggedWindows": 5145,
+   "falseFlaggedWindows": 2863,
+   "positiveWindows": 3613,
+   "aucScoredWindows": 0.8405154894036113,
+   "scoredWindows": 26486,
+   "scoredPositiveWindows": 3355
+  },
+  "windowCheck": {
+   "windowPrecision": 0.2563064465898474,
+   "windowRecallAllWindows": 0.6304902962206334,
+   "flaggedWindows": 9633,
+   "falseFlaggedWindows": 7164,
+   "positiveWindows": 3916,
+   "aucScoredWindows": 0.7823435877578689,
+   "scoredWindows": 40059,
+   "scoredPositiveWindows": 3752
+  },
+  "bootstrapCheck": {
+   "fpPerHourCI95": [
+    4.05,
+    22.05
+   ],
+   "recallCI95": [
+    0.8163265306122449,
+    1.0
+   ],
+   "note": "bootstrap over nights; nights share a few source snoring clips, so the true uncertainty is larger"
+  },
+  "bootstrapTuning": {
+   "fpPerHourCI95": [
+    2.14875,
+    17.25124999999999
+   ],
+   "recallCI95": [
+    0.9302325581395349,
+    1.0
+   ],
+   "note": "bootstrap over nights; nights share a few source snoring clips, so the true uncertainty is larger"
+  },
+  "falseSegmentSources": {
+   "tuning": {
+    "background: sea_waves": 80,
+    "background: breathing": 65,
+    "distractor: weather/water/other ambient": 11,
+    "distractor: animal": 8,
+    "distractor: mechanical/fan": 7,
+    "distractor: transient/impact": 4,
+    "distractor: breathing/respiratory": 3,
+    "background: wind": 2,
+    "background: crickets": 1,
+    "distractor: speech-like vocal": 1,
+    "distractor: tonal": 1
+   },
+   "check": {
+    "background: wind": 60,
+    "background: sea_waves": 57,
+    "background: vacuum_cleaner": 55,
+    "background: thunderstorm": 25,
+    "distractor: weather/water/other ambient": 18,
+    "distractor: transient/impact": 11,
+    "distractor: breathing/respiratory": 7,
+    "distractor: mechanical/fan": 6,
+    "background: rain": 6,
+    "distractor: animal": 5,
+    "distractor: speech-like vocal": 5,
+    "background: washing_machine": 2,
+    "distractor: tonal": 1
+   }
+  }
+ },
+ "chosen": {
+  "cfg": {
+   "thr": 0.98,
+   "n": 7,
+   "K": 2,
+   "M": 3,
+   "rho": null,
+   "policy": "-"
+  },
+  "label": "t=0.98 M=3 2-of-14w(7s)",
+  "tuning": {
+   "fp": 17,
+   "tp": 130,
+   "hours": 20.0,
+   "fpPerHour": 0.85,
+   "recall": 0.9148936170212766,
+   "precision": 0.8843537414965986,
+   "bouts": {
+    "brief": 17,
+    "all": 47,
+    "normal": 23,
+    "quiet": 10
+   },
+   "caught": {
+    "brief": 14,
+    "all": 43,
+    "normal": 23,
+    "quiet": 7
+   },
+   "tagRecall": {
+    "brief": 0.8235294117647058,
+    "all": 0.9148936170212766,
+    "normal": 1.0,
+    "quiet": 0.7
+   },
+   "nSegments": 147,
+   "cfg": {
+    "thr": 0.98,
+    "n": 7,
+    "K": 2,
+    "M": 3,
+    "rho": null,
+    "policy": "-"
+   }
+  },
+  "check": {
+   "fp": 0,
+   "tp": 118,
+   "hours": 20.0,
+   "fpPerHour": 0.0,
+   "recall": 0.851063829787234,
+   "precision": 1.0,
+   "bouts": {
+    "quiet": 9,
+    "all": 47,
+    "normal": 30,
+    "brief": 11
+   },
+   "caught": {
+    "quiet": 5,
+    "all": 40,
+    "normal": 30,
+    "brief": 7
+   },
+   "tagRecall": {
+    "quiet": 0.5555555555555556,
+    "all": 0.851063829787234,
+    "normal": 1.0,
+    "brief": 0.6363636363636364
+   },
+   "nSegments": 118
+  },
+  "windowTuning": {
+   "windowPrecision": 0.8491467576791809,
+   "windowRecallAllWindows": 0.3443122059230556,
+   "flaggedWindows": 1465,
+   "falseFlaggedWindows": 221,
+   "positiveWindows": 3613,
+   "aucScoredWindows": 0.8405154894036113,
+   "scoredWindows": 26486,
+   "scoredPositiveWindows": 3355
+  },
+  "windowCheck": {
+   "windowPrecision": 0.9047904191616767,
+   "windowRecallAllWindows": 0.38585291113381,
+   "flaggedWindows": 1670,
+   "falseFlaggedWindows": 159,
+   "positiveWindows": 3916,
+   "aucScoredWindows": 0.7823435877578689,
+   "scoredWindows": 40059,
+   "scoredPositiveWindows": 3752
+  },
+  "bootstrapCheck": {
+   "fpPerHourCI95": [
+    0.0,
+    0.0
+   ],
+   "recallCI95": [
+    0.6976744186046512,
+    0.9615384615384616
+   ],
+   "note": "bootstrap over nights; nights share a few source snoring clips, so the true uncertainty is larger"
+  },
+  "bootstrapTuning": {
+   "fpPerHourCI95": [
+    0.05,
+    1.951249999999993
+   ],
+   "recallCI95": [
+    0.8125,
+    1.0
+   ],
+   "note": "bootstrap over nights; nights share a few source snoring clips, so the true uncertainty is larger"
+  },
+  "falseSegmentSources": {
+   "tuning": {
+    "background: breathing": 15,
+    "distractor: breathing/respiratory": 1,
+    "distractor: animal": 1
+   },
+   "check": {}
+  }
+ },
+ "tradeoffByFamily": {
+  "app rule": [
+   {
+    "budget": 0.5,
+    "none": true
+   },
+   {
+    "budget": 1.0,
+    "none": true
+   },
+   {
+    "budget": 2.0,
+    "none": true
+   },
+   {
+    "budget": 3.0,
+    "none": true
+   },
+   {
+    "budget": 5.0,
+    "none": true
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.6495 M=5",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 183,
+     "tp": 77,
+     "hours": 20.0,
+     "fpPerHour": 9.15,
+     "recall": 0.9787234042553191,
+     "precision": 0.29615384615384616,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 260,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 258,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.9,
+     "recall": 0.9148936170212766,
+     "precision": 0.2411764705882353,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 340
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.6495 M=5",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 183,
+     "tp": 77,
+     "hours": 20.0,
+     "fpPerHour": 9.15,
+     "recall": 0.9787234042553191,
+     "precision": 0.29615384615384616,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 260,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 258,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.9,
+     "recall": 0.9148936170212766,
+     "precision": 0.2411764705882353,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 340
+    }
+   }
+  ],
+  "k-of-n": [
+   {
+    "budget": 0.5,
+    "label": "t=0.98 M=3 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 3,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 9,
+     "tp": 134,
+     "hours": 20.0,
+     "fpPerHour": 0.45,
+     "recall": 0.8723404255319149,
+     "precision": 0.9370629370629371,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.6
+     },
+     "nSegments": 143,
+     "cfg": {
+      "thr": 0.98,
+      "n": 3,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 126,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 126
+    }
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.85 M=3 3-of-6w(3s)",
+    "cfg": {
+     "thr": 0.85,
+     "n": 3,
+     "K": 3,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 80,
+     "tp": 157,
+     "hours": 20.0,
+     "fpPerHour": 4.0,
+     "recall": 0.9361702127659575,
+     "precision": 0.6624472573839663,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 15,
+      "all": 44,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8823529411764706,
+      "all": 0.9361702127659575,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 237,
+     "cfg": {
+      "thr": 0.85,
+      "n": 3,
+      "K": 3,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 140,
+     "tp": 154,
+     "hours": 20.0,
+     "fpPerHour": 7.0,
+     "recall": 0.9361702127659575,
+     "precision": 0.5238095238095238,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 44,
+      "normal": 30,
+      "brief": 10
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9361702127659575,
+      "normal": 1.0,
+      "brief": 0.9090909090909091
+     },
+     "nSegments": 294
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.6495 M=5 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 3,
+     "K": 2,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 170,
+     "tp": 94,
+     "hours": 20.0,
+     "fpPerHour": 8.5,
+     "recall": 0.9787234042553191,
+     "precision": 0.3560606060606061,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 264,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 3,
+      "K": 2,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 314,
+     "tp": 90,
+     "hours": 20.0,
+     "fpPerHour": 15.7,
+     "recall": 0.8936170212765957,
+     "precision": 0.22277227722772278,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 404
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.6495 M=5 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 3,
+     "K": 2,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 170,
+     "tp": 94,
+     "hours": 20.0,
+     "fpPerHour": 8.5,
+     "recall": 0.9787234042553191,
+     "precision": 0.3560606060606061,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 264,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 3,
+      "K": 2,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 314,
+     "tp": 90,
+     "hours": 20.0,
+     "fpPerHour": 15.7,
+     "recall": 0.8936170212765957,
+     "precision": 0.22277227722772278,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 404
+    }
+   }
+  ],
+  "periodicity (+k-of-n optional)": [
+   {
+    "budget": 0.5,
+    "label": "t=0.98 M=3 2-of-6w(3s) rho>=0.2 lenient",
+    "cfg": {
+     "thr": 0.98,
+     "n": 3,
+     "K": 2,
+     "M": 3,
+     "rho": 0.2,
+     "policy": "lenient"
+    },
+    "tuning": {
+     "fp": 8,
+     "tp": 119,
+     "hours": 20.0,
+     "fpPerHour": 0.4,
+     "recall": 0.851063829787234,
+     "precision": 0.937007874015748,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 11,
+      "all": 40,
+      "normal": 23,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.6470588235294118,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "quiet": 0.6
+     },
+     "nSegments": 127,
+     "cfg": {
+      "thr": 0.98,
+      "n": 3,
+      "K": 2,
+      "M": 3,
+      "rho": 0.2,
+      "policy": "lenient"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 106,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.8085106382978723,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 38,
+      "normal": 28,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8085106382978723,
+      "normal": 0.9333333333333333,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 106
+    }
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.98 M=3 2-of-10w(5s) rho>=0.2 lenient",
+    "cfg": {
+     "thr": 0.98,
+     "n": 5,
+     "K": 2,
+     "M": 3,
+     "rho": 0.2,
+     "policy": "lenient"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.8723404255319149,
+     "precision": 0.9147286821705426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 129,
+     "cfg": {
+      "thr": 0.98,
+      "n": 5,
+      "K": 2,
+      "M": 3,
+      "rho": 0.2,
+      "policy": "lenient"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 101,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.8297872340425532,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 39,
+      "normal": 29,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8297872340425532,
+      "normal": 0.9666666666666667,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 101
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.98 M=3 2-of-10w(5s) rho>=0.2 lenient",
+    "cfg": {
+     "thr": 0.98,
+     "n": 5,
+     "K": 2,
+     "M": 3,
+     "rho": 0.2,
+     "policy": "lenient"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.8723404255319149,
+     "precision": 0.9147286821705426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 129,
+     "cfg": {
+      "thr": 0.98,
+      "n": 5,
+      "K": 2,
+      "M": 3,
+      "rho": 0.2,
+      "policy": "lenient"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 101,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.8297872340425532,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 39,
+      "normal": 29,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8297872340425532,
+      "normal": 0.9666666666666667,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 101
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.98 M=3 2-of-10w(5s) rho>=0.2 lenient",
+    "cfg": {
+     "thr": 0.98,
+     "n": 5,
+     "K": 2,
+     "M": 3,
+     "rho": 0.2,
+     "policy": "lenient"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.8723404255319149,
+     "precision": 0.9147286821705426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 129,
+     "cfg": {
+      "thr": 0.98,
+      "n": 5,
+      "K": 2,
+      "M": 3,
+      "rho": 0.2,
+      "policy": "lenient"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 101,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.8297872340425532,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 39,
+      "normal": 29,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8297872340425532,
+      "normal": 0.9666666666666667,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 101
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.98 M=3 2-of-10w(5s) rho>=0.2 lenient",
+    "cfg": {
+     "thr": 0.98,
+     "n": 5,
+     "K": 2,
+     "M": 3,
+     "rho": 0.2,
+     "policy": "lenient"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.8723404255319149,
+     "precision": 0.9147286821705426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 129,
+     "cfg": {
+      "thr": 0.98,
+      "n": 5,
+      "K": 2,
+      "M": 3,
+      "rho": 0.2,
+      "policy": "lenient"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 101,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.8297872340425532,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 39,
+      "normal": 29,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8297872340425532,
+      "normal": 0.9666666666666667,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 101
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.98 M=3 2-of-10w(5s) rho>=0.2 lenient",
+    "cfg": {
+     "thr": 0.98,
+     "n": 5,
+     "K": 2,
+     "M": 3,
+     "rho": 0.2,
+     "policy": "lenient"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.8723404255319149,
+     "precision": 0.9147286821705426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 129,
+     "cfg": {
+      "thr": 0.98,
+      "n": 5,
+      "K": 2,
+      "M": 3,
+      "rho": 0.2,
+      "policy": "lenient"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 101,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.8297872340425532,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 39,
+      "normal": 29,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8297872340425532,
+      "normal": 0.9666666666666667,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 101
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.98 M=3 2-of-10w(5s) rho>=0.2 lenient",
+    "cfg": {
+     "thr": 0.98,
+     "n": 5,
+     "K": 2,
+     "M": 3,
+     "rho": 0.2,
+     "policy": "lenient"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.8723404255319149,
+     "precision": 0.9147286821705426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 129,
+     "cfg": {
+      "thr": 0.98,
+      "n": 5,
+      "K": 2,
+      "M": 3,
+      "rho": 0.2,
+      "policy": "lenient"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 101,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.8297872340425532,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 39,
+      "normal": 29,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8297872340425532,
+      "normal": 0.9666666666666667,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 101
+    }
+   }
+  ],
+  "threshold + min windows": [
+   {
+    "budget": 0.5,
+    "label": "t=0.95 M=8",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 8,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 10,
+     "tp": 68,
+     "hours": 20.0,
+     "fpPerHour": 0.5,
+     "recall": 0.7021276595744681,
+     "precision": 0.8717948717948718,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 7,
+      "all": 33,
+      "normal": 20,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.4117647058823529,
+      "all": 0.7021276595744681,
+      "normal": 0.8695652173913043,
+      "quiet": 0.6
+     },
+     "nSegments": 78,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 8,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 1,
+     "tp": 70,
+     "hours": 20.0,
+     "fpPerHour": 0.05,
+     "recall": 0.723404255319149,
+     "precision": 0.9859154929577465,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 3,
+      "all": 34,
+      "normal": 29,
+      "brief": 3
+     },
+     "tagRecall": {
+      "quiet": 0.3333333333333333,
+      "all": 0.723404255319149,
+      "normal": 0.9666666666666667,
+      "brief": 0.2727272727272727
+     },
+     "nSegments": 71
+    }
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.95 M=8",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 8,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 10,
+     "tp": 68,
+     "hours": 20.0,
+     "fpPerHour": 0.5,
+     "recall": 0.7021276595744681,
+     "precision": 0.8717948717948718,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 7,
+      "all": 33,
+      "normal": 20,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.4117647058823529,
+      "all": 0.7021276595744681,
+      "normal": 0.8695652173913043,
+      "quiet": 0.6
+     },
+     "nSegments": 78,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 8,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 1,
+     "tp": 70,
+     "hours": 20.0,
+     "fpPerHour": 0.05,
+     "recall": 0.723404255319149,
+     "precision": 0.9859154929577465,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 3,
+      "all": 34,
+      "normal": 29,
+      "brief": 3
+     },
+     "tagRecall": {
+      "quiet": 0.3333333333333333,
+      "all": 0.723404255319149,
+      "normal": 0.9666666666666667,
+      "brief": 0.2727272727272727
+     },
+     "nSegments": 71
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.98 M=3",
+    "cfg": {
+     "thr": 0.98,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 24,
+     "tp": 129,
+     "hours": 20.0,
+     "fpPerHour": 1.2,
+     "recall": 0.9148936170212766,
+     "precision": 0.8431372549019608,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 153,
+     "cfg": {
+      "thr": 0.98,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 119,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 119
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.98 M=3",
+    "cfg": {
+     "thr": 0.98,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 24,
+     "tp": 129,
+     "hours": 20.0,
+     "fpPerHour": 1.2,
+     "recall": 0.9148936170212766,
+     "precision": 0.8431372549019608,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 153,
+     "cfg": {
+      "thr": 0.98,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 119,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 119
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.95 M=3",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 80,
+     "tp": 125,
+     "hours": 20.0,
+     "fpPerHour": 4.0,
+     "recall": 0.9361702127659575,
+     "precision": 0.6097560975609756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 15,
+      "all": 44,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8823529411764706,
+      "all": 0.9361702127659575,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 205,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 17,
+     "tp": 115,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.8936170212765957,
+     "precision": 0.8712121212121212,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 9
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.8181818181818182
+     },
+     "nSegments": 132
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.95 M=3",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 80,
+     "tp": 125,
+     "hours": 20.0,
+     "fpPerHour": 4.0,
+     "recall": 0.9361702127659575,
+     "precision": 0.6097560975609756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 15,
+      "all": 44,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8823529411764706,
+      "all": 0.9361702127659575,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 205,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 17,
+     "tp": 115,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.8936170212765957,
+     "precision": 0.8712121212121212,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 9
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.8181818181818182
+     },
+     "nSegments": 132
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.75 M=3",
+    "cfg": {
+     "thr": 0.75,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 244,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 12.2,
+     "recall": 0.9787234042553191,
+     "precision": 0.2716417910447761,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 335,
+     "cfg": {
+      "thr": 0.75,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 379,
+     "tp": 95,
+     "hours": 20.0,
+     "fpPerHour": 18.95,
+     "recall": 0.9574468085106383,
+     "precision": 0.20042194092827004,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 8,
+      "all": 45,
+      "normal": 30,
+      "brief": 10
+     },
+     "tagRecall": {
+      "quiet": 0.8888888888888888,
+      "all": 0.9574468085106383,
+      "normal": 1.0,
+      "brief": 0.9090909090909091
+     },
+     "nSegments": 474
+    }
+   }
+  ],
+  "threshold only": [
+   {
+    "budget": 0.5,
+    "none": true
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.98 M=5",
+    "cfg": {
+     "thr": 0.98,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 86,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.7446808510638298,
+     "precision": 0.8865979381443299,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 7,
+      "all": 35,
+      "normal": 22,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.4117647058823529,
+      "all": 0.7446808510638298,
+      "normal": 0.9565217391304348,
+      "quiet": 0.6
+     },
+     "nSegments": 97,
+     "cfg": {
+      "thr": 0.98,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.7872340425531915,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 4,
+      "all": 37,
+      "normal": 30,
+      "brief": 5
+     },
+     "tagRecall": {
+      "quiet": 0.4444444444444444,
+      "all": 0.7872340425531915,
+      "normal": 1.0,
+      "brief": 0.45454545454545453
+     },
+     "nSegments": 91
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.95 M=5",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 34,
+     "tp": 97,
+     "hours": 20.0,
+     "fpPerHour": 1.7,
+     "recall": 0.8723404255319149,
+     "precision": 0.7404580152671756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 13,
+      "all": 41,
+      "normal": 22,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7647058823529411,
+      "all": 0.8723404255319149,
+      "normal": 0.9565217391304348,
+      "quiet": 0.7
+     },
+     "nSegments": 131,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 2,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 0.1,
+     "recall": 0.8085106382978723,
+     "precision": 0.978494623655914,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 4,
+      "all": 38,
+      "normal": 30,
+      "brief": 6
+     },
+     "tagRecall": {
+      "quiet": 0.4444444444444444,
+      "all": 0.8085106382978723,
+      "normal": 1.0,
+      "brief": 0.5454545454545454
+     },
+     "nSegments": 93
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.95 M=5",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 34,
+     "tp": 97,
+     "hours": 20.0,
+     "fpPerHour": 1.7,
+     "recall": 0.8723404255319149,
+     "precision": 0.7404580152671756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 13,
+      "all": 41,
+      "normal": 22,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7647058823529411,
+      "all": 0.8723404255319149,
+      "normal": 0.9565217391304348,
+      "quiet": 0.7
+     },
+     "nSegments": 131,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 2,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 0.1,
+     "recall": 0.8085106382978723,
+     "precision": 0.978494623655914,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 4,
+      "all": 38,
+      "normal": 30,
+      "brief": 6
+     },
+     "tagRecall": {
+      "quiet": 0.4444444444444444,
+      "all": 0.8085106382978723,
+      "normal": 1.0,
+      "brief": 0.5454545454545454
+     },
+     "nSegments": 93
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.9 M=5",
+    "cfg": {
+     "thr": 0.9,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 67,
+     "tp": 93,
+     "hours": 20.0,
+     "fpPerHour": 3.35,
+     "recall": 0.8936170212765957,
+     "precision": 0.58125,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 13,
+      "all": 42,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7647058823529411,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 160,
+     "cfg": {
+      "thr": 0.9,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 42,
+     "tp": 88,
+     "hours": 20.0,
+     "fpPerHour": 2.1,
+     "recall": 0.8723404255319149,
+     "precision": 0.676923076923077,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 41,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 130
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.75 M=5",
+    "cfg": {
+     "thr": 0.75,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 131,
+     "tp": 78,
+     "hours": 20.0,
+     "fpPerHour": 6.55,
+     "recall": 0.9574468085106383,
+     "precision": 0.37320574162679426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 16,
+      "all": 45,
+      "normal": 23,
+      "quiet": 8
+     },
+     "tagRecall": {
+      "brief": 0.9411764705882353,
+      "all": 0.9574468085106383,
+      "normal": 1.0,
+      "quiet": 0.8
+     },
+     "nSegments": 209,
+     "cfg": {
+      "thr": 0.75,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 244,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.2,
+     "recall": 0.9148936170212766,
+     "precision": 0.25153374233128833,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 326
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.75 M=5",
+    "cfg": {
+     "thr": 0.75,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 131,
+     "tp": 78,
+     "hours": 20.0,
+     "fpPerHour": 6.55,
+     "recall": 0.9574468085106383,
+     "precision": 0.37320574162679426,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 16,
+      "all": 45,
+      "normal": 23,
+      "quiet": 8
+     },
+     "tagRecall": {
+      "brief": 0.9411764705882353,
+      "all": 0.9574468085106383,
+      "normal": 1.0,
+      "quiet": 0.8
+     },
+     "nSegments": 209,
+     "cfg": {
+      "thr": 0.75,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 244,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.2,
+     "recall": 0.9148936170212766,
+     "precision": 0.25153374233128833,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 326
+    }
+   }
+  ]
+ },
+ "tradeoffCumulative": {
+  "threshold only": [
+   {
+    "budget": 0.5,
+    "none": true
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.98 M=5",
+    "cfg": {
+     "thr": 0.98,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 86,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.7446808510638298,
+     "precision": 0.8865979381443299,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 7,
+      "all": 35,
+      "normal": 22,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.4117647058823529,
+      "all": 0.7446808510638298,
+      "normal": 0.9565217391304348,
+      "quiet": 0.6
+     },
+     "nSegments": 97,
+     "cfg": {
+      "thr": 0.98,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.7872340425531915,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 4,
+      "all": 37,
+      "normal": 30,
+      "brief": 5
+     },
+     "tagRecall": {
+      "quiet": 0.4444444444444444,
+      "all": 0.7872340425531915,
+      "normal": 1.0,
+      "brief": 0.45454545454545453
+     },
+     "nSegments": 91
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.95 M=5",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 34,
+     "tp": 97,
+     "hours": 20.0,
+     "fpPerHour": 1.7,
+     "recall": 0.8723404255319149,
+     "precision": 0.7404580152671756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 13,
+      "all": 41,
+      "normal": 22,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7647058823529411,
+      "all": 0.8723404255319149,
+      "normal": 0.9565217391304348,
+      "quiet": 0.7
+     },
+     "nSegments": 131,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 2,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 0.1,
+     "recall": 0.8085106382978723,
+     "precision": 0.978494623655914,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 4,
+      "all": 38,
+      "normal": 30,
+      "brief": 6
+     },
+     "tagRecall": {
+      "quiet": 0.4444444444444444,
+      "all": 0.8085106382978723,
+      "normal": 1.0,
+      "brief": 0.5454545454545454
+     },
+     "nSegments": 93
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.95 M=5",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 34,
+     "tp": 97,
+     "hours": 20.0,
+     "fpPerHour": 1.7,
+     "recall": 0.8723404255319149,
+     "precision": 0.7404580152671756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 13,
+      "all": 41,
+      "normal": 22,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7647058823529411,
+      "all": 0.8723404255319149,
+      "normal": 0.9565217391304348,
+      "quiet": 0.7
+     },
+     "nSegments": 131,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 2,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 0.1,
+     "recall": 0.8085106382978723,
+     "precision": 0.978494623655914,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 4,
+      "all": 38,
+      "normal": 30,
+      "brief": 6
+     },
+     "tagRecall": {
+      "quiet": 0.4444444444444444,
+      "all": 0.8085106382978723,
+      "normal": 1.0,
+      "brief": 0.5454545454545454
+     },
+     "nSegments": 93
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.9 M=5",
+    "cfg": {
+     "thr": 0.9,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 67,
+     "tp": 93,
+     "hours": 20.0,
+     "fpPerHour": 3.35,
+     "recall": 0.8936170212765957,
+     "precision": 0.58125,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 13,
+      "all": 42,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.7647058823529411,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 160,
+     "cfg": {
+      "thr": 0.9,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 42,
+     "tp": 88,
+     "hours": 20.0,
+     "fpPerHour": 2.1,
+     "recall": 0.8723404255319149,
+     "precision": 0.676923076923077,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 41,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 130
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.6495 M=5",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 183,
+     "tp": 77,
+     "hours": 20.0,
+     "fpPerHour": 9.15,
+     "recall": 0.9787234042553191,
+     "precision": 0.29615384615384616,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 260,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 258,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.9,
+     "recall": 0.9148936170212766,
+     "precision": 0.2411764705882353,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 340
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.6495 M=5",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 183,
+     "tp": 77,
+     "hours": 20.0,
+     "fpPerHour": 9.15,
+     "recall": 0.9787234042553191,
+     "precision": 0.29615384615384616,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 260,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 258,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.9,
+     "recall": 0.9148936170212766,
+     "precision": 0.2411764705882353,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 340
+    }
+   }
+  ],
+  "threshold + min windows": [
+   {
+    "budget": 0.5,
+    "label": "t=0.95 M=8",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 8,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 10,
+     "tp": 68,
+     "hours": 20.0,
+     "fpPerHour": 0.5,
+     "recall": 0.7021276595744681,
+     "precision": 0.8717948717948718,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 7,
+      "all": 33,
+      "normal": 20,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.4117647058823529,
+      "all": 0.7021276595744681,
+      "normal": 0.8695652173913043,
+      "quiet": 0.6
+     },
+     "nSegments": 78,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 8,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 1,
+     "tp": 70,
+     "hours": 20.0,
+     "fpPerHour": 0.05,
+     "recall": 0.723404255319149,
+     "precision": 0.9859154929577465,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 3,
+      "all": 34,
+      "normal": 29,
+      "brief": 3
+     },
+     "tagRecall": {
+      "quiet": 0.3333333333333333,
+      "all": 0.723404255319149,
+      "normal": 0.9666666666666667,
+      "brief": 0.2727272727272727
+     },
+     "nSegments": 71
+    }
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.98 M=5",
+    "cfg": {
+     "thr": 0.98,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 11,
+     "tp": 86,
+     "hours": 20.0,
+     "fpPerHour": 0.55,
+     "recall": 0.7446808510638298,
+     "precision": 0.8865979381443299,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 7,
+      "all": 35,
+      "normal": 22,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.4117647058823529,
+      "all": 0.7446808510638298,
+      "normal": 0.9565217391304348,
+      "quiet": 0.6
+     },
+     "nSegments": 97,
+     "cfg": {
+      "thr": 0.98,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 91,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.7872340425531915,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 4,
+      "all": 37,
+      "normal": 30,
+      "brief": 5
+     },
+     "tagRecall": {
+      "quiet": 0.4444444444444444,
+      "all": 0.7872340425531915,
+      "normal": 1.0,
+      "brief": 0.45454545454545453
+     },
+     "nSegments": 91
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.98 M=3",
+    "cfg": {
+     "thr": 0.98,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 24,
+     "tp": 129,
+     "hours": 20.0,
+     "fpPerHour": 1.2,
+     "recall": 0.9148936170212766,
+     "precision": 0.8431372549019608,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 153,
+     "cfg": {
+      "thr": 0.98,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 119,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 119
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.98 M=3",
+    "cfg": {
+     "thr": 0.98,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 24,
+     "tp": 129,
+     "hours": 20.0,
+     "fpPerHour": 1.2,
+     "recall": 0.9148936170212766,
+     "precision": 0.8431372549019608,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 153,
+     "cfg": {
+      "thr": 0.98,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 119,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 119
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.95 M=3",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 80,
+     "tp": 125,
+     "hours": 20.0,
+     "fpPerHour": 4.0,
+     "recall": 0.9361702127659575,
+     "precision": 0.6097560975609756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 15,
+      "all": 44,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8823529411764706,
+      "all": 0.9361702127659575,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 205,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 17,
+     "tp": 115,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.8936170212765957,
+     "precision": 0.8712121212121212,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 9
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.8181818181818182
+     },
+     "nSegments": 132
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.6495 M=5",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 183,
+     "tp": 77,
+     "hours": 20.0,
+     "fpPerHour": 9.15,
+     "recall": 0.9787234042553191,
+     "precision": 0.29615384615384616,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 260,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 258,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.9,
+     "recall": 0.9148936170212766,
+     "precision": 0.2411764705882353,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 340
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.6495 M=5",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 0,
+     "K": 1,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 183,
+     "tp": 77,
+     "hours": 20.0,
+     "fpPerHour": 9.15,
+     "recall": 0.9787234042553191,
+     "precision": 0.29615384615384616,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 260,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 0,
+      "K": 1,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 258,
+     "tp": 82,
+     "hours": 20.0,
+     "fpPerHour": 12.9,
+     "recall": 0.9148936170212766,
+     "precision": 0.2411764705882353,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 7,
+      "all": 43,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.7777777777777778,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 340
+    }
+   }
+  ],
+  "k-of-n": [
+   {
+    "budget": 0.5,
+    "label": "t=0.98 M=3 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 3,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 9,
+     "tp": 134,
+     "hours": 20.0,
+     "fpPerHour": 0.45,
+     "recall": 0.8723404255319149,
+     "precision": 0.9370629370629371,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.6
+     },
+     "nSegments": 143,
+     "cfg": {
+      "thr": 0.98,
+      "n": 3,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 126,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 126
+    }
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.95 M=3",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 80,
+     "tp": 125,
+     "hours": 20.0,
+     "fpPerHour": 4.0,
+     "recall": 0.9361702127659575,
+     "precision": 0.6097560975609756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 15,
+      "all": 44,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8823529411764706,
+      "all": 0.9361702127659575,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 205,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 17,
+     "tp": 115,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.8936170212765957,
+     "precision": 0.8712121212121212,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 9
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.8181818181818182
+     },
+     "nSegments": 132
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.6495 M=5 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 3,
+     "K": 2,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 170,
+     "tp": 94,
+     "hours": 20.0,
+     "fpPerHour": 8.5,
+     "recall": 0.9787234042553191,
+     "precision": 0.3560606060606061,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 264,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 3,
+      "K": 2,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 314,
+     "tp": 90,
+     "hours": 20.0,
+     "fpPerHour": 15.7,
+     "recall": 0.8936170212765957,
+     "precision": 0.22277227722772278,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 404
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.6495 M=5 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 3,
+     "K": 2,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 170,
+     "tp": 94,
+     "hours": 20.0,
+     "fpPerHour": 8.5,
+     "recall": 0.9787234042553191,
+     "precision": 0.3560606060606061,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 264,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 3,
+      "K": 2,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 314,
+     "tp": 90,
+     "hours": 20.0,
+     "fpPerHour": 15.7,
+     "recall": 0.8936170212765957,
+     "precision": 0.22277227722772278,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 404
+    }
+   }
+  ],
+  "periodicity (+k-of-n optional)": [
+   {
+    "budget": 0.5,
+    "label": "t=0.98 M=3 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 3,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 9,
+     "tp": 134,
+     "hours": 20.0,
+     "fpPerHour": 0.45,
+     "recall": 0.8723404255319149,
+     "precision": 0.9370629370629371,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 12,
+      "all": 41,
+      "normal": 23,
+      "quiet": 6
+     },
+     "tagRecall": {
+      "brief": 0.7058823529411765,
+      "all": 0.8723404255319149,
+      "normal": 1.0,
+      "quiet": 0.6
+     },
+     "nSegments": 143,
+     "cfg": {
+      "thr": 0.98,
+      "n": 3,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 126,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 126
+    }
+   },
+   {
+    "budget": 1.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 2.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 3.0,
+    "label": "t=0.98 M=3 2-of-14w(7s)",
+    "cfg": {
+     "thr": 0.98,
+     "n": 7,
+     "K": 2,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 17,
+     "tp": 130,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.9148936170212766,
+     "precision": 0.8843537414965986,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 14,
+      "all": 43,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8235294117647058,
+      "all": 0.9148936170212766,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 147,
+     "cfg": {
+      "thr": 0.98,
+      "n": 7,
+      "K": 2,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 0,
+     "tp": 118,
+     "hours": 20.0,
+     "fpPerHour": 0.0,
+     "recall": 0.851063829787234,
+     "precision": 1.0,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 5,
+      "all": 40,
+      "normal": 30,
+      "brief": 7
+     },
+     "tagRecall": {
+      "quiet": 0.5555555555555556,
+      "all": 0.851063829787234,
+      "normal": 1.0,
+      "brief": 0.6363636363636364
+     },
+     "nSegments": 118
+    }
+   },
+   {
+    "budget": 5.0,
+    "label": "t=0.95 M=3",
+    "cfg": {
+     "thr": 0.95,
+     "n": 0,
+     "K": 1,
+     "M": 3,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 80,
+     "tp": 125,
+     "hours": 20.0,
+     "fpPerHour": 4.0,
+     "recall": 0.9361702127659575,
+     "precision": 0.6097560975609756,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 15,
+      "all": 44,
+      "normal": 23,
+      "quiet": 7
+     },
+     "tagRecall": {
+      "brief": 0.8823529411764706,
+      "all": 0.9361702127659575,
+      "normal": 1.0,
+      "quiet": 0.7
+     },
+     "nSegments": 205,
+     "cfg": {
+      "thr": 0.95,
+      "n": 0,
+      "K": 1,
+      "M": 3,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 17,
+     "tp": 115,
+     "hours": 20.0,
+     "fpPerHour": 0.85,
+     "recall": 0.8936170212765957,
+     "precision": 0.8712121212121212,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 9
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.8181818181818182
+     },
+     "nSegments": 132
+    }
+   },
+   {
+    "budget": 10.0,
+    "label": "t=0.6495 M=5 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 3,
+     "K": 2,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 170,
+     "tp": 94,
+     "hours": 20.0,
+     "fpPerHour": 8.5,
+     "recall": 0.9787234042553191,
+     "precision": 0.3560606060606061,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 264,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 3,
+      "K": 2,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 314,
+     "tp": 90,
+     "hours": 20.0,
+     "fpPerHour": 15.7,
+     "recall": 0.8936170212765957,
+     "precision": 0.22277227722772278,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 404
+    }
+   },
+   {
+    "budget": 1000000000.0,
+    "label": "t=0.6495 M=5 2-of-6w(3s)",
+    "cfg": {
+     "thr": 0.6495,
+     "n": 3,
+     "K": 2,
+     "M": 5,
+     "rho": null,
+     "policy": "-"
+    },
+    "tuning": {
+     "fp": 170,
+     "tp": 94,
+     "hours": 20.0,
+     "fpPerHour": 8.5,
+     "recall": 0.9787234042553191,
+     "precision": 0.3560606060606061,
+     "bouts": {
+      "brief": 17,
+      "all": 47,
+      "normal": 23,
+      "quiet": 10
+     },
+     "caught": {
+      "brief": 17,
+      "all": 46,
+      "normal": 23,
+      "quiet": 9
+     },
+     "tagRecall": {
+      "brief": 1.0,
+      "all": 0.9787234042553191,
+      "normal": 1.0,
+      "quiet": 0.9
+     },
+     "nSegments": 264,
+     "cfg": {
+      "thr": 0.6495,
+      "n": 3,
+      "K": 2,
+      "M": 5,
+      "rho": null,
+      "policy": "-"
+     }
+    },
+    "check": {
+     "fp": 314,
+     "tp": 90,
+     "hours": 20.0,
+     "fpPerHour": 15.7,
+     "recall": 0.8936170212765957,
+     "precision": 0.22277227722772278,
+     "bouts": {
+      "quiet": 9,
+      "all": 47,
+      "normal": 30,
+      "brief": 11
+     },
+     "caught": {
+      "quiet": 6,
+      "all": 42,
+      "normal": 30,
+      "brief": 8
+     },
+     "tagRecall": {
+      "quiet": 0.6666666666666666,
+      "all": 0.8936170212765957,
+      "normal": 1.0,
+      "brief": 0.7272727272727273
+     },
+     "nSegments": 404
+    }
+   }
+  ]
+ },
+ "extras": {
+  "pooledAll20Nights": {
+   "baseline": {
+    "fp": 441,
+    "tp": 159,
+    "hours": 40.0,
+    "fpPerHour": 11.025,
+    "recall": 0.9468085106382979,
+    "precision": 0.265,
+    "bouts": {
+     "brief": 28,
+     "all": 94,
+     "normal": 53,
+     "quiet": 19
+    },
+    "caught": {
+     "brief": 25,
+     "all": 89,
+     "normal": 53,
+     "quiet": 16
+    },
+    "tagRecall": {
+     "brief": 0.8928571428571429,
+     "all": 0.9468085106382979,
+     "normal": 1.0,
+     "quiet": 0.8421052631578947
+    },
+    "nSegments": 600
+   },
+   "chosen": {
+    "fp": 17,
+    "tp": 248,
+    "hours": 40.0,
+    "fpPerHour": 0.425,
+    "recall": 0.8829787234042553,
+    "precision": 0.9358490566037736,
+    "bouts": {
+     "brief": 28,
+     "all": 94,
+     "normal": 53,
+     "quiet": 19
+    },
+    "caught": {
+     "brief": 21,
+     "all": 83,
+     "normal": 53,
+     "quiet": 12
+    },
+    "tagRecall": {
+     "brief": 0.75,
+     "all": 0.8829787234042553,
+     "normal": 1.0,
+     "quiet": 0.631578947368421
+    },
+    "nSegments": 265
+   }
+  },
+  "perBed": {
+   "crickets": {
+    "nights": 2,
+    "hours": 4.0,
+    "bouts": 9,
+    "folds": [
+     1,
+     2
+    ],
+    "baselineFp": 3,
+    "baselineCaught": 9,
+    "chosenFp": 1,
+    "chosenCaught": 9
+   },
+   "breathing": {
+    "nights": 2,
+    "hours": 4.0,
+    "bouts": 9,
+    "folds": [
+     2,
+     1
+    ],
+    "baselineFp": 86,
+    "baselineCaught": 9,
+    "chosenFp": 15,
+    "chosenCaught": 9
+   },
+   "vacuum_cleaner": {
+    "nights": 2,
+    "hours": 4.0,
+    "bouts": 9,
+    "folds": [
+     3,
+     4
+    ],
+    "baselineFp": 61,
+    "baselineCaught": 9,
+    "chosenFp": 0,
+    "chosenCaught": 6
+   },
+   "sea_waves": {
+    "nights": 4,
+    "hours": 8.0,
+    "bouts": 21,
+    "folds": [
+     4,
+     2,
+     2,
+     2
+    ],
+    "baselineFp": 162,
+    "baselineCaught": 21,
+    "chosenFp": 1,
+    "chosenCaught": 20
+   },
+   "wind": {
+    "nights": 3,
+    "hours": 6.0,
+    "bouts": 13,
+    "folds": [
+     1,
+     3,
+     1
+    ],
+    "baselineFp": 71,
+    "baselineCaught": 13,
+    "chosenFp": 0,
+    "chosenCaught": 12
+   },
+   "clock_tick": {
+    "nights": 2,
+    "hours": 4.0,
+    "bouts": 10,
+    "folds": [
+     3,
+     3
+    ],
+    "baselineFp": 0,
+    "baselineCaught": 8,
+    "chosenFp": 0,
+    "chosenCaught": 8
+   },
+   "thunderstorm": {
+    "nights": 1,
+    "hours": 2.0,
+    "bouts": 6,
+    "folds": [
+     4
+    ],
+    "baselineFp": 46,
+    "baselineCaught": 6,
+    "chosenFp": 0,
+    "chosenCaught": 6
+   },
+   "rain": {
+    "nights": 3,
+    "hours": 6.0,
+    "bouts": 12,
+    "folds": [
+     4,
+     4,
+     1
+    ],
+    "baselineFp": 9,
+    "baselineCaught": 11,
+    "chosenFp": 0,
+    "chosenCaught": 10
+   },
+   "washing_machine": {
+    "nights": 1,
+    "hours": 2.0,
+    "bouts": 5,
+    "folds": [
+     3
+    ],
+    "baselineFp": 3,
+    "baselineCaught": 3,
+    "chosenFp": 0,
+    "chosenCaught": 3
+   }
+  },
+  "periodicityEffect": {
+   "baseline": [
+    {
+     "rho": null,
+     "policy": "-",
+     "tuning": {
+      "fp": 183,
+      "tp": 77,
+      "hours": 20.0,
+      "fpPerHour": 9.15,
+      "recall": 0.9787234042553191,
+      "precision": 0.29615384615384616,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 17,
+       "all": 46,
+       "normal": 23,
+       "quiet": 9
+      },
+      "tagRecall": {
+       "brief": 1.0,
+       "all": 0.9787234042553191,
+       "normal": 1.0,
+       "quiet": 0.9
+      },
+      "nSegments": 260
+     },
+     "check": {
+      "fp": 258,
+      "tp": 82,
+      "hours": 20.0,
+      "fpPerHour": 12.9,
+      "recall": 0.9148936170212766,
+      "precision": 0.2411764705882353,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 7,
+       "all": 43,
+       "normal": 30,
+       "brief": 8
+      },
+      "tagRecall": {
+       "quiet": 0.7777777777777778,
+       "all": 0.9148936170212766,
+       "normal": 1.0,
+       "brief": 0.7272727272727273
+      },
+      "nSegments": 340
+     }
+    },
+    {
+     "rho": 0.2,
+     "policy": "strict",
+     "tuning": {
+      "fp": 37,
+      "tp": 28,
+      "hours": 20.0,
+      "fpPerHour": 1.85,
+      "recall": 0.48936170212765956,
+      "precision": 0.4307692307692308,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 1,
+       "all": 23,
+       "normal": 16,
+       "quiet": 6
+      },
+      "tagRecall": {
+       "brief": 0.058823529411764705,
+       "all": 0.48936170212765956,
+       "normal": 0.6956521739130435,
+       "quiet": 0.6
+      },
+      "nSegments": 65
+     },
+     "check": {
+      "fp": 65,
+      "tp": 28,
+      "hours": 20.0,
+      "fpPerHour": 3.25,
+      "recall": 0.44680851063829785,
+      "precision": 0.3010752688172043,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 3,
+       "all": 21,
+       "normal": 17,
+       "brief": 2
+      },
+      "tagRecall": {
+       "quiet": 0.3333333333333333,
+       "all": 0.44680851063829785,
+       "normal": 0.5666666666666667,
+       "brief": 0.18181818181818182
+      },
+      "nSegments": 93
+     }
+    },
+    {
+     "rho": 0.2,
+     "policy": "lenient",
+     "tuning": {
+      "fp": 93,
+      "tp": 49,
+      "hours": 20.0,
+      "fpPerHour": 4.65,
+      "recall": 0.6808510638297872,
+      "precision": 0.34507042253521125,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 9,
+       "all": 32,
+       "normal": 17,
+       "quiet": 8
+      },
+      "tagRecall": {
+       "brief": 0.5294117647058824,
+       "all": 0.6808510638297872,
+       "normal": 0.7391304347826086,
+       "quiet": 0.8
+      },
+      "nSegments": 142
+     },
+     "check": {
+      "fp": 123,
+      "tp": 43,
+      "hours": 20.0,
+      "fpPerHour": 6.15,
+      "recall": 0.5957446808510638,
+      "precision": 0.25903614457831325,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 4,
+       "all": 28,
+       "normal": 19,
+       "brief": 6
+      },
+      "tagRecall": {
+       "quiet": 0.4444444444444444,
+       "all": 0.5957446808510638,
+       "normal": 0.6333333333333333,
+       "brief": 0.5454545454545454
+      },
+      "nSegments": 166
+     }
+    },
+    {
+     "rho": 0.3,
+     "policy": "strict",
+     "tuning": {
+      "fp": 18,
+      "tp": 9,
+      "hours": 20.0,
+      "fpPerHour": 0.9,
+      "recall": 0.1702127659574468,
+      "precision": 0.3333333333333333,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 0,
+       "all": 8,
+       "normal": 6,
+       "quiet": 2
+      },
+      "tagRecall": {
+       "brief": 0.0,
+       "all": 0.1702127659574468,
+       "normal": 0.2608695652173913,
+       "quiet": 0.2
+      },
+      "nSegments": 27
+     },
+     "check": {
+      "fp": 31,
+      "tp": 9,
+      "hours": 20.0,
+      "fpPerHour": 1.55,
+      "recall": 0.1702127659574468,
+      "precision": 0.225,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 1,
+       "all": 8,
+       "normal": 6,
+       "brief": 1
+      },
+      "tagRecall": {
+       "quiet": 0.1111111111111111,
+       "all": 0.1702127659574468,
+       "normal": 0.2,
+       "brief": 0.09090909090909091
+      },
+      "nSegments": 40
+     }
+    },
+    {
+     "rho": 0.3,
+     "policy": "lenient",
+     "tuning": {
+      "fp": 74,
+      "tp": 30,
+      "hours": 20.0,
+      "fpPerHour": 3.7,
+      "recall": 0.44680851063829785,
+      "precision": 0.28846153846153844,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 8,
+       "all": 21,
+       "normal": 11,
+       "quiet": 4
+      },
+      "tagRecall": {
+       "brief": 0.47058823529411764,
+       "all": 0.44680851063829785,
+       "normal": 0.4782608695652174,
+       "quiet": 0.4
+      },
+      "nSegments": 104
+     },
+     "check": {
+      "fp": 89,
+      "tp": 24,
+      "hours": 20.0,
+      "fpPerHour": 4.45,
+      "recall": 0.3829787234042553,
+      "precision": 0.21238938053097345,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 2,
+       "all": 18,
+       "normal": 11,
+       "brief": 5
+      },
+      "tagRecall": {
+       "quiet": 0.2222222222222222,
+       "all": 0.3829787234042553,
+       "normal": 0.36666666666666664,
+       "brief": 0.45454545454545453
+      },
+      "nSegments": 113
+     }
+    },
+    {
+     "rho": 0.4,
+     "policy": "strict",
+     "tuning": {
+      "fp": 5,
+      "tp": 2,
+      "hours": 20.0,
+      "fpPerHour": 0.25,
+      "recall": 0.0425531914893617,
+      "precision": 0.2857142857142857,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 0,
+       "all": 2,
+       "normal": 2,
+       "quiet": 0
+      },
+      "tagRecall": {
+       "brief": 0.0,
+       "all": 0.0425531914893617,
+       "normal": 0.08695652173913043,
+       "quiet": 0.0
+      },
+      "nSegments": 7
+     },
+     "check": {
+      "fp": 8,
+      "tp": 2,
+      "hours": 20.0,
+      "fpPerHour": 0.4,
+      "recall": 0.0425531914893617,
+      "precision": 0.2,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 0,
+       "all": 2,
+       "normal": 2,
+       "brief": 0
+      },
+      "tagRecall": {
+       "quiet": 0.0,
+       "all": 0.0425531914893617,
+       "normal": 0.06666666666666667,
+       "brief": 0.0
+      },
+      "nSegments": 10
+     }
+    },
+    {
+     "rho": 0.4,
+     "policy": "lenient",
+     "tuning": {
+      "fp": 61,
+      "tp": 23,
+      "hours": 20.0,
+      "fpPerHour": 3.05,
+      "recall": 0.3617021276595745,
+      "precision": 0.27380952380952384,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 8,
+       "all": 17,
+       "normal": 8,
+       "quiet": 3
+      },
+      "tagRecall": {
+       "brief": 0.47058823529411764,
+       "all": 0.3617021276595745,
+       "normal": 0.34782608695652173,
+       "quiet": 0.3
+      },
+      "nSegments": 84
+     },
+     "check": {
+      "fp": 66,
+      "tp": 17,
+      "hours": 20.0,
+      "fpPerHour": 3.3,
+      "recall": 0.2765957446808511,
+      "precision": 0.20481927710843373,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 1,
+       "all": 13,
+       "normal": 8,
+       "brief": 4
+      },
+      "tagRecall": {
+       "quiet": 0.1111111111111111,
+       "all": 0.2765957446808511,
+       "normal": 0.26666666666666666,
+       "brief": 0.36363636363636365
+      },
+      "nSegments": 83
+     }
+    }
+   ],
+   "chosen": [
+    {
+     "rho": null,
+     "policy": "-",
+     "tuning": {
+      "fp": 17,
+      "tp": 130,
+      "hours": 20.0,
+      "fpPerHour": 0.85,
+      "recall": 0.9148936170212766,
+      "precision": 0.8843537414965986,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 14,
+       "all": 43,
+       "normal": 23,
+       "quiet": 7
+      },
+      "tagRecall": {
+       "brief": 0.8235294117647058,
+       "all": 0.9148936170212766,
+       "normal": 1.0,
+       "quiet": 0.7
+      },
+      "nSegments": 147
+     },
+     "check": {
+      "fp": 0,
+      "tp": 118,
+      "hours": 20.0,
+      "fpPerHour": 0.0,
+      "recall": 0.851063829787234,
+      "precision": 1.0,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 5,
+       "all": 40,
+       "normal": 30,
+       "brief": 7
+      },
+      "tagRecall": {
+       "quiet": 0.5555555555555556,
+       "all": 0.851063829787234,
+       "normal": 1.0,
+       "brief": 0.6363636363636364
+      },
+      "nSegments": 118
+     }
+    },
+    {
+     "rho": 0.2,
+     "policy": "strict",
+     "tuning": {
+      "fp": 1,
+      "tp": 36,
+      "hours": 20.0,
+      "fpPerHour": 0.05,
+      "recall": 0.46808510638297873,
+      "precision": 0.972972972972973,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 0,
+       "all": 22,
+       "normal": 17,
+       "quiet": 5
+      },
+      "tagRecall": {
+       "brief": 0.0,
+       "all": 0.46808510638297873,
+       "normal": 0.7391304347826086,
+       "quiet": 0.5
+      },
+      "nSegments": 37
+     },
+     "check": {
+      "fp": 0,
+      "tp": 36,
+      "hours": 20.0,
+      "fpPerHour": 0.0,
+      "recall": 0.5106382978723404,
+      "precision": 1.0,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 1,
+       "all": 24,
+       "normal": 22,
+       "brief": 1
+      },
+      "tagRecall": {
+       "quiet": 0.1111111111111111,
+       "all": 0.5106382978723404,
+       "normal": 0.7333333333333333,
+       "brief": 0.09090909090909091
+      },
+      "nSegments": 36
+     }
+    },
+    {
+     "rho": 0.2,
+     "policy": "lenient",
+     "tuning": {
+      "fp": 13,
+      "tp": 113,
+      "hours": 20.0,
+      "fpPerHour": 0.65,
+      "recall": 0.8723404255319149,
+      "precision": 0.8968253968253969,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 13,
+       "all": 41,
+       "normal": 22,
+       "quiet": 7
+      },
+      "tagRecall": {
+       "brief": 0.7647058823529411,
+       "all": 0.8723404255319149,
+       "normal": 0.9565217391304348,
+       "quiet": 0.7
+      },
+      "nSegments": 126
+     },
+     "check": {
+      "fp": 0,
+      "tp": 92,
+      "hours": 20.0,
+      "fpPerHour": 0.0,
+      "recall": 0.8085106382978723,
+      "precision": 1.0,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 4,
+       "all": 38,
+       "normal": 29,
+       "brief": 7
+      },
+      "tagRecall": {
+       "quiet": 0.4444444444444444,
+       "all": 0.8085106382978723,
+       "normal": 0.9666666666666667,
+       "brief": 0.6363636363636364
+      },
+      "nSegments": 92
+     }
+    },
+    {
+     "rho": 0.3,
+     "policy": "strict",
+     "tuning": {
+      "fp": 1,
+      "tp": 22,
+      "hours": 20.0,
+      "fpPerHour": 0.05,
+      "recall": 0.3404255319148936,
+      "precision": 0.9565217391304348,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 0,
+       "all": 16,
+       "normal": 13,
+       "quiet": 3
+      },
+      "tagRecall": {
+       "brief": 0.0,
+       "all": 0.3404255319148936,
+       "normal": 0.5652173913043478,
+       "quiet": 0.3
+      },
+      "nSegments": 23
+     },
+     "check": {
+      "fp": 0,
+      "tp": 18,
+      "hours": 20.0,
+      "fpPerHour": 0.0,
+      "recall": 0.2978723404255319,
+      "precision": 1.0,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 1,
+       "all": 14,
+       "normal": 12,
+       "brief": 1
+      },
+      "tagRecall": {
+       "quiet": 0.1111111111111111,
+       "all": 0.2978723404255319,
+       "normal": 0.4,
+       "brief": 0.09090909090909091
+      },
+      "nSegments": 18
+     }
+    },
+    {
+     "rho": 0.3,
+     "policy": "lenient",
+     "tuning": {
+      "fp": 13,
+      "tp": 99,
+      "hours": 20.0,
+      "fpPerHour": 0.65,
+      "recall": 0.8085106382978723,
+      "precision": 0.8839285714285714,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 13,
+       "all": 38,
+       "normal": 20,
+       "quiet": 6
+      },
+      "tagRecall": {
+       "brief": 0.7647058823529411,
+       "all": 0.8085106382978723,
+       "normal": 0.8695652173913043,
+       "quiet": 0.6
+      },
+      "nSegments": 112
+     },
+     "check": {
+      "fp": 0,
+      "tp": 74,
+      "hours": 20.0,
+      "fpPerHour": 0.0,
+      "recall": 0.7446808510638298,
+      "precision": 1.0,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 4,
+       "all": 35,
+       "normal": 26,
+       "brief": 7
+      },
+      "tagRecall": {
+       "quiet": 0.4444444444444444,
+       "all": 0.7446808510638298,
+       "normal": 0.8666666666666667,
+       "brief": 0.6363636363636364
+      },
+      "nSegments": 74
+     }
+    },
+    {
+     "rho": 0.4,
+     "policy": "strict",
+     "tuning": {
+      "fp": 1,
+      "tp": 8,
+      "hours": 20.0,
+      "fpPerHour": 0.05,
+      "recall": 0.1702127659574468,
+      "precision": 0.8888888888888888,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 0,
+       "all": 8,
+       "normal": 7,
+       "quiet": 1
+      },
+      "tagRecall": {
+       "brief": 0.0,
+       "all": 0.1702127659574468,
+       "normal": 0.30434782608695654,
+       "quiet": 0.1
+      },
+      "nSegments": 9
+     },
+     "check": {
+      "fp": 0,
+      "tp": 6,
+      "hours": 20.0,
+      "fpPerHour": 0.0,
+      "recall": 0.10638297872340426,
+      "precision": 1.0,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 0,
+       "all": 5,
+       "normal": 5,
+       "brief": 0
+      },
+      "tagRecall": {
+       "quiet": 0.0,
+       "all": 0.10638297872340426,
+       "normal": 0.16666666666666666,
+       "brief": 0.0
+      },
+      "nSegments": 6
+     }
+    },
+    {
+     "rho": 0.4,
+     "policy": "lenient",
+     "tuning": {
+      "fp": 13,
+      "tp": 85,
+      "hours": 20.0,
+      "fpPerHour": 0.65,
+      "recall": 0.7659574468085106,
+      "precision": 0.8673469387755102,
+      "bouts": {
+       "brief": 17,
+       "all": 47,
+       "normal": 23,
+       "quiet": 10
+      },
+      "caught": {
+       "brief": 13,
+       "all": 36,
+       "normal": 18,
+       "quiet": 6
+      },
+      "tagRecall": {
+       "brief": 0.7647058823529411,
+       "all": 0.7659574468085106,
+       "normal": 0.782608695652174,
+       "quiet": 0.6
+      },
+      "nSegments": 98
+     },
+     "check": {
+      "fp": 0,
+      "tp": 62,
+      "hours": 20.0,
+      "fpPerHour": 0.0,
+      "recall": 0.5957446808510638,
+      "precision": 1.0,
+      "bouts": {
+       "quiet": 9,
+       "all": 47,
+       "normal": 30,
+       "brief": 11
+      },
+      "caught": {
+       "quiet": 3,
+       "all": 28,
+       "normal": 21,
+       "brief": 6
+      },
+      "tagRecall": {
+       "quiet": 0.3333333333333333,
+       "all": 0.5957446808510638,
+       "normal": 0.7,
+       "brief": 0.5454545454545454
+      },
+      "nSegments": 62
+     }
+    }
+   ]
+  },
+  "sensitivityWithoutVacuumThunderSeaBeds": {
+   "note": "POST HOC, after seeing results; not used for selection",
+   "nights": 13,
+   "hours": 26.0,
+   "baseline": {
+    "fp": 172,
+    "tp": 104,
+    "hours": 26.0,
+    "fpPerHour": 6.615384615384615,
+    "recall": 0.9137931034482759,
+    "precision": 0.37681159420289856,
+    "bouts": {
+     "brief": 16,
+     "all": 58,
+     "normal": 35,
+     "quiet": 9
+    },
+    "caught": {
+     "brief": 13,
+     "all": 53,
+     "normal": 35,
+     "quiet": 6
+    },
+    "tagRecall": {
+     "brief": 0.8125,
+     "all": 0.9137931034482759,
+     "normal": 1.0,
+     "quiet": 0.6666666666666666
+    },
+    "nSegments": 276
+   },
+   "chosen": {
+    "fp": 16,
+    "tp": 159,
+    "hours": 26.0,
+    "fpPerHour": 0.6153846153846154,
+    "recall": 0.8793103448275862,
+    "precision": 0.9085714285714286,
+    "bouts": {
+     "brief": 16,
+     "all": 58,
+     "normal": 35,
+     "quiet": 9
+    },
+    "caught": {
+     "brief": 11,
+     "all": 51,
+     "normal": 35,
+     "quiet": 5
+    },
+    "tagRecall": {
+     "brief": 0.6875,
+     "all": 0.8793103448275862,
+     "normal": 1.0,
+     "quiet": 0.5555555555555556
+    },
+    "nSegments": 175
+   }
+  }
+ }
+}

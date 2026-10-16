@@ -34,6 +34,8 @@ const ION: Record<string, Ion> = {
   'person.crop.circle.badge.questionmark': 'person-circle-outline',
   'exclamationmark.triangle': 'warning-outline',
   'exclamationmark.circle': 'alert-circle-outline',
+  'xmark.circle': 'close-circle-outline',
+  'xmark.circle.fill': 'close-circle',
   hourglass: 'hourglass-outline',
   clock: 'time-outline',
   calendar: 'calendar-outline',

@@ -23,3 +23,10 @@ export const CLAIMS_VERIFIED: ClaimsVerified = {
   clipsLocalOnlyVerified: false,
 };
 
+
+/**
+ * "Snore-like sound paused and then restarted N times" (night Details). NOT shipped: on synthetic nights with a
+ * false-flag-heavy background it fires dozens of times from false flags alone, so a count would mislead. Only the
+ * web preview dev switch (?pauses=3, labelled sample night) shows it. Flip only with real-recording evidence and approval.
+ */
+export const SNORE_PAUSES_SHIPPED = false;

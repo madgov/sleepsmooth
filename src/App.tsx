@@ -116,7 +116,8 @@ function Shell() {
 }
 
 export function App() {
-  if (typeof location !== 'undefined' && new URLSearchParams(location.search).has('parity')) return (
+  // Development builds only: the parity page is unreachable in a production build (import.meta.env.DEV is false there).
+  if (import.meta.env.DEV && typeof location !== 'undefined' && new URLSearchParams(location.search).has('parity')) return (
       <Suspense fallback={<p role="status">Loading...</p>}>
         <Parity />
       </Suspense>

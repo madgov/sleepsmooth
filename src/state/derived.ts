@@ -7,7 +7,7 @@ import { useSession } from './session';
 /** Evidence summary and report input derived from the current session. */
 export function useDerived() {
   const s = useSession();
-  const { answers, symptoms, redFlag, isSynthetic, audio, audioLabel } = s;
+  const { answers, symptoms, redFlag, partner, isSynthetic, audio, audioLabel } = s;
   return useMemo(() => {
     const { input, context } = buildRulesInput({ answers, symptoms, redFlag, isSynthetic }, audio, Boolean(audio && audioLabel));
     const evidence = evaluate(input, context);
@@ -15,6 +15,7 @@ export function useDerived() {
       answers,
       symptoms,
       redFlag,
+      partner,
       evidence,
       audio,
       audioSampleLabel: audioLabel,
@@ -22,5 +23,5 @@ export function useDerived() {
       generatedAt,
     });
     return { input, evidence, reportInput };
-  }, [answers, symptoms, redFlag, isSynthetic, audio, audioLabel]);
+  }, [answers, symptoms, redFlag, partner, isSynthetic, audio, audioLabel]);
 }

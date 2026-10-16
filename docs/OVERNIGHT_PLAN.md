@@ -718,3 +718,26 @@ VERDICT: ENG REVIEW PASSED WITH AMENDMENTS. OUTSIDE COVERAGE / CROSS-MODEL: not 
 
 **UNRESOLVED DECISIONS:**
 - Q6 (src/night/ location), Q7 (permission to refactor `import.meta.glob` sites), and approval of ER-1 (storing int8 window features in the user's own tuning builds) need the user's decision.
+
+---
+
+## ADDENDUM 2026-10-14: sleep-state filter audit, coverage view, diagnostics
+
+**Question audited:** can the (unvalidated) sleep-state estimate hide useful audio?
+**Test:** `src/night/sleepFilterAudit.test.ts` (uses the existing testkit).
+
+Findings:
+
+1. Uncertain time is already counted by default. The headline, the night state and the episode rule use the "including uncertain" set, and that set includes the first 10 minutes ("onset-pending") of a night.
+2. Epochs the estimate labels likely-awake inside the scheduled window (screen on, handling the phone, 10 s or more of motion) were not counted. Snore-like windows there were silently left out of the totals.
+3. Worst case: the app left on screen all night makes every epoch likely-awake. Nothing is assessable by the old rule, so the night read as not-assessed although the whole night was recorded and scored.
+
+Decision: the verdict rules were **not** changed. They are unvalidated either way, and changing what counts as snore-like on a hunch would be a new, untested claim. Instead:
+
+- `NightSummary.sensitivity.allInWindow` (new, additive) counts every captured epoch inside the scheduled window, whatever the estimate says.
+- Night detail shows, under Details, how many more snore-like windows were found in time the phone guessed was awake ("They are not in the totals above, but they were not discarded").
+- The estimate is now secondary: recording duration and coverage are the primary facts, and the estimate sits under "Rough estimate (unvalidated)".
+
+Coverage view (`src/mobileLogic/coverage.ts`): four kinds of time, never merged or graded: recorded and assessable, recorded but not assessable, not recorded (gap), outside the sleep hours. "Assessable" means the share of an epoch's windows the snore model could score. It does not depend on the sleep estimate. A bar is drawn as assessable once a quarter of its recorded time was scored, because most windows in a quiet room sit under the level gate and a majority rule would hide real stretches of analysed time. "Nothing snore-like was found in the assessable time" and "Could not assess" are separate sentences, and neither reads as "all clear".
+
+Diagnostics and the test protocol: `mobile/DEVICE_TEST.md`. Privacy promises and their status: `docs/PRIVACY_CHECKS.md`. Reproducible release check: `npm run release:check`, output in `docs/releases/`.

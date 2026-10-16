@@ -1,5 +1,6 @@
 import * as Haptics from 'expo-haptics';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../src/nav/useSafeRouter';
+
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
@@ -56,7 +57,7 @@ function Dot({ i, x, w }: { i: number; x: SharedValue<number>; w: number }) {
 }
 
 function Intro() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { reduceMotion } = useTheme();
@@ -113,7 +114,7 @@ function Intro() {
                 <View style={{ alignItems: i === LAST ? 'stretch' : 'center', gap: 22 }}>
                   {sl.art}
                   <View style={{ gap: 10, alignItems: 'center', alignSelf: 'center', maxWidth: BODY_MAX }}>
-                    <AppText variant="largeTitle" center accessibilityRole="header" style={{ letterSpacing: -0.8 }}>
+                    <AppText variant="largeTitle" center accessibilityRole="header">
                       {sl.title}
                     </AppText>
                     <AppText variant="body" tone="secondary" center>

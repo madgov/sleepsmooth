@@ -1,4 +1,3 @@
-import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, type ReactNode } from 'react';
 import { TextInput, View } from 'react-native';
@@ -71,7 +70,7 @@ export function ChoiceCard({ label, caption, icon, selected, onPress, accessibil
           </View>
         ) : null}
         <View style={{ flex: 1, gap: 2 }}>
-          <AppText variant="headline" style={{ letterSpacing: -0.3 }}>
+          <AppText variant="headline">
             {label}
           </AppText>
           {caption ? (
@@ -98,7 +97,7 @@ export function StepFrame({ title, subtitle, children, footer, hero }: { title: 
       <Screen backdrop={false} gap={18} contentStyle={{ paddingTop: 8 }} bottom={footer ? <View style={{ paddingHorizontal: 20, paddingTop: 10, paddingBottom: insets.bottom + 12, gap: 4 }}>{footer}</View> : undefined}>
         {hero}
         <View style={{ gap: 8 }}>
-          <AppText variant="title1" accessibilityRole="header" style={{ letterSpacing: -0.4 }}>
+          <AppText variant="title1" accessibilityRole="header">
             {title}
           </AppText>
           {subtitle ? (
@@ -154,10 +153,15 @@ export function BigNumberField({ value, onChange, unit, label, invalid, autoFocu
 }
 
 /** Primary footer button + optional plain secondary. Both 44pt+. */
-export function FooterActions({ primary, onPrimary, disabled, secondary, onSecondary, loading }: { primary: string; onPrimary: () => void; disabled?: boolean; secondary?: string; onSecondary?: () => void; loading?: boolean }) {
+export function FooterActions({ primary, onPrimary, disabled, disabledReason, secondary, onSecondary, loading }: { primary: string; onPrimary: () => void; disabled?: boolean; disabledReason?: string; secondary?: string; onSecondary?: () => void; loading?: boolean }) {
   return (
     <>
-      <PrimaryButton label={primary} onPress={() => { void Haptics.selectionAsync(); onPrimary(); }} disabled={disabled} loading={loading} />
+      <PrimaryButton label={primary} onPress={onPrimary} disabled={disabled} disabledReason={disabledReason} loading={loading} haptic="selection" />
+      {disabled && disabledReason ? (
+        <AppText variant="footnote" tone="secondary" center accessibilityLiveRegion="polite">
+          {disabledReason}
+        </AppText>
+      ) : null}
       {secondary && onSecondary ? <PrimaryButton label={secondary} variant="plain" onPress={onSecondary} /> : null}
     </>
   );

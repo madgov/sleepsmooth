@@ -5,7 +5,20 @@ export interface Tone {
   border: string;
 }
 
+/** Muted tints for icon tiles and quiet list glyphs. Purposeful, desaturated, never green, never a status signal. */
+export type TintName = 'sky' | 'teal' | 'violet' | 'amber' | 'rose' | 'slate';
+export interface Tint {
+  /** Glyph colour (at least 4.5:1 on its own tint over the card). */
+  fg: string;
+  /** Tile fill. */
+  bg: string;
+  /** 1pt tile edge. */
+  border: string;
+}
+
 export interface Colors {
+  /** Restrained icon-tile palette. The single-accent rule still holds for calls to action: tints are never used on buttons. */
+  tint: Record<TintName, Tint>;
   bg: string;
   card: string;
   cardRaised: string;
@@ -51,6 +64,14 @@ export interface Colors {
 }
 
 export const lightColors: Colors = {
+  tint: {
+    sky: { fg: '#1F5FA6', bg: 'rgba(31,95,166,0.10)', border: 'rgba(31,95,166,0.20)' },
+    teal: { fg: '#0F6573', bg: 'rgba(15,101,115,0.10)', border: 'rgba(15,101,115,0.20)' },
+    violet: { fg: '#5A3FC2', bg: 'rgba(90,63,194,0.10)', border: 'rgba(90,63,194,0.20)' },
+    amber: { fg: '#7F5400', bg: 'rgba(166,110,0,0.12)', border: 'rgba(166,110,0,0.24)' },
+    rose: { fg: '#A02F4D', bg: 'rgba(160,47,77,0.09)', border: 'rgba(160,47,77,0.20)' },
+    slate: { fg: '#4A4F73', bg: 'rgba(74,79,115,0.10)', border: 'rgba(74,79,115,0.18)' },
+  },
   bg: '#F2F1FA',
   card: '#FFFFFF',
   cardRaised: '#F7F6FD',
@@ -86,6 +107,14 @@ export const lightColors: Colors = {
 };
 
 export const darkColors: Colors = {
+  tint: {
+    sky: { fg: '#8DBFF5', bg: 'rgba(110,170,240,0.16)', border: 'rgba(141,191,245,0.26)' },
+    teal: { fg: '#7FCFDB', bg: 'rgba(90,190,208,0.15)', border: 'rgba(127,207,219,0.25)' },
+    violet: { fg: '#BBAAF7', bg: 'rgba(150,125,240,0.17)', border: 'rgba(187,170,247,0.27)' },
+    amber: { fg: '#F2C777', bg: 'rgba(235,175,70,0.15)', border: 'rgba(242,199,119,0.25)' },
+    rose: { fg: '#F2A3B8', bg: 'rgba(235,120,150,0.15)', border: 'rgba(242,163,184,0.25)' },
+    slate: { fg: '#B4BBD8', bg: 'rgba(180,187,216,0.12)', border: 'rgba(180,187,216,0.20)' },
+  },
   bg: '#1C1B33',
   card: '#25264A',
   cardRaised: '#2D2E58',
@@ -110,12 +139,12 @@ export const darkColors: Colors = {
   cardHighlight: 'rgba(255,255,255,0.07)',
   shadow: '#000000',
   bgGradient: ['#2E335A', '#252746', '#1C1B33'],
-  glassFill: 'rgba(89,54,180,0.28)',
-  glassBorder: ['rgba(255,255,255,0.28)', 'rgba(255,255,255,0.05)'],
+  glassFill: 'rgba(120,100,220,0.13)',
+  glassBorder: ['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.04)'],
   glow: 'rgba(89,54,180,0.30)',
   accentGradient: ['#34C8E8', '#4E4AF2'],
   accentGradientText: ['#3068E3', '#4E4AF2'],
-  glassGradient: ['rgba(89,54,180,0.34)', 'rgba(54,42,132,0.34)'],
+  glassGradient: ['rgba(120,100,220,0.17)', 'rgba(70,56,160,0.12)'],
   neu: { track: '#232447', trackLight: '#33356A', trackDark: '#18182F', active: '#2F3160', activeLight: '#3A3D72', activeDark: '#1B1C38' },
   capsule: { fill: '#5936B4', fillEnd: '#362A84', outline: 'rgba(235,235,245,0.32)', label: '#B9BAD0' },
 };

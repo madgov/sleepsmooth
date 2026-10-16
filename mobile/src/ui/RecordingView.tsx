@@ -53,7 +53,7 @@ function Inner({ state, elapsedSec, endAtMs, levels, band, stale, onStop, onHide
               </AppText>
             </View>
           ) : (
-            <AppText variant="subheadline" tone="secondary" weight="600" style={{ letterSpacing: 0.3, textAlign: 'center' }}>
+            <AppText variant="subheadline" tone="secondary" weight="600" style={{ textAlign: 'center' }}>
               Tonight
             </AppText>
           )}
@@ -70,7 +70,7 @@ function Inner({ state, elapsedSec, endAtMs, levels, band, stale, onStop, onHide
             accessibilityValueText={spokenElapsed(elapsedSec)}
             testID="hero"
           />
-          <AppText variant="largeTitle" tabular accessibilityLabel={`Recording for ${spokenElapsed(elapsedSec)}`} style={{ fontSize: 52, lineHeight: 58, letterSpacing: -1 }}>
+          <AppText variant="display" tabular accessibilityLabel={`Recording for ${spokenElapsed(elapsedSec)}`}>
             {formatElapsed(elapsedSec)}
           </AppText>
           {endAtMs !== null ? (

@@ -1,0 +1,76 @@
+list,rank,esc50_file,offset_s,duration_s,cls,type,fold,oof_score,rms_dbfs
+false_positive,1,data/raw/esc50/ESC-50-master/audio/3-171937-A-34.wav,2.5,1.0,can_opening,transient/impact,3,0.9969,-55.1
+false_positive,2,data/raw/esc50/ESC-50-master/audio/2-99955-C-7.wav,2.5,1.0,insects,animal,2,0.9961,-41.7
+false_positive,3,data/raw/esc50/ESC-50-master/audio/4-205526-B-23.wav,3.5,1.0,breathing,breathing/respiratory,4,0.9958,-29.7
+false_positive,4,data/raw/esc50/ESC-50-master/audio/2-99955-C-7.wav,0.0,1.0,insects,animal,2,0.9952,-48.4
+false_positive,5,data/raw/esc50/ESC-50-master/audio/2-84965-A-23.wav,0.0,1.0,breathing,breathing/respiratory,2,0.9945,-34.6
+false_positive,6,data/raw/esc50/ESC-50-master/audio/1-67230-A-29.wav,0.5,1.0,drinking_sipping,weather/water/other ambient,1,0.9943,-31.9
+false_positive,7,data/raw/esc50/ESC-50-master/audio/3-143119-A-21.wav,0.0,1.0,sneezing,breathing/respiratory,3,0.9938,-55.5
+false_positive,8,data/raw/esc50/ESC-50-master/audio/1-202111-A-3.wav,0.5,1.0,cow,animal,1,0.9937,-15.4
+false_positive,9,data/raw/esc50/ESC-50-master/audio/1-30709-A-23.wav,4.0,1.0,breathing,breathing/respiratory,1,0.993,-20.9
+false_positive,10,data/raw/esc50/ESC-50-master/audio/1-202111-A-3.wav,0.0,1.0,cow,animal,1,0.9873,-21.1
+false_positive,11,data/raw/esc50/ESC-50-master/audio/3-171937-A-34.wav,3.0,1.0,can_opening,transient/impact,3,0.9865,-54.2
+false_positive,12,data/raw/esc50/ESC-50-master/audio/4-205526-B-23.wav,1.5,1.0,breathing,breathing/respiratory,4,0.9847,-29.4
+false_positive,13,data/raw/esc50/ESC-50-master/audio/4-188191-A-29.wav,1.5,1.0,drinking_sipping,weather/water/other ambient,4,0.9827,-36.9
+false_positive,14,data/raw/esc50/ESC-50-master/audio/4-149940-B-5.wav,2.0,1.0,cat,animal,4,0.9806,-35.3
+false_positive,15,data/raw/esc50/ESC-50-master/audio/2-91912-B-33.wav,2.5,1.0,door_wood_creaks,transient/impact,2,0.9802,-20.4
+false_positive,16,data/raw/esc50/ESC-50-master/audio/4-205526-A-23.wav,1.5,1.0,breathing,breathing/respiratory,4,0.9792,-33.8
+false_positive,17,data/raw/esc50/ESC-50-master/audio/2-84965-A-23.wav,0.5,1.0,breathing,breathing/respiratory,2,0.9762,-36.8
+false_positive,18,data/raw/esc50/ESC-50-master/audio/3-144128-A-23.wav,0.5,1.0,breathing,breathing/respiratory,3,0.9748,-27.4
+false_positive,19,data/raw/esc50/ESC-50-master/audio/2-122763-A-29.wav,1.5,1.0,drinking_sipping,weather/water/other ambient,2,0.9735,-44.5
+false_positive,20,data/raw/esc50/ESC-50-master/audio/1-47819-A-5.wav,3.5,1.0,cat,animal,1,0.9696,-54.4
+false_positive,21,data/raw/esc50/ESC-50-master/audio/3-144128-B-23.wav,2.5,1.0,breathing,breathing/respiratory,3,0.9661,-31.7
+false_positive,22,data/raw/esc50/ESC-50-master/audio/1-47819-C-5.wav,4.0,1.0,cat,animal,1,0.964,-54.3
+false_positive,23,data/raw/esc50/ESC-50-master/audio/2-68391-A-41.wav,0.5,1.0,chainsaw,mechanical/fan,2,0.9629,-35.7
+false_positive,24,data/raw/esc50/ESC-50-master/audio/2-77945-A-41.wav,1.0,1.0,chainsaw,mechanical/fan,2,0.9603,-20.8
+false_positive,25,data/raw/esc50/ESC-50-master/audio/3-151206-A-23.wav,3.0,1.0,breathing,breathing/respiratory,3,0.9547,-45.5
+false_positive,26,data/raw/esc50/ESC-50-master/audio/4-155650-A-24.wav,3.5,1.0,coughing,breathing/respiratory,4,0.9527,-51.5
+false_positive,27,data/raw/esc50/ESC-50-master/audio/1-67230-A-29.wav,2.5,1.0,drinking_sipping,weather/water/other ambient,1,0.9524,-35.2
+false_positive,28,data/raw/esc50/ESC-50-master/audio/1-60676-A-34.wav,2.5,1.0,can_opening,transient/impact,1,0.9518,-53.7
+false_positive,29,data/raw/esc50/ESC-50-master/audio/2-68595-B-15.wav,2.5,1.0,water_drops,transient/impact,2,0.9514,-49.8
+false_positive,30,data/raw/esc50/ESC-50-master/audio/4-253649-A-6.wav,3.5,1.0,hen,animal,4,0.9464,-24.2
+false_positive,31,data/raw/esc50/ESC-50-master/audio/4-119647-A-48.wav,0.0,1.0,fireworks,transient/impact,4,0.946,-45.8
+false_positive,32,data/raw/esc50/ESC-50-master/audio/1-47819-A-5.wav,3.0,1.0,cat,animal,1,0.9445,-54.6
+false_positive,33,data/raw/esc50/ESC-50-master/audio/2-85292-A-24.wav,1.0,1.0,coughing,breathing/respiratory,2,0.9421,-40.5
+false_positive,34,data/raw/esc50/ESC-50-master/audio/1-85123-A-31.wav,4.0,1.0,mouse_click,transient/impact,1,0.9417,-25.3
+false_positive,35,data/raw/esc50/ESC-50-master/audio/4-210000-A-23.wav,1.5,1.0,breathing,breathing/respiratory,4,0.9409,-55.4
+false_positive,36,data/raw/esc50/ESC-50-master/audio/2-87795-A-24.wav,4.0,1.0,coughing,breathing/respiratory,2,0.9404,-55.5
+false_positive,37,data/raw/esc50/ESC-50-master/audio/4-188191-A-29.wav,0.0,1.0,drinking_sipping,weather/water/other ambient,4,0.9397,-34.2
+false_positive,38,data/raw/esc50/ESC-50-master/audio/1-47819-C-5.wav,3.5,1.0,cat,animal,1,0.934,-54.6
+false_positive,39,data/raw/esc50/ESC-50-master/audio/3-166125-B-23.wav,1.0,1.0,breathing,breathing/respiratory,3,0.9313,-41.9
+false_positive,40,data/raw/esc50/ESC-50-master/audio/2-105270-A-47.wav,2.5,1.0,airplane,mechanical/fan,2,0.93,-37.3
+false_positive,41,data/raw/esc50/ESC-50-master/audio/1-43807-C-47.wav,2.5,1.0,airplane,mechanical/fan,1,0.9244,-25.9
+false_positive,42,data/raw/esc50/ESC-50-master/audio/1-36393-A-23.wav,0.0,1.0,breathing,breathing/respiratory,1,0.9219,-32.2
+false_positive,43,data/raw/esc50/ESC-50-master/audio/2-68391-A-41.wav,0.0,1.0,chainsaw,mechanical/fan,2,0.9206,-36.5
+false_positive,44,data/raw/esc50/ESC-50-master/audio/3-144128-B-23.wav,1.0,1.0,breathing,breathing/respiratory,3,0.9198,-28.4
+false_positive,45,data/raw/esc50/ESC-50-master/audio/2-87795-A-24.wav,3.5,1.0,coughing,breathing/respiratory,2,0.9188,-50.6
+false_positive,46,data/raw/esc50/ESC-50-master/audio/3-108160-A-23.wav,1.0,1.0,breathing,breathing/respiratory,3,0.9131,-32.3
+false_positive,47,data/raw/esc50/ESC-50-master/audio/1-15689-B-4.wav,1.0,1.0,frog,animal,1,0.9117,-48.1
+false_positive,48,data/raw/esc50/ESC-50-master/audio/1-115545-A-48.wav,2.5,1.0,fireworks,transient/impact,1,0.9091,-55.3
+false_positive,49,data/raw/esc50/ESC-50-master/audio/3-144128-A-23.wav,2.5,1.0,breathing,breathing/respiratory,3,0.9084,-30.6
+false_positive,50,data/raw/esc50/ESC-50-master/audio/1-12654-B-15.wav,1.5,1.0,water_drops,transient/impact,1,0.9068,-54.7
+false_negative,1,data/raw/esc50/ESC-50-master/audio/3-130998-B-28.wav,2.5,1.0,snoring,snoring (missed),3,0.0082,-22.4
+false_negative,2,data/raw/esc50/ESC-50-master/audio/3-151557-A-28.wav,0.0,1.0,snoring,snoring (missed),3,0.0152,-42.6
+false_negative,3,data/raw/esc50/ESC-50-master/audio/2-114609-B-28.wav,2.5,1.0,snoring,snoring (missed),2,0.026,-31.7
+false_negative,4,data/raw/esc50/ESC-50-master/audio/3-151557-B-28.wav,0.0,1.0,snoring,snoring (missed),3,0.0265,-39.0
+false_negative,5,data/raw/esc50/ESC-50-master/audio/2-114609-A-28.wav,1.5,1.0,snoring,snoring (missed),2,0.028,-47.7
+false_negative,6,data/raw/esc50/ESC-50-master/audio/1-53444-A-28.wav,2.0,1.0,snoring,snoring (missed),1,0.0402,-29.8
+false_negative,7,data/raw/esc50/ESC-50-master/audio/2-114609-B-28.wav,4.0,1.0,snoring,snoring (missed),2,0.0437,-44.3
+false_negative,8,data/raw/esc50/ESC-50-master/audio/1-53444-A-28.wav,1.5,1.0,snoring,snoring (missed),1,0.0475,-32.2
+false_negative,9,data/raw/esc50/ESC-50-master/audio/3-151557-A-28.wav,0.5,1.0,snoring,snoring (missed),3,0.0504,-42.5
+false_negative,10,data/raw/esc50/ESC-50-master/audio/3-130998-A-28.wav,4.0,1.0,snoring,snoring (missed),3,0.0559,-29.8
+false_negative,11,data/raw/esc50/ESC-50-master/audio/3-130998-B-28.wav,3.0,1.0,snoring,snoring (missed),3,0.0623,-25.7
+false_negative,12,data/raw/esc50/ESC-50-master/audio/3-151255-A-28.wav,4.0,1.0,snoring,snoring (missed),3,0.0698,-52.9
+false_negative,13,data/raw/esc50/ESC-50-master/audio/1-47923-A-28.wav,0.0,1.0,snoring,snoring (missed),1,0.0799,-27.5
+false_negative,14,data/raw/esc50/ESC-50-master/audio/1-39937-A-28.wav,2.5,1.0,snoring,snoring (missed),1,0.1538,-36.6
+false_negative,15,data/raw/esc50/ESC-50-master/audio/4-180337-A-28.wav,4.0,1.0,snoring,snoring (missed),4,0.2017,-23.7
+false_negative,16,data/raw/esc50/ESC-50-master/audio/3-130998-A-28.wav,2.0,1.0,snoring,snoring (missed),3,0.2038,-22.2
+false_negative,17,data/raw/esc50/ESC-50-master/audio/2-114609-A-28.wav,1.0,1.0,snoring,snoring (missed),2,0.2212,-48.4
+false_negative,18,data/raw/esc50/ESC-50-master/audio/1-39937-A-28.wav,3.0,1.0,snoring,snoring (missed),1,0.2812,-36.7
+false_negative,19,data/raw/esc50/ESC-50-master/audio/4-197454-B-28.wav,1.0,1.0,snoring,snoring (missed),4,0.3478,-40.8
+false_negative,20,data/raw/esc50/ESC-50-master/audio/1-20545-A-28.wav,4.0,1.0,snoring,snoring (missed),1,0.3555,-43.9
+false_negative,21,data/raw/esc50/ESC-50-master/audio/3-124795-A-28.wav,2.5,1.0,snoring,snoring (missed),3,0.383,-62.4
+false_negative,22,data/raw/esc50/ESC-50-master/audio/2-52001-A-28.wav,3.5,1.0,snoring,snoring (missed),2,0.3845,-58.2
+false_negative,23,data/raw/esc50/ESC-50-master/audio/2-52001-A-28.wav,4.0,1.0,snoring,snoring (missed),2,0.3852,-50.2
+false_negative,24,data/raw/esc50/ESC-50-master/audio/4-180337-A-28.wav,0.5,1.0,snoring,snoring (missed),4,0.4091,-24.8
+false_negative,25,data/raw/esc50/ESC-50-master/audio/4-197454-B-28.wav,2.0,1.0,snoring,snoring (missed),4,0.4263,-19.5

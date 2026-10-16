@@ -195,7 +195,7 @@ export function ExampleCard() {
   const { colors } = useTheme();
   const fact = (label: string, value: string, flex = 1) => (
     <View style={{ flex, gap: 3 }}>
-      <AppText variant="caption1" tone="secondary" weight="600" style={{ letterSpacing: 0.4, textTransform: 'uppercase' }}>
+      <AppText variant="caption1" tone="secondary" weight="600" style={{ textTransform: 'uppercase' }}>
         {label}
       </AppText>
       <AppText variant="headline" tabular>

@@ -11,3 +11,4 @@ export { summarizeNight, nightAudioState, findEpisodes, flaggedWindowIndices, no
 export { nightToAudioAnalysis, nightStateToAudioEvidence, aggregateNights, nightRulesInput, type NightAggregate } from './adapter';
 export { serializeEpoch, parseEpochLog, recoverUnfinishedNight, resumeFromLog, isSupportedEpochSchema, type ParsedEpochLog } from './recovery';
 export { buildSampleNight, buildSampleNightView, sampleNightSchedule, SAMPLE_NIGHT_LABEL, SAMPLE_NIGHT_MODEL_VERSION, type SampleNightVariant } from './sample';
+export { countSnorePauses, snorePausesForView, PAUSE_MIN_GAP_SEC, PAUSE_MAX_GAP_SEC, PAUSE_MIN_BOUT_WINDOWS, type SnorePauseResult } from './snorePauses';

@@ -16,6 +16,7 @@ import { evaluate } from '../evidence/engine';
 import { nightRulesInput } from '../night';
 import type { NightAudioState, NightView } from '../night';
 import { generateCareSummary } from '../report/generate';
+import type { PartnerObservations } from '../questionnaire/partner';
 import type { SymptomAnswers } from '../questionnaire/symptomChecklist';
 import type { CareSummary, CareSummarySection } from '../types/report';
 import type { AnswerValue } from '../types/questionnaire';
@@ -25,6 +26,8 @@ export interface SummaryArgs {
   answers: Record<string, AnswerValue>;
   symptoms: SymptomAnswers;
   redFlag: boolean | null;
+  /** Optional bed-partner observations (user-reported, not scored). */
+  partner?: PartnerObservations | null;
   /** Real nights, newest first. */
   realNights: readonly NightView[];
   /** A sample night, included only when the user asks to preview with it. It is labelled everywhere it appears. */
@@ -76,6 +79,7 @@ export function buildSummary(a: SummaryArgs): BuiltSummary {
     answers: a.answers,
     symptoms: a.symptoms,
     redFlag: a.redFlag,
+    partner: a.partner,
     evidence,
     audio: analysis,
     isSynthetic: sampleOnly,

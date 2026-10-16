@@ -1,9 +1,11 @@
 import * as Haptics from 'expo-haptics';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeRouter } from '../../src/nav/useSafeRouter';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
+import { confirmAction } from '../../src/ui/confirm';
 import Animated, { FadeIn } from 'react-native-reanimated';
-import { formatClock, spokenDuration } from '@core/mobileLogic/index';
+import { formatClock } from '@core/mobileLogic/index';
 import {
   AUDIO_DETAIL,
   DISCLAIMER_AUDIO,
@@ -16,14 +18,13 @@ import {
   NOTE_AUDIO_NEVER_DOWNGRADES,
   NOTE_NO_UNIFIED_SCORE,
   NOTE_SNORE_LIKE,
+  ROUGH_ESTIMATE_LABEL,
+  ROUGH_ESTIMATE_NOTE,
   RESULTS_DETAILS_HEADING,
   SAMPLE_AUDIO_LABEL,
   SAMPLE_AUDIO_NOT_USED,
-  SNORE_NONE_ASSESSABLE_LINE,
   SNORE_NOT_APNEA_LINE,
   modelVersionLine,
-  snoreWindowsLine,
-  tooQuietLine,
 } from '@core/content/claims';
 import { nightSource, SAMPLE_NIGHT_ID, type NightListItem } from '../../src/data/nightSource';
 import { COPY } from '../../src/content/copy';
@@ -46,7 +47,8 @@ import { HealthLineView } from '../../src/ui/HealthParts';
 import { healthAvailable, ensureHealthLoaded, useHealthStore } from '../../src/health';
 import { healthNightFor, type HealthNight } from '@core/mobileLogic/healthSleep';
 import { HourCapsuleRow } from '../../src/ui/HourCapsule';
-import { GlassTile } from '../../src/ui/GlassTile';
+import { CoverageSection } from '../../src/ui/CoverageSection';
+import { DiagnosticsSection } from '../../src/ui/DiagnosticsSection';
 import { ClipsSection } from '../../src/ui/ClipsSection';
 import { clipPlayer } from '../../src/clips/clipPlayer';
 
@@ -92,21 +94,21 @@ export default function NightDetail() {
 /** Labelled sample for the sample night only: a made-up Apple Health record so the layout can be seen. */
 const SAMPLE_HEALTH_NIGHT: HealthNight = { key: 0, startMs: new Date(2026, 0, 1, 23, 20).getTime(), endMs: new Date(2026, 0, 2, 6, 50).getTime(), kind: 'asleep', source: 'Apple Watch' };
 
-function ErrorState({ retry }: { retry: () => void }) {
+function ErrorState({ retry, label = COPY.C.tryAgain }: { retry: () => void; label?: string }) {
   return (
     <StateCard
       tone="error"
       icon="exclamationmark.triangle"
       title={ERROR_BOUNDARY_TITLE}
       body={ERROR_BOUNDARY_MESSAGE}
-      actions={[{ label: COPY.C.tryAgain, onPress: retry }]}
+      actions={[{ label, onPress: retry }]}
       testID="night-error"
     />
   );
 }
 
 function NightBody({ night }: { night: NightListItem }) {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { reduceMotion } = useTheme();
   const s = useSettings();
   const ev = useNightEvidence(s, night);
@@ -120,18 +122,18 @@ function NightBody({ night }: { night: NightListItem }) {
   useEffect(() => () => clipPlayer.stop(), []);
   const notAssessed = night.state === 'not-assessed';
   const confirmDelete = () =>
-    Alert.alert(COPY.N65_DELETE_NIGHT, 'Delete this night from this phone? This cannot be undone.', [
-      { text: COPY.C.cancel, style: 'cancel' },
-      {
-        text: COPY.C.delete,
-        style: 'destructive',
-        onPress: () => {
-          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          void nightSource.deleteNight(night.id).finally(() => router.back());
-        },
+    confirmAction({
+      title: COPY.N65_DELETE_NIGHT,
+      message: 'Delete this night from this phone? This cannot be undone.',
+      confirmLabel: COPY.C.delete,
+      cancelLabel: COPY.C.cancel,
+      destructive: true,
+      onConfirm: () => {
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        void nightSource.deleteNight(night.id).finally(() => router.back());
       },
-    ]);
-  if (!p || !ev) return <ErrorState retry={() => router.back()} />;
+    });
+  if (!p || !ev) return <ErrorState retry={() => router.back()} label="Go back" />;
 
   const w = night.estimatedWindow;
   // M16: calm reveal, opacity only. No bounce, no count-up, no haptic.
@@ -140,8 +142,6 @@ function NightBody({ night }: { night: NightListItem }) {
       {night.isSample ? (
         <StateCard tone="sample" icon="testtube.2" title={SAMPLE_AUDIO_LABEL} body={SAMPLE_AUDIO_NOT_USED} source="sample" animated={false} testID="sample-banner" />
       ) : null}
-
-      <ListRow title={COPY.N67_SEE_OVERALL} leading="chevron.left" onPress={() => router.navigate('/nights')} />
 
       <StateCard
         tone={p.tone}
@@ -169,31 +169,33 @@ function NightBody({ night }: { night: NightListItem }) {
         testID="night-state-card"
       />
 
+      {night.state !== 'not-recorded' ? <CoverageSection night={night} /> : null}
+
       <View style={{ gap: 8 }}>
         <AppText variant="footnote" tone="secondary" accessibilityRole="header" style={{ paddingHorizontal: 16 }}>
-          Estimated sleep window
+          {ROUGH_ESTIMATE_LABEL}
         </AppText>
-        <Surface source={night.isSample ? 'sample' : undefined}>
+        <Surface source={night.isSample ? 'sample' : undefined} padding={0}>
           {w && night.epochs.length > 0 ? (
-            <View style={{ gap: 12 }}>
-              <AppText variant="title3" tabular>{`${formatClock(w.startMin)} to ${formatClock(w.endMin)}`}</AppText>
-              <AppText variant="footnote" tone="secondary">{`${COPY.N61_ESTIMATE_LINE}`}</AppText>
-              <Timeline epochs={night.epochs} epochMinutesEach={night.epochMinutes} startMin={w.startMin} endMin={w.endMin} />
-              <HourCapsuleRow epochs={night.epochs} epochMinutesEach={night.epochMinutes} startMin={w.startMin} />
-              <AppText variant="footnote" tone="secondary">
-                Each capsule fills with the minutes estimated asleep in that hour. A paler band marks minutes the estimate is unsure about. It is an estimate from the recording, not a measurement.
-              </AppText>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-                <GlassTile icon="clock" label="Estimated window" value={`${formatClock(w.startMin)} to ${formatClock(w.endMin)}`} caption="Estimated" />
-                <GlassTile icon="hourglass" label="Window length" value={spokenDuration(w.endMin - w.startMin)} caption="Estimated" />
+            <>
+              <View style={{ padding: 16, gap: 6 }}>
+                <AppText variant="subheadline" tabular testID="rough-estimate-window">{`${formatClock(w.startMin)} to ${formatClock(w.endMin)}`}</AppText>
+                <AppText variant="footnote" tone="secondary">{ROUGH_ESTIMATE_NOTE}</AppText>
               </View>
-              <AppText variant="footnote" tone="secondary">
-                {COPY.N63_SIGNALS(night.signals.used.join(', ') || 'none', night.signals.used.length, night.signals.total)}
-              </AppText>
-              <AppText variant="footnote" tone="secondary">{NIGHT_ESTIMATE_CAVEAT}</AppText>
-            </View>
+              <Disclosure title="Hour by hour (rough)">
+                <Timeline epochs={night.epochs} epochMinutesEach={night.epochMinutes} startMin={w.startMin} endMin={w.endMin} />
+                <HourCapsuleRow epochs={night.epochs} epochMinutesEach={night.epochMinutes} startMin={w.startMin} />
+                <AppText variant="footnote" tone="secondary">{`${COPY.N61_ESTIMATE_LINE}`}</AppText>
+                <AppText variant="footnote" tone="secondary">
+                  {COPY.N63_SIGNALS(night.signals.used.join(', ') || 'none', night.signals.used.length, night.signals.total)}
+                </AppText>
+                <AppText variant="footnote" tone="secondary">{NIGHT_ESTIMATE_CAVEAT}</AppText>
+              </Disclosure>
+            </>
           ) : (
-            <AppText variant="body" tone="secondary">{COPY.N68_NO_ESTIMATE}</AppText>
+            <View style={{ padding: 16 }}>
+              <AppText variant="subheadline" tone="secondary">{COPY.N68_NO_ESTIMATE}</AppText>
+            </View>
           )}
         </Surface>
       </View>
@@ -209,19 +211,6 @@ function NightBody({ night }: { night: NightListItem }) {
         <Surface source={night.isSample ? 'sample' : 'audio-observation'}>
           <View style={{ gap: 6 }}>
             <AppText variant="subheadline">{AUDIO_DETAIL[detailKey(night.state)]}</AppText>
-            {night.snoreWindows ? (
-              night.snoreWindows.assessable === 0 ? (
-                <AppText variant="subheadline">{SNORE_NONE_ASSESSABLE_LINE}</AppText>
-              ) : (
-                <>
-                  <AppText variant="subheadline">{snoreWindowsLine(night.snoreWindows.snoreLike, night.snoreWindows.assessable)}</AppText>
-                  <AppText variant="subheadline">{tooQuietLine(night.snoreWindows.tooQuiet)}</AppText>
-                </>
-              )
-            ) : null}
-            {night.sensitivity ? (
-              <AppText variant="footnote" tone="secondary">{COPY.N64_SENSITIVITY(night.sensitivity.likelyAsleep, night.sensitivity.includingUncertain)}</AppText>
-            ) : null}
             <AppText variant="footnote" tone="secondary">{SNORE_NOT_APNEA_LINE}</AppText>
           </View>
         </Surface>
@@ -247,6 +236,8 @@ function NightBody({ night }: { night: NightListItem }) {
         </Disclosure>
         <ListRow title={MODEL_CARD_HEADING} subtitle={night.view.summary.modelVersion ? modelVersionLine(night.view.summary.modelVersion) : undefined} trailing="chevron" onPress={() => router.push('/model-card')} />
       </InsetGroup>
+
+      <DiagnosticsSection night={night} />
 
       {!night.isSample ? (
         <InsetGroup>

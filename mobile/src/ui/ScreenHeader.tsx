@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
+
 import type { ReactNode } from 'react';
+import { useSafeRouter } from '../nav/useSafeRouter';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/useTheme';
@@ -7,27 +8,36 @@ import { AppText } from './AppText';
 import { GradientBorder } from './GradientBorder';
 import { Icon } from './Icon';
 import { PressScale } from './Press';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { COLLAPSE_TO, useScrollY } from './CollapsingBar';
 
 /** Large title block for tab screens: 34pt bold, optional eyebrow and subtitle, optional trailing control. */
 export function ScreenHeader({ title, subtitle, eyebrow, right }: { title: string; subtitle?: string; eyebrow?: string; right?: ReactNode }) {
   const insets = useSafeAreaInsets();
+  const ctx = useScrollY();
+  const fallback = useSharedValue(0);
+  const y = ctx ?? fallback;
+  // The large title keeps its place and fades as the bar title takes over; the subtitle goes first.
+  const titleStyle = useAnimatedStyle(() => ({ opacity: interpolate(y.get(), [8, COLLAPSE_TO], [1, 0], 'clamp') }));
   return (
     <View style={{ paddingTop: insets.top + 10, gap: 6 }}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12 }}>
         <View style={{ flex: 1, gap: 4 }}>
           {eyebrow ? (
-            <AppText variant="subheadline" tone="secondary" weight="600" style={{ letterSpacing: -0.3 }}>
+            <AppText variant="subheadline" tone="secondary" weight="600">
               {eyebrow}
             </AppText>
           ) : null}
-          <AppText variant="largeTitle" accessibilityRole="header" style={{ letterSpacing: -0.5 }}>
-            {title}
-          </AppText>
+          <Animated.View style={ctx ? titleStyle : undefined}>
+            <AppText variant="largeTitle" accessibilityRole="header">
+              {title}
+            </AppText>
+          </Animated.View>
         </View>
         {right}
       </View>
       {subtitle ? (
-        <AppText variant="callout" tone="secondary" style={{ letterSpacing: -0.3 }}>
+        <AppText variant="callout" tone="secondary">
           {subtitle}
         </AppText>
       ) : null}
@@ -37,7 +47,7 @@ export function ScreenHeader({ title, subtitle, eyebrow, right }: { title: strin
 
 /** Glass back button: 44pt tile with a gradient hairline. */
 export function BackButton({ onPress, label = 'Back', icon = 'chevron.left' }: { onPress?: () => void; label?: string; icon?: 'chevron.left' | 'xmark' }) {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, reduceTransparency } = useTheme();
   return (
     <PressScale onPress={onPress ?? (() => router.back())} accessibilityLabel={label} haptic="light">

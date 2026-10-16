@@ -50,12 +50,46 @@ Do not run YAMNet in the JS thread: 69.2 M multiply-adds per patch (counted from
   **Measure on the device before claiming anything** (Xcode Instruments Energy Log, one 8 h run).
 * Reference point measured here: the NumPy re-implementation runs roughly 40 to 60 patches/s on this (busy) Mac CPU.
 
-## Parity gap you must close before shipping
+## Runtime parity (Oct 2026: harness ready, NOT yet run)
 `scripts/yamnet/yamnet_np.py` is a NumPy re-implementation built from Google's official Keras weights. It passes a functional sanity check
 (`data/processed/yamnet/sanity_classes.json`: the expected AudioSet class is in the top 5 for 714 of 832 ESC-50 folds 1-4 clips over 26 mapped
-classes; snoring 32/32) but **has not been compared numerically with the official TFLite output**. The head was trained on the re-implementation's
-scores. Before trusting the head on-device: run the TFLite on a few hundred ESC-50 windows, compare score vectors (expect small differences from
-quantization and resampling), and re-run `evaluate_test.py`-style checks on TFLite-derived scores. If they differ, retrain the head on TFLite outputs.
+classes; snoring 32/32) but **has not been compared numerically with the official TFLite output**, and the head was trained on the re-implementation's
+scores. The TFLite file's own metadata says it is "8 bit quantized internally", so small score differences are expected; whether they move the head's
+decisions near the threshold is the thing to measure. An external reviewer raised this point and we agree.
+
+**Harness:** `scripts/yamnet/parity.py` (shell entry point: `scripts/yamnet/run_parity.sh`).
+- `export` (needs only what the repo already uses; no TFLite runtime): picks 200 development windows (folds 1-4 only, fixed seed: 50 snoring, 50 of the
+  highest-scoring negatives, 100 random negatives), computes NumPy scores, writes `data/processed/yamnet/parity_waveforms.npz`. Already run.
+- `compare` (needs NumPy + a TFLite interpreter): runs the official TFLite on the same 200 waveforms and writes `model/parity.v3.json`:
+  max / mean / 99th-percentile absolute score difference over all 521 outputs, top-1 and top-5 agreement, the Snoring-class (38) difference, and the head
+  decision agreement (disagreements, how many fall within 0.05 of the threshold, per group). **`model/parity.v3.json` does not exist until a real run;
+  its absence means parity is unverified.**
+- Read the result as: any disagreement of the head decision on the 50 positives or the 50 hard negatives is a finding. If the decisions disagree on more
+  than a small fraction of windows near the threshold, retrain the head on TFLite scores (`extract.py` with the TFLite runtime in place of `yamnet_np`)
+  and re-do CV; do not just move the threshold.
+
+**Runtime package (not installed; needs your approval).** This Mac is Intel x86_64 (Core i5-8257U), macOS 15, default Python 3.12.7. There is **no
+macOS-x86_64 wheel for Python 3.12** of the small runtimes: `ai-edge-litert` (all versions from 1.1.0 up, latest 2.3.0) ships macOS wheels for arm64
+only, and `tflite-runtime` has no macOS wheel newer than 2.5.0 (Python 3.5 to 3.8). Smallest working option found (checked on PyPI metadata, not installed):
+- **`ai-edge-litert==1.0.1`**, wheel `ai_edge_litert-1.0.1-cp311-cp311-macosx_10_15_x86_64.whl`, **2,817,400 bytes (2.82 MB)**, requires only `numpy>=1.23.2`.
+  Needs Python 3.11; `/usr/local/bin/python3.11` (3.11.5, with NumPy 2.4.1) is already on this machine. Suggested, in a throwaway venv:
+  `/usr/local/bin/python3.11 -m venv --system-site-packages /tmp/litert-venv && /tmp/litert-venv/bin/pip install ai-edge-litert==1.0.1 && /tmp/litert-venv/bin/python scripts/yamnet/parity.py compare`.
+  Risk, unverified: the wheel was built in Aug 2024 and may have been compiled against NumPy 1.x; if importing it under NumPy 2.4 fails with an ABI error,
+  use a venv with `numpy<2` (about 20 MB more) instead.
+- Fallback if that fails: `tensorflow==2.16.2` (`tensorflow-2.16.2-cp312-cp312-macosx_10_15_x86_64.whl`, **259.7 MB** wheel plus dependencies), the last
+  TensorFlow release with a macOS x86_64 / Python 3.12 wheel. Much larger; only if the small package does not work.
+- Apple-silicon machine: `ai-edge-litert==2.3.0` (cp312, macosx_12_0_arm64, 12.83 MB) works with the default Python 3.12 directly.
+No runtime was installed or run to produce this section.
+
+**Re-validating on the phone (identical audio, expected scores).** `parity.py export` also writes fixtures the app can load and compare:
+- `scripts/yamnet/fixtures/synthetic_fixtures.json` (committable; 4 generated waveforms: 440 Hz tone, white noise, amplitude-modulated noise, near-silence).
+- `data/processed/yamnet/phone_fixtures.json` (git-ignored; 18 ESC-50-derived windows, CC BY-NC, snoring / hard negative / random negative).
+Each fixture holds the exact 15,600 float32 samples (little-endian, base64, plus a sha256 so the phone can prove it fed the same bytes), the 521 expected scores from the
+NumPy implementation (`expectedNumpy`), the head score and decision (threshold 0.6495), and, once `compare` has run, the official TFLite reference
+(`expectedTflite`). On the device: decode the samples, run the shipped TFLite (no preprocessing, no AGC, 16 kHz mono float in [-1, 1]), and check (1) output
+shape 521, (2) max abs score difference to `expectedTflite` (should be ~1e-6 for the same model file on a different CPU; larger for a different
+delegate, in which case record it), (3) the head decision equals `expectedTflite.headDecision` for every fixture. Until `expectedTflite` exists, compare to
+`expectedNumpy` and expect quantization-sized differences, not identity.
 
 ## Other requirements
 * The phone resampler (`src/night/resample.ts`) must deliver 16 kHz mono; YAMNet is sensitive to level only through the log-mel, so apply no AGC.

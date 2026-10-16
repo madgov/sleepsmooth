@@ -13,6 +13,7 @@ import {
   type FinishedClip,
 } from '@core/mobileLogic/clips';
 import { NIGHTS_DIR } from '@core/mobileLogic/nightStore';
+import { excludeClipsFolder, type BackupExclusion } from '@core/mobileLogic/backupExclusion';
 import { nativeAutomation } from '../../modules/sleepsmooth-live-activity';
 import { getStoreRootDirectory } from '../data/fileStore';
 
@@ -20,8 +21,7 @@ const SAFE_ID = /^[A-Za-z0-9_-]{1,80}$/;
 const tmp = () => new Directory(Paths.cache, 'sleepsmooth-clip-tmp');
 const nightClipsDir = (nightId: string) => new Directory(getStoreRootDirectory(), NIGHTS_DIR, nightId, CLIPS_DIR);
 
-/** Result of trying to exclude the clips folder from backup. 'unavailable' when the native module is not linked. */
-export type BackupExclusion = 'excluded' | 'failed' | 'unavailable';
+export type { BackupExclusion };
 
 export const clipTempSink = {
   writeTemp(id: string, wav: Uint8Array): void {
@@ -84,17 +84,23 @@ export async function finalizeClips(nightId: string, picks: readonly FinishedCli
 
 /** Drops the selection-only field before the clip is written to the manifest. */
 function toMeta(c: FinishedClip): ClipMeta {
-  return { id: c.id, file: c.file, category: c.category, tag: c.tag, startMs: c.startMs, durationSec: c.durationSec, peaks: c.peaks, score: c.score };
+  return {
+    id: c.id,
+    file: c.file,
+    category: c.category,
+    tag: c.tag,
+    startMs: c.startMs,
+    durationSec: c.durationSec,
+    peaks: c.peaks,
+    score: c.score,
+    ...(c.eventSec !== undefined ? { eventSec: c.eventSec } : {}),
+    ...(c.aboveFloorDb !== undefined ? { aboveFloorDb: c.aboveFloorDb } : {}),
+    ...(c.meanWindowScore !== undefined ? { meanWindowScore: c.meanWindowScore } : {}),
+  };
 }
 
 function excludeFromBackup(dir: Directory): BackupExclusion {
-  if (!nativeAutomation) return 'unavailable';
-  try {
-    const path = dir.uri.replace(/^file:\/\//, '');
-    return nativeAutomation.setExcludedFromBackup(decodeURI(path)) ? 'excluded' : 'failed';
-  } catch {
-    return 'failed';
-  }
+  return excludeClipsFolder(nativeAutomation, dir.uri);
 }
 
 export async function readClipsManifest(nightId: string): Promise<ClipsManifest | null> {
@@ -118,7 +124,7 @@ export async function readClipBytes(nightId: string, file: string): Promise<Uint
   }
 }
 
-function nightIds(): string[] {
+export function nightIds(): string[] {
   try {
     const d = new Directory(getStoreRootDirectory(), NIGHTS_DIR);
     return d.exists ? d.list().map((e) => e.name).filter((n) => SAFE_ID.test(n)) : [];

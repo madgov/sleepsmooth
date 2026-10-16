@@ -1,3 +1,4 @@
+import { Redirect } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 import { nightSource, type NightAudioState } from '../../src/data/nightSource';
 import { useTheme } from '../../src/theme/useTheme';
@@ -14,7 +15,13 @@ import { HealthLineView, HealthRowView } from '../../src/ui/HealthParts';
 const STATES: NightAudioState[] = ['snore-like-observed', 'few-observations', 'not-assessed', 'model-not-applicable', 'no-model'];
 const SOURCES = ['user-reported', 'audio-observation', 'missing', 'sample', 'app-guidance'] as const;
 
+// Development only: in a release build (__DEV__ false) this route redirects home and the gallery is not rendered.
 export default function Gallery() {
+  if (!__DEV__) return <Redirect href="/" />;
+  return <GalleryScreen />;
+}
+
+function GalleryScreen() {
   const { colors } = useTheme();
   return (
     <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 16, paddingBottom: 40, gap: 20 }}>
