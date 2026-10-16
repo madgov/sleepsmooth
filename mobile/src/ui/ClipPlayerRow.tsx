@@ -53,7 +53,7 @@ export function ClipPlayerRow({ clip, sample, playing, loading, progress, disabl
         <View style={{ flex: 1, gap: 4 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <View style={{ paddingVertical: 3, paddingHorizontal: 9, borderRadius: 8, borderCurve: 'continuous', backgroundColor: colors.accentFill }}>
-              <AppText variant="caption1" weight="600" tone="accent" maxFontSizeMultiplier={1.4}>
+              <AppText variant="caption1" weight="600" tone="accent" maxFontSizeMultiplier={2}>
                 {meta.chip}
               </AppText>
             </View>

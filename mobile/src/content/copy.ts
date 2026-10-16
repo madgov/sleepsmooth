@@ -21,7 +21,7 @@ export const COPY = {
   N16_NOTIFS_OFF: 'Notifications are off. You can start recording from the Audio tab any time.',
   N17_ABOUT_TITLE: 'Add your answers (optional)',
   N18_ABOUT_BODY:
-    'A short screening score (NoSAS) and a symptom checklist. They help the results show what you reported next to what a recording shows. About 2 minutes.',
+    'A short questionnaire score (NoSAS) and a symptom checklist. They help the results show what you reported next to what a recording shows. About 2 minutes.',
   N19_ABOUT_LOCAL: 'Height, weight, age and sex stay on this phone.',
   N20_FIRST_NIGHT_TITLE: 'Before your first night',
   N22_BYSTANDER_ACK: 'I have told anyone sharing the room',
@@ -63,7 +63,7 @@ export const COPY = {
   N61_ESTIMATE_LINE: 'Estimated sleep window (unvalidated estimate). The phone cannot tell sleep from lying quietly awake.',
   N62_LEGEND: { asleep: 'Estimated asleep', uncertain: 'Uncertain', awake: 'Awake or not captured' },
   N63_SIGNALS: (used: string, n: number, total: number) => `Signals used: ${used} (${n} of ${total}).`,
-  N64_SENSITIVITY: (a: number, b: number) => `Counting only likely-asleep time: ${a} windows. Including uncertain time: ${b} windows.`,
+  N64_SENSITIVITY: (a: number, b: number) => `For context, by the rough estimate: ${a} snore-like windows in likely-asleep time, ${b} including uncertain time. The totals count all recorded time.`,
   N65_DELETE_NIGHT: 'Delete this night',
   N68_NO_ESTIMATE: 'No sleep-window estimate for this night.',
   N73_CONSENT_ROW: 'Overnight sound consent',

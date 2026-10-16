@@ -120,6 +120,13 @@ def export():
 # ------------------------------------------------------------------ compare (needs a TFLite runtime, NumPy only otherwise)
 def import_interpreter():
     errs = []
+    try:        # python -I disables the user site; the approved `pip install --user ai-edge-litert` lives there. Add that one directory back.
+        import site
+        us = site.getusersitepackages()
+        if os.path.isdir(os.path.join(us, 'ai_edge_litert')) and us not in sys.path:
+            sys.path.append(us)
+    except Exception:       # noqa: BLE001
+        pass
     for mod, cls in (('ai_edge_litert.interpreter', 'Interpreter'), ('tflite_runtime.interpreter', 'Interpreter'), ('tensorflow.lite', 'Interpreter')):
         try:
             m = __import__(mod, fromlist=[cls])
@@ -146,8 +153,23 @@ def run_tflite(Interpreter, waves):
     return np.stack(res).astype(np.float32), dict(inputShape=shape, inputDtype=str(inp['dtype']), outputShape=[int(s) for s in out[0]['shape']])
 
 
+def _external_runner(npz_path):
+    """Scores produced elsewhere by a TFLite-only script (e.g. TensorFlow's tf.lite in another environment), keyed by sha256 of the float32 bytes."""
+    import hashlib
+    z = np.load(npz_path, allow_pickle=False)
+    def run(Interpreter, waves):
+        return np.stack([z[hashlib.sha256(np.ascontiguousarray(w, '<f4').tobytes()).hexdigest()] for w in waves]).astype(np.float32), dict(external=os.path.basename(npz_path))
+    return run
+
+
 def compare(runtime_name=None):
-    Interpreter, info = import_interpreter()
+    global run_tflite
+    ext = os.environ.get('PARITY_TFLITE_SCORES')       # path to npz from an external TFLite-only run; bypasses the in-process interpreter
+    if ext:
+        run_tflite = _external_runner(ext)
+        Interpreter, info = object(), 'external tf.lite scores: ' + os.path.basename(ext)
+    else:
+        Interpreter, info = import_interpreter()
     if Interpreter is None:
         print('compare: no TFLite runtime importable in this interpreter:\n  ' + '\n  '.join(info))
         print('See docs/YAMNET_INTEGRATION.md ("Runtime parity") for the smallest package and how to run this step.')
@@ -160,6 +182,9 @@ def compare(runtime_name=None):
     hs_np, hs_tf = head_score(head, np_sc), head_score(head, tf_sc)
     dec_np, dec_tf = hs_np >= head['thr'], hs_tf >= head['thr']
     near = np.abs(hs_np - head['thr']) < 0.05
+    OP_THR = 0.98            # night operating point (model/segment_eval.synthetic.json "chosen")
+    d98 = (hs_np >= OP_THR) != (hs_tf >= OP_THR)
+    isg = np.array([m['group'] for m in meta])
     groups = np.array([m['group'] for m in meta])
     rep = dict(runtime=info, tflite=os.path.basename(TFLITE), n=len(waves), tfliteIO=io,
                scores=dict(maxAbsDiff=float(d.max()), meanAbsDiff=float(d.mean()), p99AbsDiff=float(np.percentile(d, 99)),
@@ -170,9 +195,19 @@ def compare(runtime_name=None):
                          disagreements=int((dec_np != dec_tf).sum()), flaggedNumpy=int(dec_np.sum()), flaggedTflite=int(dec_tf.sum()),
                          headScoreMaxAbsDiff=float(np.abs(hs_np - hs_tf).max()), headScoreMeanAbsDiff=float(np.abs(hs_np - hs_tf).mean()),
                          windowsWithin0_05OfThreshold=int(near.sum()), disagreementsAmongThose=int(((dec_np != dec_tf) & near).sum())),
+               operatingPoint98=dict(threshold=OP_THR, disagreements=int(d98.sum()), decisionAgreement=float(1 - d98.mean()),
+                                     flaggedNumpy=int((hs_np >= OP_THR).sum()), flaggedTflite=int((hs_tf >= OP_THR).sum()),
+                                     disagreementsByGroup={g: int(d98[isg == g].sum()) for g in np.unique(isg)},
+                                     windowsWithin0_02OfThreshold=int((np.abs(hs_np - OP_THR) < 0.02).sum())),
                perGroup={g: dict(n=int((groups == g).sum()), decisionAgreement=float((dec_np == dec_tf)[groups == g].mean()),
                                  snoringScoreCorr=float(np.corrcoef(np_sc[groups == g, 38], tf_sc[groups == g, 38])[0, 1])) for g in np.unique(groups)},
                note='NumPy YAMNet re-implementation vs the official quantized TFLite. Windows are DEVELOPMENT folds 1-4 only. This checks runtime agreement, not model accuracy.')
+    h = rep['head']; o = rep['operatingPoint98']
+    crit = dict(headProbMaxAbsDiffLt0_01=bool(h['headScoreMaxAbsDiff'] < 0.01),
+                decisionAgreementGe99pct_at0_6495=bool(h['decisionAgreement'] >= 0.99),
+                decisionAgreementGe99pct_at0_98=bool(o['decisionAgreement'] >= 0.99),
+                atMost1DisagreementPosAndHardNeg_at0_98=bool(o['disagreementsByGroup'].get('positive', 0) <= 1 and o['disagreementsByGroup'].get('hard-negative', 0) <= 1))
+    rep['preRegisteredCriteria'] = dict(doc='docs/YAMNET_INTEGRATION.md "Parity pass criteria (pre-registered)"', results=crit, verdict='PASS' if all(crit.values()) else 'FAIL')
     os.makedirs(os.path.dirname(REPORT), exist_ok=True)
     json.dump(rep, open(REPORT, 'w'), indent=1)
     for p in (PHONE, SYNTH):                     # fill expectedTflite on the fixtures so the phone has the official reference too

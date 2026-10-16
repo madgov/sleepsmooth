@@ -64,9 +64,9 @@ export function BackBar({ title, right, onBack, icon }: { title?: string; right?
   return (
     <View style={{ paddingTop: insets.top + 6, paddingHorizontal: 20, paddingBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
       <BackButton onPress={onBack} icon={icon} />
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, minWidth: 0, paddingHorizontal: 4 }}>
         {title ? (
-          <AppText variant="headline" numberOfLines={1} accessibilityRole="header" center>
+          <AppText variant="headline" numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.7} maxFontSizeMultiplier={1.6} accessibilityRole="header" center>
             {title}
           </AppText>
         ) : null}

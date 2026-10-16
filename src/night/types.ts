@@ -167,9 +167,9 @@ export type NightSummary = {
   notCapturedSec: number;
   estimatedWindow: { start: number; end: number } | null;
   signalsUsed: { name: string; usable: boolean }[];
-  /** Seconds captured in epochs analysed for snore-like patterns (likely-asleep + uncertain). */
+  /** Seconds captured in every epoch inside the scheduled window. The sleep-state estimate does not exclude any of it. */
   assessedSec: number;
-  /** Scored windows in analysed epochs. The ONLY denominator: unscored windows never enter it. */
+  /** Scored windows in every in-window epoch. The ONLY denominator: unscored windows never enter it. */
   assessableWindows: number;
   snoreLikeWindows: number;
   /** Windows in analysed epochs that were NOT analysed. Reported, never counted as "no snore". */
@@ -181,11 +181,13 @@ export type NightSummary = {
   bandwidthApplicable: boolean;
   effectiveBandwidthHz: number | null;
   /**
-   * asleepOnly: likely-asleep epochs. withUncertain: likely-asleep + uncertain (the default view and the verdict input).
-   * allInWindow: every captured epoch inside the scheduled window, including epochs the unvalidated estimate labels
-   * likely-awake. Shown as a separate, additional line so audio is never silently dropped by the sleep-state guess.
+   * CONTEXT ONLY. The verdict and the headline totals count every in-window epoch (see summary.ts), whatever the
+   * unvalidated sleep-state estimate says. These lines show how the count splits by that estimate:
+   * asleepOnly: epochs labelled likely-asleep. withUncertain: likely-asleep + uncertain.
+   * inLikelyAwake: epochs labelled likely-awake. They ARE in the totals; this is the annotation "N of these were in time
+   * the phone guessed you were awake".
    */
-  sensitivity: { asleepOnly: SensitivityLine; withUncertain: SensitivityLine; allInWindow: SensitivityLine };
+  sensitivity: { asleepOnly: SensitivityLine; withUncertain: SensitivityLine; inLikelyAwake: SensitivityLine };
   quality: NightQuality;
   nightState: NightAudioState;
   notAssessedReasons: string[];

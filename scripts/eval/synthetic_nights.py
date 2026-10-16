@@ -28,7 +28,8 @@ os.environ.setdefault('VECLIB_MAXIMUM_THREADS', '2')
 import numpy as np
 from multiprocessing import Pool
 from common import PROC, YDIR, load_manifest, TRAIN_FOLDS, TEST_FOLD
-from yamnet_np import YamNet, read_wav_f32, window_to_patch
+from yamnet_np import read_wav_f32, window_to_patch
+from yamnet_backend import YamNet
 from esc_types import TYPE, BEDROOM
 import night_logic as NL
 

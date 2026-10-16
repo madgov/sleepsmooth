@@ -10,6 +10,7 @@ import {
   AUDIO_DETAIL,
   DISCLAIMER_AUDIO,
   DISCLAIMER_CANNOT_RULE_OUT,
+  DISCLAIMER_NOT_DIAGNOSIS,
   ERROR_BOUNDARY_MESSAGE,
   ERROR_BOUNDARY_TITLE,
   MISSING_AUDIO_UNUSABLE,
@@ -32,6 +33,7 @@ import { useNightEvidence } from '../../src/state/evidence';
 import { useSettings } from '../../src/state/settings';
 import { useTheme } from '../../src/theme/useTheme';
 import { AppText } from '../../src/ui/AppText';
+import { DisclaimerNote } from '../../src/ui/DisclaimerNote';
 import { Disclosure } from '../../src/ui/Disclosure';
 import { EvidenceCard } from '../../src/ui/EvidenceCard';
 import { BackBar } from '../../src/ui/ScreenHeader';
@@ -169,6 +171,10 @@ function NightBody({ night }: { night: NightListItem }) {
         testID="night-state-card"
       />
 
+      <View style={{ paddingHorizontal: 4 }}>
+        <DisclaimerNote testID="night-disclaimer">{DISCLAIMER_NOT_DIAGNOSIS}</DisclaimerNote>
+      </View>
+
       {night.state !== 'not-recorded' ? <CoverageSection night={night} /> : null}
 
       <View style={{ gap: 8 }}>
@@ -203,23 +209,25 @@ function NightBody({ night }: { night: NightListItem }) {
       {showHealth ? <HealthLineView night={healthNight} noRecords={hs.nights.length === 0 && !night.isSample} sample={night.isSample} /> : null}
 
       <Section title="User-reported" badge="user-reported">
-        {ev.userItems.length > 0 ? ev.userItems.map((i) => <EvidenceCard key={i.id} item={i} />) : <AppText variant="subheadline" tone="secondary">Nothing reported yet.</AppText>}
+        {ev.userItems.length > 0 ? ev.userItems.map((i) => <EvidenceCard key={i.id} item={i} hideLimitations={SAID_ONCE} />) : <AppText variant="subheadline" tone="secondary">Nothing reported yet.</AppText>}
       </Section>
 
       <Section title="Audio observation" badge="audio-observation" sample={night.isSample}>
-        <EvidenceCard item={ev.audioItem} />
-        <Surface source={night.isSample ? 'sample' : 'audio-observation'}>
-          <View style={{ gap: 6 }}>
-            <AppText variant="subheadline">{AUDIO_DETAIL[detailKey(night.state)]}</AppText>
-            <AppText variant="footnote" tone="secondary">{SNORE_NOT_APNEA_LINE}</AppText>
+        <EvidenceCard item={ev.audioItem} hideLimitations={SAID_ONCE} />
+        <Surface source={night.isSample ? 'sample' : 'audio-observation'} padding={0}>
+          <View style={{ padding: 16 }}>
+            <AppText variant="subheadline">{SNORE_NOT_APNEA_LINE}</AppText>
           </View>
+          <Disclosure title="What the recording showed">
+            <AppText variant="subheadline" tone="secondary">{AUDIO_DETAIL[detailKey(night.state)]}</AppText>
+          </Disclosure>
         </Surface>
       </Section>
 
       {night.state !== 'not-recorded' ? <ClipsSection nightId={night.id} isSample={night.isSample} nightStartMs={night.view.record.captureStart} /> : null}
 
       <Section title="Missing information" badge="missing">
-        {[...ev.missingItems].map((i) => <EvidenceCard key={i.id} item={i} />)}
+        {[...ev.missingItems].map((i) => <EvidenceCard key={i.id} item={i} hideLimitations={SAID_ONCE} />)}
         {notAssessed ? night.notAssessedReasons.map((r) => (
           <Surface key={r} source="missing">
             <AppText variant="subheadline">{r}</AppText>
@@ -247,6 +255,9 @@ function NightBody({ night }: { night: NightListItem }) {
     </Animated.View>
   );
 }
+
+/** The app-wide "not a diagnosis" line is shown once under the result, so the evidence cards do not repeat it. */
+const SAID_ONCE = [DISCLAIMER_NOT_DIAGNOSIS] as const;
 
 function detailKey(state: NightListItem['state']): keyof typeof AUDIO_DETAIL {
   switch (state) {

@@ -95,3 +95,35 @@ delegate, in which case record it), (3) the head decision equals `expectedTflite
 * The phone resampler (`src/night/resample.ts`) must deliver 16 kHz mono; YAMNet is sensitive to level only through the log-mel, so apply no AGC.
 * Keep the existing "too quiet to assess" rule (-72 dBFS) in front of the head.
 * Scores are never shown as percentages. A below-threshold result is not reassurance.
+
+## Parity pass criteria (pre-registered)
+Written 2026-10-16T06:12:38Z, BEFORE the first real `compare` run (no `model/parity.v3.json` existed at this time). These were not defined elsewhere in the repo.
+Windows: the 200 development windows of `parity.py export` (ESC-50 folds 1-4 only) plus the 4 synthetic fixtures. Verdict is PASS only if ALL hold:
+1. Head probability: max absolute difference NumPy vs TFLite < 0.01 over the 200 windows.
+2. Head decisions identical on at least 99% of windows (>= 198 of 200), evaluated at BOTH the window threshold 0.6495 and the night operating-point
+   threshold 0.98 (the one the app will use for segments).
+3. No decision disagreement among the 50 snoring-positive windows or the 50 hard negatives at 0.98 beyond 1 window each (a larger count is a FAIL even if 1 and 2 hold).
+Reported, not gating: class-score max/mean/p99 absolute difference, top-1 and top-5 agreement, Snoring class (38) difference.
+FAIL means: STOP the iPhone integration and report; v3 metrics were computed with the NumPy port and do not transfer.
+
+**First `compare` attempt (Oct 2026): NOT RUN, parity still UNVERIFIED.** `ai-edge-litert==1.0.1` installed (`pip install --user`, Python 3.11.5) but fails at
+`Interpreter(...)` with `_ARRAY_API not found` / "module compiled using NumPy 1.x cannot be run in NumPy 2.4.1" (the ABI risk flagged above). The only
+workaround is `numpy<2` for cp311 (not installed; no cp311 NumPy 1.x exists on this Mac) or a TensorFlow runtime, neither approved. `model/parity.v3.json` was not written.
+
+**Parity result (Oct 2026): FAIL against the pre-registered criteria.** Runtime: TensorFlow 2.16.2 `tf.lite.Interpreter` (XNNPACK, x86_64) from the existing
+`~/tf_env`, run read-only by a TFLite-only script; scores were passed to `parity.py compare` via `PARITY_TFLITE_SCORES`. 200 development windows
+(`model/parity.v3.json`): class-score max abs diff 0.975, mean 0.0029, p99 0.058; top-1 agreement 52.5%, top-5 set agreement 11.5%; Snoring (38) max diff
+0.854; head probability max abs diff 0.882 (criterion < 0.01); head decisions identical on 83.0% at 0.6495 and 86.5% at 0.98 (criterion >= 99%);
+at 0.98 the disagreements are 18 of 50 positives and 7 of 50 hard negatives (criterion <= 1 each). Both implementations rank the snoring class highest on
+average for positives (mean score 0.52 NumPy, 0.62 TFLite) so neither is obviously broken, but per-window agreement is far too low for the v3 metrics
+(computed with the NumPy port) to transfer to the TFLite runtime. Not diagnosed: whether the cause is the quantized graph, a frontend difference or a harness issue.
+Per the protocol the head must be retrained on TFLite scores and re-evaluated before any on-device claim; iPhone integration was NOT started.
+
+## Provenance check of the YAMNet files (2026-10-15)
+* `yamnet.h5`: md5 `8234225c045859752bd4a2e101f8cd1a`, 15,296,092 bytes. Matches the ETag / `x-goog-hash` md5 (`gjQiXARYWXUr1KLhAfjNGg==`) returned by a HEAD request to
+  `https://storage.googleapis.com/audioset/yamnet.h5`. VERIFIED against Google's object metadata.
+* `lite-model_yamnet_classification_tflite_1.tflite` (sha256 `10c95ea3eb9a7bb4cb8bddf6feb023250381008177ac162ce169694d05c317de`, 4,126,810 bytes): **NOT VERIFIED.**
+  The old TF Hub bucket paths (`storage.googleapis.com/tfhub-lite-models/...`) now return 403 for anonymous callers, `tfhub.dev` returns 404, and the Kaggle Models page
+  (`kaggle.com/models/google/yamnet/tfLite/classification-tflite/1`) only serves a `.tar.gz` bundle (3,240,957 bytes, md5 `uE8DZmydcMuFuelFZ6+FMA==`, crc32c `SZQBBw==`
+  from a 1-byte ranged GET). That is the hash of the archive, not of the .tflite inside it, so it cannot be compared with our file without downloading and unpacking the
+  archive. No official per-file hash is published. The file is therefore NOT pinned and NOT copied into `mobile/assets`.

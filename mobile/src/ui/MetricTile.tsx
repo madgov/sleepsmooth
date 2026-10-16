@@ -31,7 +31,7 @@ export function MetricTile({ label, value, unit, caption, icon, testID }: Metric
         <View style={{ flex: 1, padding: 16, justifyContent: 'space-between', gap: 8 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Icon name={icon} size={16} color={colors.labelSecondary} />
-            <AppText variant="caption1" weight="600" tone="secondary" style={{ flexShrink: 1 }} maxFontSizeMultiplier={1.3}>
+            <AppText variant="caption1" weight="600" tone="secondary" style={{ flexShrink: 1 }} maxFontSizeMultiplier={2}>
               {label}
             </AppText>
           </View>
@@ -47,7 +47,7 @@ export function MetricTile({ label, value, unit, caption, icon, testID }: Metric
               ) : null}
             </View>
             {caption ? (
-              <AppText variant="footnote" tone="secondary" maxFontSizeMultiplier={1.4}>
+              <AppText variant="footnote" tone="secondary" maxFontSizeMultiplier={2}>
                 {caption}
               </AppText>
             ) : null}

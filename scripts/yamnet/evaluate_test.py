@@ -10,7 +10,8 @@ import sys, os, json, subprocess, tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 from common import *
-from yamnet_np import YamNet, read_wav_f32, window_to_patch
+from yamnet_np import read_wav_f32, window_to_patch
+from yamnet_backend import YamNet, SCORES_ONLY
 
 METRICS = os.path.join(MODEL_DIR, os.environ.get('METRICS_FILE', 'metrics.v3.json'))
 TRAINED = os.environ.get('TRAINED_V3', 'trained.v3.json')
@@ -86,8 +87,11 @@ for k in ['zeroshot'] + HEADS:
     pair[f'{k}_minus_v1'] = paired_auc_diff(test_scores[k][ok1], v1_scores[ok1], y[ok1], clip[ok1])
 for k in HEADS:
     pair[f'{k}_minus_zeroshot'] = paired_auc_diff(test_scores[k], test_scores['zeroshot'], y, clip)
-pair['mlp_minus_logreg'] = paired_auc_diff(test_scores['mlp'], test_scores['logreg'], y, clip)
-pair['mlp_scores_minus_mlp'] = paired_auc_diff(test_scores['mlp_scores'], test_scores['mlp'], y, clip)
+if not SCORES_ONLY:
+    pair['mlp_minus_logreg'] = paired_auc_diff(test_scores['mlp'], test_scores['logreg'], y, clip)
+    pair['mlp_scores_minus_mlp'] = paired_auc_diff(test_scores['mlp_scores'], test_scores['mlp'], y, clip)
+else:
+    pair['mlp_scores_minus_logreg_scores'] = paired_auc_diff(test_scores['mlp_scores'], test_scores['logreg_scores'], y, clip)
 
 # ---------- gate (preregistered; identical to v1's three conditions)
 kc = json.load(open(os.path.join(YDIR, 'kaggle_checks.json'))) if USE_KAGGLE and os.path.exists(os.path.join(YDIR, 'kaggle_checks.json')) else None

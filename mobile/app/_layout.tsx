@@ -21,7 +21,7 @@ Notifications.setNotificationHandler({
 });
 
 function Routes() {
-  const { colors } = useTheme();
+  const { colors, reduceMotion } = useTheme();
   const router = useRouter();
   const { status, settings } = useSettingsSnapshot();
   const fit = useSheetOptions('fitToContents');
@@ -65,9 +65,9 @@ function Routes() {
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="intro" options={{ animation: 'fade', gestureEnabled: false }} />
-        <Stack.Screen name="onboarding" options={{ animation: 'slide_from_right', gestureEnabled: false }} />
+        <Stack.Screen name="onboarding" options={{ animation: reduceMotion ? 'fade' : 'slide_from_right', gestureEnabled: false }} />
         <Stack.Screen name="(tabs)" options={{ animation: 'fade', gestureEnabled: false }} />
-        <Stack.Screen name="recording" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom', gestureEnabled: false }} />
+        <Stack.Screen name="recording" options={{ presentation: 'fullScreenModal', animation: reduceMotion ? 'fade' : 'slide_from_bottom', gestureEnabled: false }} />
         <Stack.Screen name="start-sheet" options={tall} />
         <Stack.Screen name="consent" options={fit} />
         <Stack.Screen name="auto-record" options={tall} />

@@ -48,7 +48,7 @@ function Inner({ state, elapsedSec, endAtMs, levels, band, stale, onStop, onHide
         <View style={{ alignItems: 'center', gap: 6 }}>
           {simulatedLabel ? (
             <View style={{ paddingVertical: 4, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.sample.border, backgroundColor: colors.sample.bg, maxWidth: '100%' }}>
-              <AppText variant="caption1" weight="600" numberOfLines={1} style={{ color: colors.sample.fg }}>
+              <AppText variant="caption1" weight="600" center style={{ color: colors.sample.fg }}>
                 {simulatedLabel}
               </AppText>
             </View>

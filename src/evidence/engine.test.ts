@@ -45,7 +45,7 @@ describe('ER-3 rules table', () => {
 
   it('rule 4 lists missing items', () => {
     const s = evaluate(mk({ noSas: 'incompleteBelow', symptoms: 'none' }));
-    expect(s.headline).toBe('This screening cannot rule out sleep apnea.');
+    expect(s.headline).toBe('These results cannot rule out sleep apnea.');
     expect(s.missing.join(' ')).toMatch(/Neck/);
     expect(s.missing.join(' ')).toMatch(/Audio/);
   });

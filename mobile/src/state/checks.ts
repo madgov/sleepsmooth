@@ -1,5 +1,6 @@
 // Presentation model for the Checks tab. Statuses come straight from the evidence engine's item states (state/evidence.ts);
 // nothing here interprets a score or decides a conclusion.
+import { NOSAS_ENABLED } from '@core/content/claims';
 import type { EvidenceItem, EvidenceState } from '@core/types/evidence';
 import type { SymbolName } from '../ui/Icon';
 import type { ToneName } from '../theme/tokens';
@@ -39,7 +40,7 @@ export function buildChecks(items: readonly EvidenceItem[], s: Settings, realNig
   const mk = (id: CheckId, title: string, kind: string, icon: SymbolName, status: CheckStatus, item: EvidenceItem | null): CheckModel => ({ id, title, kind, icon, status, tone: STATUS_TONE[status], item });
   return [
     mk('snore', 'Snore-pattern check', 'Overnight audio, analysed on this phone', 'waveform', audioStatus, audio),
-    mk('nosas', 'NoSAS screening', 'Height, weight, neck, snoring, age, sex', 'list.clipboard', nosas ? fromState(nosas.state) : 'Not done yet', nosas),
+    ...(NOSAS_ENABLED ? [mk('nosas', 'NoSAS questionnaire', 'Height, weight, neck, snoring, age, sex', 'list.clipboard', nosas ? fromState(nosas.state) : 'Not done yet', nosas)] : []),
     mk('symptoms', 'Symptom checklist', 'How often you notice six symptoms', 'checklist', symptoms ? fromState(symptoms.state) : 'Not done yet', symptoms),
     mk('warning', 'Warning signs', 'One question about drowsy driving', 'exclamationmark.triangle', warnStatus, find('redFlag')),
   ];

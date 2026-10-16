@@ -741,3 +741,21 @@ Decision: the verdict rules were **not** changed. They are unvalidated either wa
 Coverage view (`src/mobileLogic/coverage.ts`): four kinds of time, never merged or graded: recorded and assessable, recorded but not assessable, not recorded (gap), outside the sleep hours. "Assessable" means the share of an epoch's windows the snore model could score. It does not depend on the sleep estimate. A bar is drawn as assessable once a quarter of its recorded time was scored, because most windows in a quiet room sit under the level gate and a majority rule would hide real stretches of analysed time. "Nothing snore-like was found in the assessable time" and "Could not assess" are separate sentences, and neither reads as "all clear".
 
 Diagnostics and the test protocol: `mobile/DEVICE_TEST.md`. Privacy promises and their status: `docs/PRIVACY_CHECKS.md`. Reproducible release check: `npm run release:check`, output in `docs/releases/`.
+
+---
+
+## ADDENDUM 2026-10-15: the sleep estimate no longer hides evidence (supersedes the 2026-10-14 decision on verdict rules)
+
+**Decision:** every captured epoch inside the scheduled window counts toward the night verdict and the totals, whatever the motion-based sleep estimate says. The estimate is context only. It still appears under "Rough estimate (unvalidated)" and annotates the count: "N of these snore-like windows were in time the phone guessed you were awake. They are counted in the totals above."
+
+**Why:** the 2026-10-14 audit left the verdict rules alone and added a side count. That kept the product's main number dependent on an unvalidated estimate, which could drop real snore-like windows (turning over in bed raises the motion signal) and, with the screen on all night, turned a fully recorded night into "not assessed". Letting an unvalidated guess hide evidence risks false reassurance, which the product principles forbid. Counting everything recorded in the scheduled hours is the more conservative reading of what the audio shows.
+
+**What changed:**
+- `summarizeNight` (`src/night/summary.ts`): the analysed set is every in-window epoch (`state !== 'outside-window'`). `assessedSec`, `assessableWindows`, `snoreLikeWindows`, episodes, `unscoredWindows` and the bandwidth check all use it. The logic does not read the episode or level-gate constants, so model-upgrade changes to them flow through unchanged.
+- `sensitivity.allInWindow` is removed (it is now the main number). `sensitivity.inLikelyAwake` is new: the part of the count that falls in likely-awake time, used only for the annotation. `asleepOnly` and `withUncertain` remain as context lines.
+- Unchanged: "not assessed" for time that was not captured, below the silence floor or under the level gate (no scored windows, too short, low coverage, unusable quality), "model not applicable", and the rule that unscored windows are never read as "no snore".
+- Behaviour: a screen-on-all-night recording now gets the same verdict as the same audio with the screen off. The estimate and the hour-by-hour view are unchanged.
+- Copy: Details shows the annotation and a counting-rule line (`awakeGuessContextLine`, `COUNTING_RULE_LINE`, appended to `src/content/claims.ts`; the old `awakeWindowsLine` is no longer used). The context line in Details (`N64_SENSITIVITY`) now says the totals count all recorded time.
+- Tests: `src/night/sleepFilterAudit.test.ts` inverted, plus screen-on cases (snore-like, nothing scorable, scored but none snore-like).
+
+Still unvalidated: whether counting all in-window time changes how well the verdict matches what a clinician would find. This only removes a dependency on the estimate.

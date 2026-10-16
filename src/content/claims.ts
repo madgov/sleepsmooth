@@ -4,6 +4,23 @@
 export const NOSAS_CITATION =
   'Marti-Soler H, et al. The NoSAS score for screening of sleep-disordered breathing: a derivation and validation study. Lancet Respir Med 2016;4:742-748. doi:10.1016/S2213-2600(16)30075-3.';
 
+/**
+ * LICENSING FALLBACK FLAG (docs/outreach/NOSAS_PERMISSION_EMAIL.md). NoSAS reuse terms are NOT VERIFIED. Set to false to hide
+ * the NoSAS questions, score, checks row and evidence item everywhere (web and iPhone). The app then shows only the
+ * user-reported symptom checklist and the sound observations. Default: shown.
+ */
+export const NOSAS_ENABLED: boolean = true;
+
+/**
+ * TODO (user action): set to the real HTTPS origin that serves public/privacy.html and public/support.html.
+ * ".example" is a reserved name that never resolves, so the placeholder cannot point anywhere real. Apple requires live URLs.
+ */
+export const SITE_BASE_URL = 'https://TODO-set-your-domain.example';
+export const PRIVACY_POLICY_TITLE = 'Privacy policy';
+export const SUPPORT_TITLE = 'Support';
+export const PRIVACY_POLICY_URL = `${SITE_BASE_URL}/privacy.html`;
+export const SUPPORT_URL = `${SITE_BASE_URL}/support.html`;
+
 export const NOSAS_URLS = [
   'https://iris.unil.ch/handle/iris/57504',
   'https://pmc.ncbi.nlm.nih.gov/articles/PMC6977329',
@@ -119,7 +136,7 @@ export const RED_FLAG_NOTE =
 export const WELCOME_PURPOSE =
   'SleepSmooth helps you organize what you notice about your sleep, see what the available information does and does not show, and prepare a summary to discuss with a clinician.';
 export const WELCOME_CAN = [
-  'Ask a short set of screening questions and a symptom checklist.',
+  'Ask a short set of questions and a symptom checklist.',
   'Optionally look at a recording of your sleep sounds for acoustic patterns, on your own device.',
   'Show what each piece of information shows, what is missing, and where it is uncertain.',
   'Prepare a summary you can edit and bring to an appointment.',
@@ -137,10 +154,10 @@ export const CONSENT_DETAIL =
 
 // Results.
 export const HEADLINE_DISCUSS = 'Based on what you shared, this is worth discussing with a clinician.';
-export const HEADLINE_INCONCLUSIVE = 'This screening cannot rule out sleep apnea.';
-export const HEADLINE_NOT_ENOUGH = 'There is not enough information yet. This screening cannot rule out sleep apnea.';
+export const HEADLINE_INCONCLUSIVE = 'These results cannot rule out sleep apnea.';
+export const HEADLINE_NOT_ENOUGH = 'There is not enough information yet. These results cannot rule out sleep apnea.';
 export const CONFLICT_QUIET_OR_MISSING_AUDIO =
-  'Your symptoms and screening answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.';
+  'Your symptoms and questionnaire answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.';
 export const NOTE_SNORE_LIKE =
   'Snore-like sounds were observed; snoring alone does not mean sleep apnea, but it is worth mentioning.';
 export const NOTE_AUDIO_NEVER_DOWNGRADES =
@@ -151,7 +168,7 @@ export const AUDIO_SLOT_LABEL = 'Audio evidence';
 export const AUDIO_SLOT_EMPTY = 'No recording was analyzed. That is a missing piece of information, not a reassuring result.';
 
 export const MISSING_NECK = 'Neck circumference (NoSAS item)';
-export const MISSING_NOSAS = 'NoSAS screening questions';
+export const MISSING_NOSAS = 'NoSAS questions';
 export const MISSING_SYMPTOMS = 'Symptom checklist';
 export const MISSING_AUDIO = 'Audio recording (optional)';
 export const MISSING_AUDIO_UNUSABLE = 'A usable recording (the recording could not be assessed)';
@@ -186,7 +203,7 @@ export const SYNTHETIC_PREFIX = `${SYNTHETIC_LABEL}: `;
 // Summary and next steps.
 export const SUMMARY_SECTION_TITLES = {
   reported: 'What I reported',
-  screening: 'Screening score (NoSAS)',
+  screening: 'Questionnaire score (NoSAS)',
   audio: 'Recording observations',
   guidance: 'What this app can and cannot say',
   questions: 'Questions for my clinician',
@@ -284,7 +301,7 @@ export const FOOTER_MODEL_CARD = 'Model card';
 
 export const SOURCES_TITLE = 'Sources and claims';
 export const SOURCES_INTRO =
-  'Everything this prototype says about screening comes from the sources below. Nothing here is clinically validated for this app.';
+  'Everything this prototype says about the questionnaire score comes from the sources below. Nothing here is clinically validated for this app.';
 export const MODEL_CARD_TITLE = 'Model card (summary)';
 export const MODEL_CARD_LICENSE =
   'The model was trained on ESC-50 clips (CC BY-NC 3.0), so it is for non-commercial use only. Full details: model/MODEL_CARD.md in the project files.';
@@ -578,3 +595,9 @@ export const CLIP_ADAPT_RESET_DONE = 'Your feedback no longer changes which clip
 export const partnerClipsLine = (n: number): string => `${n} ${n === 1 ? 'clip' : 'clips'} you marked as a partner's sound (your label, not a measurement).`;
 export const snorePausesLine = (n: number): string =>
   `Snore-like sound paused and then restarted ${n} ${n === 1 ? 'time' : 'times'}. This pattern can happen with or without sleep apnea, and phone audio can't tell which. Worth mentioning to a clinician if it happens often.`;
+
+// Verdict policy 2026-10-15: every recorded window inside the scheduled hours counts, whatever the unvalidated sleep estimate says.
+// The estimate only annotates the count. (Replaces awakeWindowsLine above, which described these windows as left out of the totals.)
+export const awakeGuessContextLine = (n: number): string =>
+  `${n} of these snore-like ${n === 1 ? 'window was' : 'windows were'} in time the phone guessed you were awake. They are counted in the totals above.`;
+export const COUNTING_RULE_LINE = 'Everything recorded during your scheduled sleep hours is counted. The rough sleep estimate never removes any of it.';

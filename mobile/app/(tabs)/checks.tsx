@@ -42,7 +42,7 @@ export default function Checks() {
                 <IconTile name={c.icon} size={48} tint={CHECK_TINT[c.id]} />
                 <View style={{ flex: 1, gap: 3 }}>
                   <AppText variant="headline">{c.title}</AppText>
-                  <AppText variant="footnote" tone="secondary" numberOfLines={2}>
+                  <AppText variant="footnote" tone="secondary">
                     {c.kind}
                   </AppText>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>

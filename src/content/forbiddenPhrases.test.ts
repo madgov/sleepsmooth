@@ -21,6 +21,11 @@ const FORBIDDEN: { name: string; re: RegExp; allow: string[] }[] = [
   { name: 'sleep score', re: /sleep (score|quality|efficiency)/i, allow: [] },
   { name: 'sleep stage', re: /sleep stages?|\b(deep|rem|light) sleep\b/i, allow: [] },
   { name: 'bare asleep', re: /(?<!(?:estimated|likely|fallen|falling|nearly|fall|fell|stay|staying|stayed|while|drifting off|dozing off)[ -])\basleep\b/i, allow: [] },
+  // Regulatory wording (docs/REGULATORY_POSITION.md): the app must not claim to screen for, detect or test for a disease.
+  { name: 'screen for sleep apnea', re: /screen(s|ing|ed)?\s+(you\s+|yourself\s+)?for\s+(possible\s+)?(obstructive\s+)?sleep apnea|sleep apnea screening/i, allow: [] },
+  { name: 'detect sleep apnea', re: /detect(s|ing)?\s+(possible\s+)?(obstructive\s+)?sleep apnea|sleep apnea detection/i, allow: ['src/content/claims.ts'] },
+  { name: 'test for sleep apnea', re: /(test|tests|testing|check|checks|checking)\s+(you\s+)?for\s+(possible\s+)?(obstructive\s+)?sleep apnea|sleep apnea checker/i, allow: [] },
+  { name: 'at risk of sleep apnea', re: /\b(at risk (of|for)|your risk of) (obstructive )?sleep apnea/i, allow: [] },
   { name: 'diagnos*', re: /diagnos/i, allow: ['src/content/claims.ts', 'src/components/Disclaimer.tsx'] },
 ];
 

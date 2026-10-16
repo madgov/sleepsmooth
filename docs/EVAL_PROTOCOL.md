@@ -105,3 +105,24 @@ estimation, not 1 s snore windows); separate training; separate validation again
 false alarms per hour, and agreement with PSG-derived indices if an index is ever claimed); and a separate clinical, regulatory and wording review. The
 snore-like model may be an input feature to that work but earns no credit for it. Until then the app presents evidence as "acoustic pattern observed" and
 as a prompt for a conversation with a clinician, nothing more.
+
+## 7. TFLite retrain (v3t): pre-registered BEFORE any TFLite-feature result was computed
+Written 2026-10-16T06:21:49Z. Context: `model/parity.v3.json` shows the shipped int8 TFLite YAMNet disagrees with the NumPy port (diagnosis: the NumPy port equals
+float TensorFlow ops to 1e-5 or better; the TFLite file is a post-training-quantised variant whose class scores differ per window). The on-device
+runtime is the TFLite file, so features must come from it. Scores only (the file exposes no embedding), so only the `scores` candidates are trained.
+1. **Procedure**: identical to `scripts/yamnet/train_cv.py` / `evaluate_test.py` / `scripts/eval/*`: same windows, same folds 1-4 for everything chosen
+   (augmentation scheme, L2, head family, threshold: Youden J with bedroom-negative FPR <= 5% on clean out-of-fold scores), same pre-registered CV
+   criterion (mean pooled OOF AUC over clean and 4 kHz low-passed), fold 5 touched once by `evaluate_test.py`. Fold 5 was already scored by v1, v2 and v3
+   (NumPy), so its estimate is optimistic; it is reported as such. Only the feature source changes (`YAMNET_BACKEND=tflite`, TensorFlow 2.16.2
+   `tf.lite.Interpreter` from the existing `~/tf_env`, run read-only).
+2. **Operating-point rule (unchanged from `docs/MODEL_ERROR_REPORT.md` section 0)**: on the TUNING synthetic nights (folds 1 and 2) choose the configuration
+   with maximum segment recall subject to <= 2 false segments per hour, ties broken by the existing simplicity order in `segment_eval.py`; the CHECK
+   nights (folds 3 and 4) are reported once and never used to choose. The same grid is searched. The chosen point may differ from the NumPy-era
+   t=0.98, M=3, 2-of-14 windows; whatever the rule selects is adopted.
+3. **Proceed-to-app criteria** (all must hold, else the iPhone integration stops): fold-5 AUC >= 0.85; fold-5 bedroom-negative FPR <= 10% (the
+   existing v3 gate); a configuration exists that meets the rule with tuning false segments/h <= 2; CHECK-night segment recall >= 0.70 and CHECK-night
+   false segments/h reported (no bound, but a value above 2 is disclosed as a failure of generalisation).
+4. **Redefined parity** (the NumPy port is no longer the reference): (a) the TypeScript head (`src/audio/yamnet/head.ts` on the exported JSON) must reproduce
+   the Python head (same rounded weights, float64) on the TFLite scores of the 200 parity windows and 22 fixtures: max abs probability difference < 1e-6 and
+   100% identical decisions at both the window threshold and the operating-point threshold; (b) the TS night-logic port must reproduce `night_logic.py`
+   segments exactly on the synthetic-night fixtures. On-device (iPhone) TFLite vs desktop TFLite agreement is NOT checkable here and stays unverified.

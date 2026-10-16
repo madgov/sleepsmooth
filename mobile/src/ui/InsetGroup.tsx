@@ -23,7 +23,7 @@ export interface ListRowProps {
   accessibilityLabel?: string;
   accessibilityHint?: string;
   accessibilityRole?: 'button' | 'checkbox' | 'radio' | 'link' | 'text';
-  accessibilityState?: { checked?: boolean; selected?: boolean; disabled?: boolean };
+  accessibilityState?: { checked?: boolean; selected?: boolean; disabled?: boolean; expanded?: boolean };
   testID?: string;
 }
 
@@ -72,6 +72,9 @@ export function ListRow(p: ListRowProps) {
   );
 
   if (!pressable) {
+    // A row that hosts its own control (a Switch) must not be one merged element, or VoiceOver cannot reach the control.
+    // The control carries its own label; the title and subtitle are read as separate text.
+    if (isValidElement(p.trailing)) return <View testID={p.testID}>{body}</View>;
     return (
       <View accessible accessibilityRole={p.accessibilityRole === 'button' ? undefined : p.accessibilityRole} accessibilityLabel={label} accessibilityState={p.accessibilityState} testID={p.testID}>
         {body}
@@ -83,7 +86,7 @@ export function ListRow(p: ListRowProps) {
       onPress={p.onPress}
       accessibilityRole={p.accessibilityRole ?? 'button'}
       accessibilityLabel={label}
-      accessibilityHint={p.accessibilityHint}
+      accessibilityHint={p.accessibilityHint ?? (p.accessibilityRole === 'link' ? 'Opens in your browser' : undefined)}
       accessibilityState={{ selected: p.selected, ...p.accessibilityState }}
       testID={p.testID}
       // M2: background-only press feedback, instant in, short ease-out out (transition handled by the OS highlight; no scale in lists).

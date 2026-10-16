@@ -42,7 +42,7 @@ export function SourcesView() {
         {SOURCES_TITLE}
       </h2>
       <p>{SOURCES_INTRO}</p>
-      <h3>Screening score (NoSAS)</h3>
+      <h3>Questionnaire score (NoSAS)</h3>
       <p>{NOSAS_CITATION}</p>
       <ul>
         {NOSAS_URLS.map((u) => (

@@ -43,11 +43,11 @@ export function SleepHoursEditor() {
   return (
     <View style={{ gap: 16 }}>
       <InsetGroup footer={COPY.N14_IN_BED(formatDuration(minutesInBed(bedMin, wakeMin)))}>
-        <ListRow title="Bedtime" subtitle={suggested} value={formatClock(bedMin)} accessibilityLabel={`Bedtime, ${formatClock(bedMin)}, button`} onPress={() => setOpen(open === 'bed' ? null : 'bed')} trailing="chevronUpDown" />
+        <ListRow title="Bedtime" subtitle={suggested} value={formatClock(bedMin)} accessibilityLabel={`Bedtime, ${formatClock(bedMin)}`} accessibilityHint="Shows a time picker" accessibilityState={{ expanded: open === 'bed' }} onPress={() => setOpen(open === 'bed' ? null : 'bed')} trailing="chevronUpDown" />
         {open === 'bed' ? (
           <TimeWheel label="Bedtime" minutes={bedMin} onChange={(m) => setMinutes('bed', m)} />
         ) : null}
-        <ListRow title="Wake time" subtitle={suggested} value={formatClock(wakeMin)} accessibilityLabel={`Wake time, ${formatClock(wakeMin)}, button`} onPress={() => setOpen(open === 'wake' ? null : 'wake')} trailing="chevronUpDown" />
+        <ListRow title="Wake time" subtitle={suggested} value={formatClock(wakeMin)} accessibilityLabel={`Wake time, ${formatClock(wakeMin)}`} accessibilityHint="Shows a time picker" accessibilityState={{ expanded: open === 'wake' }} onPress={() => setOpen(open === 'wake' ? null : 'wake')} trailing="chevronUpDown" />
         {open === 'wake' ? (
           <TimeWheel label="Wake time" minutes={wakeMin} onChange={(m) => setMinutes('wake', m)} />
         ) : null}

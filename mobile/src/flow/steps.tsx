@@ -2,6 +2,7 @@ import * as Haptics from 'expo-haptics';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import {
+  NOSAS_ENABLED,
   NOSAS_QUESTIONS,
   NOSAS_SCREENING_NOT_DIAGNOSIS,
   RED_FLAG_NOTE,
@@ -273,6 +274,8 @@ export function questionSteps(): StepDef[] {
     },
     { key: 'sex', label: NOSAS_QUESTIONS.sex, skippable: true, render: (ctx) => <SexQuestion ctx={ctx} /> },
   ];
+  // Licensing fallback (NOSAS_ENABLED=false): drop the six NoSAS questions, keep everything else.
+  if (!NOSAS_ENABLED) steps.splice(0, 6);
   SYMPTOM_ITEMS.forEach((it, i) => {
     steps.push({
       key: `symptom-${it.key}`,
@@ -295,12 +298,15 @@ export function questionSteps(): StepDef[] {
 export function ReviewStep({ ctx, saveLabel }: { ctx: StepCtx; saveLabel: string }) {
   const d = ctx.draft;
   const answeredSymptoms = Object.keys(d.symptoms).length;
-  const rows: [string, string][] = [
+  const nosasRows: [string, string][] = [
     ['Height and weight', d.height && d.weight ? 'Answered' : 'Not answered'],
     ['Neck circumference', d.neckUnknown ? 'Unknown' : d.neck ? 'Answered' : 'Not answered'],
     [NOSAS_QUESTIONS.snoring, d.snoring === null ? 'Not answered' : d.snoring ? COPY.C.yes : COPY.C.no],
     ['Age', d.age ? 'Answered' : 'Not answered'],
     [NOSAS_QUESTIONS.sex, d.sex ? 'Answered' : 'Not answered'],
+  ];
+  const rows: [string, string][] = [
+    ...(NOSAS_ENABLED ? nosasRows : []),
     ['Symptom checklist', answeredSymptoms > 0 ? `${answeredSymptoms} of ${SYMPTOM_ITEMS.length}` : 'Not answered'],
     ['Warning signs', d.redFlag === null ? 'Not answered' : 'Answered'],
     ['Bed partner (optional, not scored)', d.partner.presence === null ? 'Not answered' : 'Answered'],
@@ -339,15 +345,15 @@ export function AboutStep({ ctx }: { ctx: StepCtx }) {
     >
       <GlassCard radius={26} padding={16}>
         <View style={{ gap: 12 }}>
-          <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+          {NOSAS_ENABLED ? <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
             <Icon name="list.clipboard" size={22} color="#34C8E8" />
             <View style={{ flex: 1 }}>
-              <AppText variant="headline">NoSAS screening score</AppText>
+              <AppText variant="headline">NoSAS questionnaire score</AppText>
               <AppText variant="footnote" tone="secondary">
                 Height, weight, neck, snoring, age, sex
               </AppText>
             </View>
-          </View>
+          </View> : null}
           <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
             <Icon name="checklist" size={22} color="#34C8E8" />
             <View style={{ flex: 1 }}>

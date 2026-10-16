@@ -47,7 +47,7 @@ for name, f in zs.items():
     print(f"{name:44s} CV AUC clean {ac:.4f} lp4k {al:.4f} mean {(ac + al) / 2:.4f}", flush=True)
 
 grid = []
-for feat in ('emb', 'scores'):
+for feat in (('scores',) if os.environ.get('YAMNET_BACKEND') == 'tflite' else ('emb', 'scores')):   # TFLite exposes class scores only
     for aug_on in (False, True):
         for l2 in (1e-3, 1e-2, 1e-1, 1.0): grid.append(dict(kind='logreg', feat=feat, l2=l2, augment=aug_on, hidden=0, epochs=0))
         for l2 in (1e-3, 1e-2, 1e-1): grid.append(dict(kind='mlp', feat=feat, l2=l2, augment=aug_on, hidden=32, epochs=12 if aug_on else 30))
@@ -76,6 +76,8 @@ for g in grid:
 
 best = lambda fam: max([r for r in results if r['family'] == fam], key=lambda r: r['crit'])
 chosen = {'zeroshot': best('zeroshot'), 'logreg': best('logreg'), 'mlp': best('mlp'), 'logreg_scores': best('logreg_scores'), 'mlp_scores': best('mlp_scores')}
+if os.environ.get('YAMNET_BACKEND') == 'tflite':
+    chosen = {k: v for k, v in chosen.items() if k in ('zeroshot', 'logreg_scores', 'mlp_scores')}
 final = {}
 for fam, r in chosen.items():
     thr = pick_threshold(r['oofClean'], y, bedneg, 0.05)

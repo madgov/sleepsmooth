@@ -180,7 +180,8 @@ export function summarizeNight(night: NightRecord, rawEpochs: readonly EpochReco
   let recordedSec = 0, inWindowSec = 0, asleepSec = 0, uncertainSec = 0, awakeSec = 0, notCapturedSec = 0, assessedSec = 0;
   let firstAsleep = -1, lastAsleep = -1;
   const analyzed: EpochRecord[] = [];
-  const inWindowCaptured: EpochRecord[] = [];
+  const awakeGuess: EpochRecord[] = [];
+  const withUncertainEpochs: EpochRecord[] = []; // context only: epochs not labelled likely-awake
   const asleepOnly: EpochRecord[] = [];
   const unscored = { belowGate: 0, tooQuiet: 0, skipped: 0 };
   let captured = 0, digitalSilent = 0, loud = 0, clip = 0;
@@ -203,15 +204,18 @@ export function summarizeNight(night: NightRecord, rawEpochs: readonly EpochReco
       asleepOnly.push(e);
     } else if (st === 'uncertain') uncertainSec += e.cap;
     else if (st === 'likely-awake') awakeSec += e.cap;
-    if (st === 'likely-asleep' || st === 'uncertain') {
+    // VERDICT POLICY (docs/OVERNIGHT_PLAN.md, addendum 2026-10-15): every epoch inside the scheduled window counts toward
+    // the totals and the verdict, whatever the unvalidated sleep-state estimate says. The estimate is context only.
+    if (st !== 'outside-window') {
       analyzed.push(e);
       assessedSec += e.cap;
       unscored.belowGate += e.win.belowGate;
       unscored.tooQuiet += e.win.tooQuiet;
       unscored.skipped += e.overload ?? 0;
+      if (st === 'likely-awake') awakeGuess.push(e);
+      else withUncertainEpochs.push(e);
     }
     if (e.cap > 0 && st !== 'outside-window') {
-      inWindowCaptured.push(e);
       captured++;
       floors.push(e.floor);
       clip += e.clipSamples ?? 0;
@@ -238,8 +242,8 @@ export function summarizeNight(night: NightRecord, rawEpochs: readonly EpochReco
   const snoreLikeWindows = analyzed.reduce((a, e) => a + e.win.snoreLike, 0);
   const sens = {
     asleepOnly: sensitivity(asleepOnly, night.captureStart),
-    withUncertain: sensitivity(analyzed, night.captureStart),
-    allInWindow: sensitivity(inWindowCaptured, night.captureStart),
+    withUncertain: sensitivity(withUncertainEpochs, night.captureStart),
+    inLikelyAwake: sensitivity(awakeGuess, night.captureStart),
   };
   const { episodes, flaggedSec } = findEpisodes(flaggedWindowIndices(analyzed), night.captureStart);
   const inEpisodeFlagged = episodes.reduce((a, e) => a + e.flagged, 0);

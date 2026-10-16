@@ -15,6 +15,7 @@ import {
   RED_FLAG_QUESTION,
   SYMPTOM_CHECKLIST_NOTE,
   SYMPTOM_NOT_VALIDATED,
+  NOSAS_ENABLED,
 } from '../content/claims';
 import {
   PARTNER_ALONE_NOTE,
@@ -46,6 +47,7 @@ import { DemoBanner, DiscussChecklist, Icon, useFocusHeading } from '../componen
 import { selectedDiscussItems, withDiscussItem } from '../questionnaire/discussItems';
 
 type Stage = 'nosas' | 'symptoms' | 'partner' | 'review';
+const FIRST_STAGE: Stage = NOSAS_ENABLED ? 'nosas' : 'symptoms';
 
 function isBad(value: AnswerValue | undefined): boolean {
   return typeof value === 'number' && !(value > 0);
@@ -85,7 +87,7 @@ function NumberField({ id, label, value, onChange, unit, submitted }: { id: stri
 
 export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
   const s = useSession();
-  const [stage, setStage] = useState<Stage>('nosas');
+  const [stage, setStage] = useState<Stage>(FIRST_STAGE);
   const [showErrors, setShowErrors] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   useFocusHeading(root, stage);
@@ -123,8 +125,8 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
   if (stage === 'nosas') {
     return wrap(
       <section aria-labelledby="q-h">
-        <h2 id="q-h">Your screening questions</h2>
-        <p>Step 1 of 4: {activeInstrument.title}, a published screening score. Skip anything you do not know; skipped items are listed as missing.</p>
+        <h2 id="q-h">Your questions</h2>
+        <p>Step 1 of 4: {activeInstrument.title}, a published questionnaire score. Skip anything you do not know; skipped items are listed as missing.</p>
         <details open>
           <summary>How this score works</summary>
           <div className="table-wrap">
@@ -232,7 +234,7 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
         </fieldset>
         <DiscussChecklist answers={s.answers} onToggle={(id, on) => s.setAnswers(withDiscussItem(s.answers, id, on))} />
         <div className="actions nav-actions">
-          <button type="button" className="btn btn-secondary" onClick={() => setStage('nosas')}>
+          <button type="button" className="btn btn-secondary" onClick={() => (stage === 'symptoms' && !NOSAS_ENABLED ? onBack() : setStage(FIRST_STAGE))}>
             Back
           </button>
           <button type="button" className="btn" onClick={() => setStage('partner')}>
@@ -320,8 +322,8 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
         {score.total === null ? `Score: ${score.band}.` : `Score: ${score.total} of 17.`} {score.explanation}
       </p>
       <p>
-        <button type="button" className="btn btn-secondary" onClick={() => setStage('nosas')}>
-          Edit screening answers
+        <button type="button" className="btn btn-secondary" onClick={() => setStage(FIRST_STAGE)}>
+          Edit questionnaire answers
         </button>
       </p>
       <h3>Symptom checklist ({SYMPTOM_NOT_VALIDATED})</h3>

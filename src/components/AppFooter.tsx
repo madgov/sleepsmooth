@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { DELETE_DATA_LABEL, FOOTER_MODEL_CARD, FOOTER_SOURCES, FOOTER_TEXT } from '../content/claims';
+import { DELETE_DATA_LABEL, FOOTER_MODEL_CARD, FOOTER_SOURCES, FOOTER_TEXT, PRIVACY_POLICY_TITLE, SUPPORT_TITLE } from '../content/claims';
 
 export interface AppFooterProps {
   onDelete: () => void;
@@ -36,6 +36,8 @@ export function AppFooter({ onDelete }: AppFooterProps) {
         <nav aria-label="More information" className="footer-links">
           <a href="#/sources">{FOOTER_SOURCES}</a>
           <a href="#/model-card">{FOOTER_MODEL_CARD}</a>
+          <a href="privacy.html">{PRIVACY_POLICY_TITLE}</a>
+          <a href="support.html">{SUPPORT_TITLE}</a>
           <button
             ref={trigger}
             type="button"

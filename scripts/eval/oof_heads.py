@@ -21,7 +21,7 @@ logit = lambda p: np.log(np.clip(p, 1e-6, 1 - 1e-6) / (1 - np.clip(p, 1e-6, 1 - 
 
 def main():
     T = json.load(open(os.path.join(YDIR, 'trained.v3.json')))['chosen']['logreg_scores']
-    assert T['kind'] == 'logreg' and T['feat'] == 'scores' and T['augment'] and abs(T['l2'] - 0.01) < 1e-12
+    assert T['kind'] == 'logreg' and T['feat'] == 'scores'       # augment flag and L2 are taken from trained.v3.json (v3t retrain: they were re-selected on TFLite features)
     rows = [r for r in window_rows() if r['source'] == 'esc50' and r['fold'] in TRAIN_FOLDS]
     assert all(r['fold'] != TEST_FOLD for r in rows)
     _, S = load_clean(rows)
@@ -35,7 +35,7 @@ def main():
     for vf in TRAIN_FOLDS:
         tr = np.where(fold != vf)[0]
         Xtr, ytr, btr = X[tr], y[tr], bedr[tr]
-        for ai, ae in zip(aug_idx, aug_X):
+        for ai, ae in (zip(aug_idx, aug_X) if T['augment'] else []):
             m = fold[ai] != vf
             Xtr = np.concatenate([Xtr, ae[m]]); ytr = np.concatenate([ytr, y[ai[m]]]); btr = np.concatenate([btr, bedr[ai[m]]])
         mdl = fit_head('logreg', Xtr, ytr, btr, T['l2'])

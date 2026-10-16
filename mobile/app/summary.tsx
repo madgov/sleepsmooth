@@ -11,6 +11,7 @@ import { useSettings } from '../src/state/settings';
 import { AppText } from '../src/ui/AppText';
 import { BackBar } from '../src/ui/ScreenHeader';
 import { Screen } from '../src/ui/Screen';
+import { Disclosure } from '../src/ui/Disclosure';
 import { InsetGroup, ListRow } from '../src/ui/InsetGroup';
 import { LimitsPanel } from '../src/ui/LimitsPanel';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
@@ -20,6 +21,29 @@ import { Surface } from '../src/ui/Surface';
 
 /** The web preview has no iOS share sheet; say so instead of a generic failure. */
 const WEB_SHARE_NOTE = Platform.OS === 'web' ? 'Sharing needs the iPhone app. This web preview cannot open a share sheet. Nothing was sent.' : null;
+
+/** Sections whose long lists are folded behind a Disclosure. Screening, audio, nights and limits always stay fully visible (labels, caveats, sources). */
+const FOLDABLE = new Set(['reported', 'discuss', 'guidance', 'questions']);
+
+function SummarySectionCard({ id, title, text }: { id: string; title: string; text: string }) {
+  const lines = text.split('\n');
+  const fold = FOLDABLE.has(id) && lines.length > 2;
+  return (
+    <Surface padding={0} testID={`summary-section-${id}`}>
+      <View style={{ gap: 6, padding: 16 }}>
+        <AppText variant="headline" accessibilityRole="header">
+          {title}
+        </AppText>
+        <AppText variant="body">{fold ? (lines[0] ?? '') : text}</AppText>
+      </View>
+      {fold ? (
+        <Disclosure title={`Show all ${lines.length - 1} lines`}>
+          <AppText variant="body">{lines.slice(1).join('\n')}</AppText>
+        </Disclosure>
+      ) : null}
+    </Surface>
+  );
+}
 
 export default function SummaryScreen() {
   const s = useSettings();
@@ -105,14 +129,7 @@ export default function SummaryScreen() {
             ) : null}
 
             {built.summary.sections.map((sec) => (
-              <Surface key={sec.id}>
-                <View style={{ gap: 6 }}>
-                  <AppText variant="headline" accessibilityRole="header">
-                    {sec.title}
-                  </AppText>
-                  <AppText variant="body">{sec.text}</AppText>
-                </View>
-              </Surface>
+              <SummarySectionCard key={sec.id} id={sec.id} title={sec.title} text={sec.text} />
             ))}
 
             <LimitsPanel />

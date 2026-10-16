@@ -1,4 +1,5 @@
 import {
+  NOSAS_ENABLED,
   AUDIO_DETAIL,
   DISCLAIMER_AUDIO,
   DISCLAIMER_CANNOT_RULE_OUT,
@@ -48,7 +49,9 @@ export interface EvidenceContext {
 
 export function missingFor(i: RulesInput, ctx: EvidenceContext = {}): string[] {
   const m: string[] = [];
-  if (i.noSas === 'notAnswered') m.push(MISSING_NOSAS);
+  if (!NOSAS_ENABLED) {
+    // NoSAS hidden by the licensing fallback flag: it is not a missing item.
+  } else if (i.noSas === 'notAnswered') m.push(MISSING_NOSAS);
   else if (i.noSas === 'incompleteBelow' || (i.noSas === 'atOrAbove' && ctx.noSasTotal === null)) {
     m.push(...(ctx.noSasMissing && ctx.noSasMissing.length > 0 ? ctx.noSasMissing : [MISSING_NECK]));
   }
@@ -76,10 +79,10 @@ export function evaluate(input: RulesInput, ctx: EvidenceContext = {}): Evidence
   if (typeof ctx.noSasTotal === 'number') nosasDetail = nosasScoreStatement(ctx.noSasTotal);
   if (input.noSas === 'below') nosasDetail = `${nosasDetail} ${NOSAS_BELOW_CANNOT_RULE_OUT}`;
   else if (input.noSas === 'atOrAbove') nosasDetail = `${NOSAS_DETAIL.atOrAbove} ${NOSAS_INCOMPLETE_AT_OR_ABOVE}`;
-  items.push({
+  if (NOSAS_ENABLED) items.push({
     id: 'noSas',
     source: 'user-reported',
-    label: 'NoSAS screening score',
+    label: 'NoSAS questionnaire score',
     detail: nosasDetail,
     state: nosasState[input.noSas],
     isSynthetic: syn,

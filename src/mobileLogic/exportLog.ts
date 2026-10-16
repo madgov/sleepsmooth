@@ -39,7 +39,7 @@ export function buildTestLog(input: TestLogInput): Record<string, unknown> {
         modelVersion: r.modelVersion,
         device: { model: r.deviceModel, os: r.osVersion, app: r.appVersion },
         coverageSec: cov.seconds,
-        windows: { scored: cov.scoredWindows, snoreLike: cov.snoreLikeWindows, snoreLikeIncludingAwakeGuess: s.sensitivity.allInWindow.snoreLikeWindows },
+        windows: { scored: cov.scoredWindows, snoreLike: cov.snoreLikeWindows, snoreLikeInAwakeGuess: s.sensitivity.inLikelyAwake.snoreLikeWindows },
         nightState: s.nightState,
         diagnostics: n.diagnostics,
         diagnosticsNumbers: nums,

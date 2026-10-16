@@ -113,7 +113,7 @@ function partialScore(a: Record<string, AnswerValue>): PartialScore {
 export const noSas: ScreeningInstrument = {
   id: 'nosas',
   version: '1',
-  title: 'NoSAS screening score',
+  title: 'NoSAS questionnaire score',
   citation: { text: NOSAS_CITATION, url: NOSAS_URLS[0], verified: true },
   items: NOSAS_ITEMS,
   notDiagnostic: true,

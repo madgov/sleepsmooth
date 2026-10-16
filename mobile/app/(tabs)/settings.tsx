@@ -2,7 +2,7 @@ import * as Haptics from 'expo-haptics';
 import { useSafeRouter } from '../../src/nav/useSafeRouter';
 
 import { useState } from 'react';
-import { ActivityIndicator, Platform, Switch, View } from 'react-native';
+import { ActivityIndicator, Linking, Platform, Switch, View } from 'react-native';
 import { confirmAction } from '../../src/ui/confirm';
 import {
   CLIP_DELETE_ALL,
@@ -14,7 +14,11 @@ import {
   DELETE_DATA_LABEL,
   FOOTER_TEXT,
   MODEL_CARD_TITLE,
+  PRIVACY_POLICY_TITLE,
+  PRIVACY_POLICY_URL,
   SOURCES_TITLE,
+  SUPPORT_TITLE,
+  SUPPORT_URL,
 } from '@core/content/claims';
 import { autoRecordRowValue, outcomeNote } from '@core/mobileLogic/autoRecord';
 import { RETENTION_OPTIONS, estimateStorageBytes, formatBytes } from '@core/mobileLogic/clips';
@@ -33,6 +37,7 @@ import { Icon, type SymbolName } from '../../src/ui/Icon';
 import { IconTile } from '../../src/ui/IconTile';
 import type { TintName } from '../../src/theme/tokens';
 import { Chip } from '../../src/ui/Chip';
+import { PressScale } from '../../src/ui/Press';
 import { GroupHeader, InsetGroup, ListRow } from '../../src/ui/InsetGroup';
 import { Screen, Stagger } from '../../src/ui/Screen';
 import { ScreenHeader } from '../../src/ui/ScreenHeader';
@@ -235,9 +240,11 @@ export default function Settings() {
             <AppText variant="footnote" tone="destructive" accessibilityLiveRegion="polite" style={{ flex: 1 }}>
               {COPY.N76_DELETE_ERROR}
             </AppText>
-            <AppText variant="footnote" tone="accent" accessibilityRole="button" onPress={() => void doDelete()}>
-              {COPY.C.retry}
-            </AppText>
+            <PressScale onPress={() => void doDelete()} haptic="light" accessibilityLabel={`${COPY.C.retry} deleting my data`} containerStyle={{ minHeight: 44, minWidth: 44, justifyContent: 'center' }}>
+              <AppText variant="footnote" tone="accent" weight="600">
+                {COPY.C.retry}
+              </AppText>
+            </PressScale>
           </View>
         ) : null}
       </Stagger>
@@ -246,6 +253,8 @@ export default function Settings() {
         <InsetGroup header="About">
           <ListRow title={SOURCES_TITLE} leading={tile('link')} trailing="chevron" onPress={() => router.push('/sources')} />
           <ListRow title={MODEL_CARD_TITLE} leading={tile('waveform', 'teal')} trailing="chevron" onPress={() => router.push('/model-card')} />
+          <ListRow title={PRIVACY_POLICY_TITLE} leading={tile('lock.shield')} trailing="chevron" accessibilityRole="link" onPress={() => void Linking.openURL(PRIVACY_POLICY_URL)} />
+          <ListRow title={SUPPORT_TITLE} leading={tile('questionmark.circle')} trailing="chevron" accessibilityRole="link" onPress={() => void Linking.openURL(SUPPORT_URL)} />
           <ListRow title="About SleepSmooth" subtitle="Informational only. It cannot confirm or rule out sleep apnea." leading={tile('info.circle')} />
           {__DEV__ || process.env.EXPO_PUBLIC_DEVICE_LAB === '1' ? <ListRow title="Developer: device lab" trailing="chevron" leading={tile('wrench.and.screwdriver')} onPress={() => router.push('/(dev)/lab')} /> : null}
           {__DEV__ ? <ListRow title="Developer: gallery" trailing="chevron" leading={tile('square.grid.2x2')} onPress={() => router.push('/(dev)/gallery')} /> : null}

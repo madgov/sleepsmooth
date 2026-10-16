@@ -16,7 +16,7 @@ from common import PROC, MODEL_DIR, ROOT, roc_auc
 import night_logic as NL
 
 NIGHTS = os.path.join(PROC, 'synthetic_nights')
-BASE_THR = json.load(open(os.path.join(ROOT, 'src/audio/model/model.v3.json')))['threshold']
+BASE_THR = json.load(open(os.environ.get('V3_JSON', os.path.join(ROOT, 'src/audio/model/model.v3.json'))))['threshold']
 THRS = [round(BASE_THR, 4), 0.75, 0.85, 0.90, 0.95, 0.98]
 NS = [3, 5, 7, 10]
 KS = [1, 2, 3, 4, 6, 8, 10]

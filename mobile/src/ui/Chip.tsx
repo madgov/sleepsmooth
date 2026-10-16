@@ -33,7 +33,7 @@ export function Chip({ label, icon, tone = 'default', testID }: ChipProps) {
       }}
     >
       {icon ? <Icon name={icon} size={13} color={t.fg} weight="semibold" /> : null}
-      <AppText variant="caption1" weight="600" tone={{ color: t.fg }} maxFontSizeMultiplier={1.4}>
+      <AppText variant="caption1" weight="600" tone={{ color: t.fg }} maxFontSizeMultiplier={2}>
         {label}
       </AppText>
     </View>

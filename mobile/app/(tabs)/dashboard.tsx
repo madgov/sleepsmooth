@@ -228,6 +228,12 @@ function EmptyHero({ onStart }: { onStart: () => void }) {
 }
 
 const DAY_LETTER = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const DAY_NAME = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+/** "2026-10-14" to "Wednesday", so a single letter in the strip is never the only spoken label. */
+function spokenDay(key: string): string {
+  const [y, m, d] = key.split('-').map(Number);
+  return DAY_NAME[new Date(y ?? 1970, (m ?? 1) - 1, d ?? 1).getDay()] ?? key;
+}
 
 function WeekStrip({ nights, sample, scheduledMin, onOpen }: { nights: NightListItem[]; sample: NightListItem | null; scheduledMin: number; onOpen: (id: string) => void }) {
   const { colors } = useTheme();
@@ -248,7 +254,7 @@ function WeekStrip({ nights, sample, scheduledMin, onOpen }: { nights: NightList
         {days.map((d) => {
           const share = d.night ? Math.min(1, d.night.recordedMinutes / Math.max(1, scheduledMin)) : 0;
           const cap = (
-            <View style={{ alignItems: 'center', gap: 6, width: 40 }}>
+            <View style={{ alignItems: 'center', gap: 6, width: 44 }}>
               <View style={{ width: 30, height: 84, borderRadius: 15, borderCurve: 'continuous', borderWidth: 1, borderColor: d.night ? colors.capsule.outline : colors.separatorOpaque, borderStyle: d.night ? 'solid' : 'dashed', overflow: 'hidden', justifyContent: 'flex-end' }}>
                 {d.night ? <View style={{ height: `${Math.max(8, share * 100)}%`, backgroundColor: colors.capsule.fill, opacity: d.night.isSample ? 0.55 : 1 }} /> : null}
               </View>
@@ -261,11 +267,11 @@ function WeekStrip({ nights, sample, scheduledMin, onOpen }: { nights: NightList
             </View>
           );
           return d.night ? (
-            <PressScale key={d.key} onPress={() => onOpen((d.night as NightListItem).id)} accessibilityLabel={`${d.night.isSample ? 'Sample night' : 'Night'}, ${formatDuration(d.night.recordedMinutes)} recorded`}>
+            <PressScale key={d.key} onPress={() => onOpen((d.night as NightListItem).id)} accessibilityLabel={`${d.night.isSample ? 'Sample night' : 'Night'} of ${spokenDay(d.key)}, ${formatDuration(d.night.recordedMinutes)} recorded`} accessibilityHint="Opens the night">
               {cap}
             </PressScale>
           ) : (
-            <View key={d.key} accessible accessibilityLabel="No recording">
+            <View key={d.key} accessible accessibilityLabel={`${spokenDay(d.key)}, no recording`}>
               {cap}
             </View>
           );

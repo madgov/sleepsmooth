@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SleepSmooth privacy policy</title>
+<style>
+  :root { color-scheme: light dark; --bg:#fff; --fg:#14213d; --muted:#4a5568; --line:#d7dce5; --note:#f3f5f9; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#10151f; --fg:#e8ecf4; --muted:#a9b3c4; --line:#2a3345; --note:#182030; } }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:44rem; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.8rem; line-height:1.25; } h2 { font-size:1.25rem; margin-top:2rem; }
+  .note { background:var(--note); border:1px solid var(--line); border-radius:10px; padding:12px 16px; }
+  .todo { background:#fff3bf; color:#3d2e00; padding:0 4px; border-radius:4px; font-weight:600; }
+  a { color:inherit; } table { border-collapse:collapse; width:100%; } th,td { text-align:left; border-bottom:1px solid var(--line); padding:8px 6px; vertical-align:top; }
+  .muted { color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+<p><a href="/">SleepSmooth</a> &middot; <a href="support.html">Support</a></p>
+<h1>SleepSmooth privacy policy</h1>
+<p class="muted">Last updated: <span class="todo">TODO: set the date when this is published</span></p>
+
+<p class="note"><strong>SleepSmooth is informational. It is not a diagnosis, and it cannot confirm or rule out sleep apnea.</strong> This policy is a plain-language description of what the app does with your information, written from the app's source code. Where we have not yet been able to confirm a behavior on a real device, we say "designed to" instead of promising it.</p>
+
+<h2>Who we are</h2>
+<p>SleepSmooth is built by <span class="todo">TODO: legal name of the publisher</span>. Contact: <span class="todo">TODO: privacy contact email</span>.</p>
+
+<h2>The short version</h2>
+<ul>
+  <li>The iPhone app is designed to keep your information on your iPhone. The app's own code contains no network calls, no accounts, no advertising and no analytics. We have checked this in the code with automated tests; we have not yet confirmed it by watching a phone's network traffic over a full night, so we do not promise more than "designed to".</li>
+  <li>We do not sell your information, and we do not use it for advertising or to track you across other apps or websites.</li>
+  <li>You can delete everything the app stores at any time from Settings, using "Delete my data".</li>
+</ul>
+
+<h2>What the iPhone app handles</h2>
+<table>
+<thead><tr><th>Information</th><th>Why</th><th>Where it lives</th></tr></thead>
+<tbody>
+<tr><td>Microphone sound, only during the sleep hours you set and only after you start a night</td><td>To notice snore-like sounds and summarize them. The sound is analyzed on the iPhone. By default, no audio is saved; the app keeps timings and sound-level summaries for each night.</td><td>On your iPhone</td></tr>
+<tr><td>Short sound clips (off by default; you choose to turn this on)</td><td>So you can listen back to what was flagged. Clips may include other people in the room. Speech-like stretches are designed to be skipped.</td><td>On your iPhone, until you delete them or the retention period you pick ends</td></tr>
+<tr><td>Your answers: height, weight, neck size, age, sex, snoring, symptom checklist, drowsy-driving question, optional notes about a bed partner</td><td>To show what you reported next to what a recording shows, and to prepare a summary for a clinician. Optional; you can skip any question.</td><td>On your iPhone</td></tr>
+<tr><td>Your sleep hours, reminder settings, consent choice</td><td>To time your reminder and stop recording in the morning.</td><td>On your iPhone. Reminders are local notifications created by the app on your phone.</td></tr>
+<tr><td>Motion activity history (only when you tap "Find my routine")</td><td>To suggest your usual sleep hours from how long the phone was still overnight.</td><td>Read on demand by iOS and used on the phone; the app does not query it at launch.</td></tr>
+<tr><td>Apple Health sleep and step history</td><td>Not used in the current build. The Apple Health connection is switched off. If a later version turns it on, it will be read-only and this policy will be updated first.</td><td>Not applicable</td></tr>
+<tr><td>Feedback you give on a clip, and technical diagnostics (for example, whether recording was interrupted)</td><td>To spot mistakes in the sound analysis.</td><td>On your iPhone</td></tr>
+</tbody>
+</table>
+
+<h2>What leaves your iPhone</h2>
+<p>Nothing leaves your iPhone unless you send it. The app has a share action for your summary (a document) and a test log. The test log is built to exclude audio and the detailed sound measurements. You choose where it goes in the iOS share sheet, and the app itself sends nothing. Once you share something, the receiving app or person handles it under their own rules.</p>
+<p>The app can open links you tap, for example to a published source. Opening a link takes you to that website, which has its own privacy practices.</p>
+
+<h2>Backups</h2>
+<p>The app is designed to keep the saved-clips folder out of iPhone backups; this has not yet been confirmed on a device. Night summaries, answers and settings are not excluded from iPhone backups, so if you back up your iPhone to iCloud or a computer, those files can be included in that backup under Apple's terms. They contain timings and sound-level summaries, not audio.</p>
+
+<h2>Apple's "privacy nutrition label"</h2>
+<p>Apple defines "collecting" data as transferring it off the device in a way that lets the developer or its partners access it for longer than needed to serve the request in real time. Because the app is designed to keep your information on your iPhone, our App Store privacy details report that we do not collect data. This is our reading of Apple's definition and we will update it if the app changes.</p>
+
+<h2>The web version</h2>
+<p>The web version runs in your browser. Your answers are kept in your browser's session storage and are cleared when you close the tab or choose "Delete my data". A recording you add is analyzed in your browser and is not stored by the page. The page's content security policy only allows it to connect to its own site. The site's host may keep ordinary server logs (such as IP addresses) as web servers do. <span class="todo">TODO: state the actual hosting provider and its logging once chosen.</span></p>
+
+<h2>Sensitive information and who may be recorded</h2>
+<p>Sleep sounds and health answers are sensitive. Recording picks up everyone in the room, so please tell anyone who shares your room. The app asks you to confirm this before your first night.</p>
+
+<h2>Your choices</h2>
+<ul>
+<li>Delete one night, delete all saved clips, or delete everything with "Delete my data" in Settings.</li>
+<li>Turn off the microphone, notifications or motion access in iOS Settings at any time.</li>
+<li>Withdraw consent in Settings.</li>
+</ul>
+
+<h2>Children</h2>
+<p>SleepSmooth is for adults. It is not directed to children.</p>
+
+<h2>Medical information</h2>
+<p>SleepSmooth is not a medical device and does not diagnose, treat or monitor any condition. A quiet, normal-looking or inconclusive result cannot rule out sleep apnea. If you are concerned about your sleep or symptoms, talk to a qualified healthcare professional.</p>
+
+<h2>Changes</h2>
+<p>If we change what the app does with your information, we will update this page and the date above before the change ships.</p>
+
+<h2>Contact</h2>
+<p><span class="todo">TODO: privacy contact email</span> &middot; <a href="support.html">Support page</a></p>
+</main>
+</body>
+</html>

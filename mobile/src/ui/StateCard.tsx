@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 import { useTheme } from '../theme/useTheme';
 import type { ToneName } from '../theme/tokens';
-import { AppText } from './AppText';
+import { AppText, contentScale } from './AppText';
 import { Icon, type SymbolName } from './Icon';
 import { EASE_OUT } from './motion';
 import { PrimaryButton } from './PrimaryButton';
@@ -27,15 +27,17 @@ export interface StateCardProps {
 export function StateCard({ tone, icon, title, body, extra, actions, source, animated = true, radius = 'lg', serifTitle, testID }: StateCardProps) {
   const { colors, reduceMotion } = useTheme();
   const t = colors[tone];
+  // At large content sizes the icon stacks above the text so the text gets the full card width.
+  const stacked = contentScale() >= 1.6;
   const card = (
     <Surface level="L3" tone={tone} source={source} radius={radius} padding={20} testID={testID}>
       <View style={{ gap: 10 }}>
-        <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+        <View style={{ flexDirection: stacked ? 'column' : 'row', gap: stacked ? 6 : 12, alignItems: 'flex-start' }}>
           <View style={{ paddingTop: serifTitle ? 6 : 2 }}>
             <Icon name={icon} size={22} color={t.fg} />
           </View>
-          <View style={{ flex: 1, gap: 6 }}>
-            <AppText variant={serifTitle ? 'title1' : 'headline'} serif={serifTitle} tone={{ color: t.fg }} accessibilityRole="header">
+          <View style={{ flex: stacked ? undefined : 1, alignSelf: 'stretch', gap: 6 }}>
+            <AppText variant={serifTitle ? 'title1' : 'headline'} serif={serifTitle} tone={{ color: t.fg }} accessibilityRole="header" maxFontSizeMultiplier={1.6}>
               {title}
             </AppText>
             {body ? (

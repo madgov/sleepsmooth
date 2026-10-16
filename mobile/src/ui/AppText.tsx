@@ -1,4 +1,4 @@
-import { Platform, Text, type TextProps, type TextStyle } from 'react-native';
+import { PixelRatio, Platform, Text, type TextProps, type TextStyle } from 'react-native';
 import { devFontScale } from '../dev/devParams';
 import { useTheme } from '../theme/useTheme';
 
@@ -36,10 +36,15 @@ const SIZES: Record<TextVariant, { fontSize: number; lineHeight: number; fontWei
 const WEB_TRACKING: Record<number, number> = { 44: -0.9, 34: -0.6, 22: -0.3, 17: -0.3, 15: -0.2, 13: -0.08, 11: 0.06 };
 
 /** Chrome-only variants cap Dynamic Type; body-level content is uncapped and must reflow. */
-const CHROME_CAP: Partial<Record<TextVariant, number>> = { caption1: 1.4, caption2: 1.4, display: 1.3 };
+const CHROME_CAP: Partial<Record<TextVariant, number>> = { caption1: 2, caption2: 1.4, display: 1.3, largeTitle: 2 };
 
 /** Only 400, 600 and 700 exist in the scale. */
 const normaliseWeight = (w: TextStyle['fontWeight']): TextStyle['fontWeight'] => (w === '500' || w === 500 ? '600' : w === '800' || w === '900' || w === 'bold' ? '700' : w);
+
+/** Effective content-size multiplier: the system Dynamic Type scale on device, the ?fontscale value in the web preview. */
+export function contentScale(): number {
+  return Math.max(PixelRatio.getFontScale(), devFontScale());
+}
 
 export interface AppTextProps extends TextProps {
   variant?: TextVariant;

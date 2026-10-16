@@ -26,7 +26,7 @@ export function EvidenceCard({ item, hideLimitations = [], testID }: EvidenceCar
     <Surface source={source} testID={testID}>
       <View
         accessible
-        accessibilityLabel={`${item.isSynthetic ? 'Sample data. ' : ''}${item.label}. ${STATE_TEXT[item.state]}. ${item.detail}`}
+        accessibilityLabel={`${item.isSynthetic ? 'Sample data. ' : ''}${item.label}. ${STATE_TEXT[item.state]}. ${item.detail}${limits.length > 0 ? ` Limits: ${limits.join('. ')}.` : ''}${item.citation ? ` Source: ${item.citation}.` : ''}`}
         style={{ gap: 8 }}
       >
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>

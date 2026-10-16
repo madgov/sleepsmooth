@@ -4,7 +4,8 @@ import {
   COVERAGE_DETAILS_HEADING,
   COVERAGE_EXACT_HEADING,
   COVERAGE_HEADING,
-  awakeWindowsLine,
+  COUNTING_RULE_LINE,
+  awakeGuessContextLine,
   snorePausesLine,
   snoreWindowsLine,
   tooQuietLine,
@@ -42,7 +43,7 @@ export function CoverageSection({ night }: { night: NightListItem }) {
     const real = snorePausesForView(night.view).count;
     return night.isSample && preview !== null ? preview : real;
   }, [night, preview]);
-  const extraAwake = night.snoreLikeAnyTime !== null && night.sensitivity ? night.snoreLikeAnyTime - night.sensitivity.includingUncertain : 0;
+  const inAwakeGuess = night.snoreLikeInAwakeGuess ?? 0;
   return (
     <View style={{ gap: 8 }} testID="coverage-section">
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16, flexWrap: 'wrap' }}>
@@ -72,7 +73,8 @@ export function CoverageSection({ night }: { night: NightListItem }) {
           ) : null}
           {night.sensitivity ? <AppText variant="footnote" tone="secondary">{COPY.N64_SENSITIVITY(night.sensitivity.likelyAsleep, night.sensitivity.includingUncertain)}</AppText> : null}
           {pauses > 0 ? <AppText variant="subheadline" testID="snore-pauses-line">{snorePausesLine(pauses)}</AppText> : null}
-          {extraAwake > 0 ? <AppText variant="subheadline" tabular testID="awake-windows-line">{awakeWindowsLine(extraAwake)}</AppText> : null}
+          {inAwakeGuess > 0 ? <AppText variant="subheadline" tabular testID="awake-windows-line">{awakeGuessContextLine(inAwakeGuess)}</AppText> : null}
+          <AppText variant="footnote" tone="secondary">{COUNTING_RULE_LINE}</AppText>
         </Disclosure>
       </Surface>
     </View>

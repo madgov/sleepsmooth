@@ -20,10 +20,10 @@ exports[`generateCareSummary > snapshot (no audio, real user) 1`] = `
     {
       "id": "screening",
       "source": "user-reported",
-      "text": "NoSAS screening score: 5 of 17. Below the published cutoff of 8 (this cannot rule out sleep apnea).
+      "text": "NoSAS questionnaire score: 5 of 17. Below the published cutoff of 8 (this cannot rule out sleep apnea).
 Your NoSAS score is 5 of 17. In the studies that tested it, people scoring 8 or more were more likely to have clinically significant sleep-disordered breathing than people scoring lower. A lower score cannot rule out sleep apnea. Talk to a clinician if you have symptoms. NoSAS (Marti-Soler et al., Lancet Respir Med 2016, doi:10.1016/S2213-2600(16)30075-3) is a screening score. It is not a diagnosis. This score is being applied outside the populations in which it was validated.
 Source: Marti-Soler H, et al. The NoSAS score for screening of sleep-disordered breathing: a derivation and validation study. Lancet Respir Med 2016;4:742-748. doi:10.1016/S2213-2600(16)30075-3.",
-      "title": "Screening score (NoSAS)",
+      "title": "Questionnaire score (NoSAS)",
     },
     {
       "id": "audio",
@@ -36,7 +36,7 @@ A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea."
       "id": "guidance",
       "source": "app-guidance",
       "text": "Based on what you shared, this is worth discussing with a clinician.
-Your symptoms and screening answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.
+Your symptoms and questionnaire answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.
 Missing information:
 - Audio recording (optional)
 Uncertainty:
@@ -89,11 +89,11 @@ exports[`generateCareSummary > snapshot (synthetic demo) 1`] = `
       "id": "screening",
       "isSynthetic": true,
       "source": "user-reported",
-      "text": "Synthetic / illustrative: NoSAS screening score: Incomplete.
+      "text": "Synthetic / illustrative: NoSAS questionnaire score: Incomplete.
 Neck measurement missing, so the score is incomplete. Without it, the highest possible score is 13.
 This score is being applied outside the populations in which it was validated.
 Source: Marti-Soler H, et al. The NoSAS score for screening of sleep-disordered breathing: a derivation and validation study. Lancet Respir Med 2016;4:742-748. doi:10.1016/S2213-2600(16)30075-3.",
-      "title": "Screening score (NoSAS)",
+      "title": "Questionnaire score (NoSAS)",
     },
     {
       "id": "audio",
@@ -114,7 +114,7 @@ A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea."
       "isSynthetic": true,
       "source": "app-guidance",
       "text": "Synthetic / illustrative: Based on what you shared, this is worth discussing with a clinician.
-Your symptoms and screening answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.
+Your symptoms and questionnaire answers suggest this is worth discussing, and a quiet or missing recording cannot rule out sleep apnea.
 Uncertainty:
 - SleepSmooth is informational and is not a diagnosis. It cannot confirm or rule out sleep apnea.
 - A quiet, normal-looking, or inconclusive recording cannot rule out sleep apnea.

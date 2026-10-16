@@ -6,6 +6,7 @@ import type { RulesInput } from '../types/evidence';
 import type { AnswerValue } from '../types/questionnaire';
 import { audioStateFrom } from './audioState';
 import type { EvidenceContext } from './engine';
+import { NOSAS_ENABLED } from '../content/claims';
 
 export interface ScreeningInputs {
   answers: Record<string, AnswerValue>;
@@ -27,12 +28,12 @@ export function buildRulesInput(
     (i) => `${i.text}: ${FREQUENCY_LABELS[s.symptoms[i.key] as keyof typeof FREQUENCY_LABELS].toLowerCase()}`,
   );
   const input: RulesInput = {
-    noSas: screeningState(activeInstrument, s.answers),
+    noSas: NOSAS_ENABLED ? screeningState(activeInstrument, s.answers) : 'notAnswered',
     symptoms: symptomBurden(s.symptoms),
     redFlagPresent: s.redFlag === true,
     audio: audioIsSample ? 'notProvided' : audioStateFrom(audio),
     ...(audio && !audioIsSample ? { audioAnalysis: audio } : {}),
     isSynthetic: s.isSynthetic || (audio?.isSynthetic ?? false),
   };
-  return { input, context: { noSasTotal: score.total, noSasMissing: partial.missing, frequentSymptoms, ...(audioIsSample && audio ? { audioIsSample: true } : {}) } };
+  return { input, context: { noSasTotal: NOSAS_ENABLED ? score.total : null, noSasMissing: NOSAS_ENABLED ? partial.missing : [], frequentSymptoms, ...(audioIsSample && audio ? { audioIsSample: true } : {}) } };
 }

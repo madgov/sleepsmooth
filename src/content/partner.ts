@@ -3,7 +3,7 @@
 
 export const PARTNER_SOURCE_LABEL = 'user-reported (partner)';
 export const PARTNER_STEP_TITLE = 'Anyone who sleeps near you';
-export const PARTNER_STEP_NOTE = 'Optional. Skip it if you like. What someone else noticed is passed along by you. It is not scored, and it is not part of the NoSAS screening score.';
+export const PARTNER_STEP_NOTE = 'Optional. Skip it if you like. What someone else noticed is passed along by you. It is not scored, and it is not part of the NoSAS score.';
 export const PARTNER_PRESENCE_QUESTION = 'Does anyone sleep near you, or has anyone told you about your sleep?';
 export const PARTNER_PRESENCE_OPTIONS = { yes: 'Yes', alone: 'No, I sleep alone', unsure: 'Not sure' } as const;
 export const PARTNER_NOTICED_QUESTION = 'What have they noticed?';

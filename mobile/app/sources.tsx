@@ -13,7 +13,7 @@ export default function Sources() {
         <AppText variant="body" tone="secondary" style={{ paddingHorizontal: 16 }}>
           {SOURCES_INTRO}
         </AppText>
-        <InsetGroup header="NoSAS screening score">
+        <InsetGroup header="NoSAS questionnaire score">
           <ListRow title={NOSAS_CITATION} />
           {urls.map((u) => (
             <ListRow key={u} title={u} leading="link" accessibilityRole="link" onPress={() => void Linking.openURL(u)} />

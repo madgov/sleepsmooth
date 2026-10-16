@@ -38,8 +38,8 @@ export interface NightListItem {
   snoreWindows: { snoreLike: number; assessable: number; tooQuiet: number } | null;
   /** Recording coverage of the scheduled hours (recorded / assessable / too quiet / not recorded / outside). Audio only; not a sleep estimate. */
   coverage: Coverage;
-  /** Snore-like windows over all captured in-window time, including time the phone guessed was awake (unvalidated). */
-  snoreLikeAnyTime: number | null;
+  /** Of the snore-like windows in the totals, how many fall in time the (unvalidated) estimate labels likely-awake. Context only: they are already counted. */
+  snoreLikeInAwakeGuess: number | null;
   /** Technical record of the capture. null for sample nights and for nights recorded before it existed. */
   diagnostics: NightDiagnostics | null;
   /** The core's night view. Evidence is derived from it by nightRulesInput(); the UI never interprets it. */
@@ -114,7 +114,7 @@ export function toNightListItem(view: NightView, diagnostics: NightDiagnostics |
         ? { snoreLike: s.snoreLikeWindows, assessable: s.assessableWindows, tooQuiet: s.unscoredWindows.tooQuiet }
         : null,
     coverage: computeCoverage(view.epochs, view.schedule),
-    snoreLikeAnyTime: assessed ? s.sensitivity.allInWindow.snoreLikeWindows : null,
+    snoreLikeInAwakeGuess: assessed ? s.sensitivity.inLikelyAwake.snoreLikeWindows : null,
     diagnostics: s.isSynthetic && !diagnostics?.devPreview ? null : diagnostics,
     view,
   };

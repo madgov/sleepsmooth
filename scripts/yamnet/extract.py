@@ -8,7 +8,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 from multiprocessing import Pool
 from common import *
-from yamnet_np import YamNet, read_wav_f32, window_to_patch
+from yamnet_np import read_wav_f32, window_to_patch
+from yamnet_backend import YamNet
 
 K_AUG = 3
 _M = None

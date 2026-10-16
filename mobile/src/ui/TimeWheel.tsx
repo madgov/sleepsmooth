@@ -9,7 +9,7 @@ export function TimeWheel({ minutes, onChange, label }: { minutes: number; onCha
   d.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
   return (
     <View accessible={false} style={{ alignItems: 'center' }} accessibilityLabel={label}>
-      <DateTimePicker value={d} mode="time" display="spinner" themeVariant={scheme} onChange={(_, v) => v && onChange(v.getHours() * 60 + v.getMinutes())} />
+      <DateTimePicker accessibilityLabel={label} value={d} mode="time" display="spinner" themeVariant={scheme} onChange={(_, v) => v && onChange(v.getHours() * 60 + v.getMinutes())} />
     </View>
   );
 }

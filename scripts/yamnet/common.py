@@ -45,7 +45,7 @@ def window_rows(man=None):
 def load_cache(name):
     p = os.path.join(YDIR, name)
     if not os.path.exists(p):
-        return {}, np.zeros((0, 1024), np.float32), np.zeros((0, 521), np.float32)
+        return {}, np.zeros((0, 1 if os.environ.get('YAMNET_BACKEND') == 'tflite' else 1024), np.float32), np.zeros((0, 521), np.float32)
     z = np.load(p, allow_pickle=False)
     keys = z['keys'].tolist()
     return {k: i for i, k in enumerate(keys)}, z['emb'], z['scores']

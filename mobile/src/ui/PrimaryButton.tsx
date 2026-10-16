@@ -69,9 +69,10 @@ export function PrimaryButton({ label, onPress, variant = 'filled', shape = 'cap
           justifyContent: 'center',
           flexDirection: 'row',
           gap: 8,
-          transform: [{ scale: pressed ? pressedScale : 1 }],
+          transform: reduceMotion ? [] : [{ scale: pressed ? pressedScale : 1 }],
+          ...(reduceMotion && pressed ? { opacity: disabled ? 0.4 : 0.7 } : null),
           transitionProperty: 'transform',
-          transitionDuration: pressed ? PRESS_IN_MS : PRESS_OUT_MS,
+          transitionDuration: reduceMotion ? 0 : pressed ? PRESS_IN_MS : PRESS_OUT_MS,
           transitionTimingFunction: CSS_EASE_OUT,
         }}
       >

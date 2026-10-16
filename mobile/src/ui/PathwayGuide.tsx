@@ -61,7 +61,7 @@ function Sources({ list }: { list: PathwaySource[] }) {
   return (
     <View style={{ gap: 2 }}>
       {list.map((s) => (
-        <Pressable key={s.url} accessibilityRole="link" accessibilityLabel={`Source: ${s.label}`} onPress={() => void Linking.openURL(s.url).catch(() => undefined)} style={{ minHeight: 28, justifyContent: 'center' }}>
+        <Pressable key={s.url} accessibilityRole="link" accessibilityLabel={`Source: ${s.label}`} onPress={() => void Linking.openURL(s.url).catch(() => undefined)} accessibilityHint="Opens in your browser" hitSlop={{ top: 8, bottom: 8 }} style={{ minHeight: 44, justifyContent: 'center' }}>
           <AppText variant="footnote" tone="accent">
             Source: {s.label}
           </AppText>
