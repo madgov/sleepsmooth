@@ -25,7 +25,7 @@ import {
   SAMPLE_AUDIO_LABEL,
   SAMPLE_AUDIO_NOT_USED,
   SNORE_NOT_APNEA_LINE,
-  modelVersionLine,
+  nightModelLine,
 } from '@core/content/claims';
 import { nightSource, SAMPLE_NIGHT_ID, type NightListItem } from '../../src/data/nightSource';
 import { COPY } from '../../src/content/copy';
@@ -242,7 +242,7 @@ function NightBody({ night }: { night: NightListItem }) {
             <AppText key={t} variant="subheadline" tone="secondary">{t}</AppText>
           ))}
         </Disclosure>
-        <ListRow title={MODEL_CARD_HEADING} subtitle={night.view.summary.modelVersion ? modelVersionLine(night.view.summary.modelVersion) : undefined} trailing="chevron" onPress={() => router.push('/model-card')} />
+        <ListRow title={MODEL_CARD_HEADING} subtitle={night.view.summary.modelVersion ? nightModelLine(night.view.summary.modelVersion) : undefined} trailing="chevron" onPress={() => router.push('/model-card')} />
       </InsetGroup>
 
       <DiagnosticsSection night={night} />

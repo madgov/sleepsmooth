@@ -1,0 +1,185 @@
+{
+ "label": "SYNTHETIC nights (stand-in for real overnight recordings). Not real-world performance.",
+ "rule": "docs/EVAL_PROTOCOL.md section 8",
+ "operatingPoint": {
+  "thr": 0.98,
+  "n": 7,
+  "K": 2,
+  "M": 3,
+  "rho": null,
+  "policy": "-"
+ },
+ "candidates": {
+  "0.0": {
+   "tuning": {
+    "fpPerHour": 12.15,
+    "fp": 243,
+    "tp": 124,
+    "hours": 20.0,
+    "recall": 0.9148936170212766,
+    "bouts": 47,
+    "caught": 43,
+    "scoredWindows": 125536,
+    "allWindows": 143990,
+    "assessableFraction": 0.8718383221057018,
+    "assessableOfAboveSilenceFloor": 0.8718383221057018
+   },
+   "check": {
+    "fpPerHour": 0.0,
+    "fp": 0,
+    "tp": 121,
+    "hours": 20.0,
+    "recall": 0.851063829787234,
+    "bouts": 47,
+    "caught": 40,
+    "scoredWindows": 128792,
+    "allWindows": 143990,
+    "assessableFraction": 0.8944510035419126,
+    "assessableOfAboveSilenceFloor": 0.8944510035419126
+   }
+  },
+  "1.0": {
+   "tuning": {
+    "fpPerHour": 11.85,
+    "fp": 237,
+    "tp": 124,
+    "hours": 20.0,
+    "recall": 0.9148936170212766,
+    "bouts": 47,
+    "caught": 43,
+    "scoredWindows": 100016,
+    "allWindows": 143990,
+    "assessableFraction": 0.6946037919299951,
+    "assessableOfAboveSilenceFloor": 0.6946037919299951
+   },
+   "check": {
+    "fpPerHour": 0.0,
+    "fp": 0,
+    "tp": 121,
+    "hours": 20.0,
+    "recall": 0.851063829787234,
+    "bouts": 47,
+    "caught": 40,
+    "scoredWindows": 117564,
+    "allWindows": 143990,
+    "assessableFraction": 0.8164733662059865,
+    "assessableOfAboveSilenceFloor": 0.8164733662059865
+   }
+  },
+  "2.0": {
+   "tuning": {
+    "fpPerHour": 10.65,
+    "fp": 213,
+    "tp": 124,
+    "hours": 20.0,
+    "recall": 0.9148936170212766,
+    "bouts": 47,
+    "caught": 43,
+    "scoredWindows": 75139,
+    "allWindows": 143990,
+    "assessableFraction": 0.5218348496423363,
+    "assessableOfAboveSilenceFloor": 0.5218348496423363
+   },
+   "check": {
+    "fpPerHour": 0.0,
+    "fp": 0,
+    "tp": 120,
+    "hours": 20.0,
+    "recall": 0.851063829787234,
+    "bouts": 47,
+    "caught": 40,
+    "scoredWindows": 100998,
+    "allWindows": 143990,
+    "assessableFraction": 0.7014237099798597,
+    "assessableOfAboveSilenceFloor": 0.7014237099798597
+   }
+  },
+  "3.0": {
+   "tuning": {
+    "fpPerHour": 8.3,
+    "fp": 166,
+    "tp": 121,
+    "hours": 20.0,
+    "recall": 0.9148936170212766,
+    "bouts": 47,
+    "caught": 43,
+    "scoredWindows": 57535,
+    "allWindows": 143990,
+    "assessableFraction": 0.3995763594694076,
+    "assessableOfAboveSilenceFloor": 0.3995763594694076
+   },
+   "check": {
+    "fpPerHour": 0.0,
+    "fp": 0,
+    "tp": 120,
+    "hours": 20.0,
+    "recall": 0.851063829787234,
+    "bouts": 47,
+    "caught": 40,
+    "scoredWindows": 81956,
+    "allWindows": 143990,
+    "assessableFraction": 0.5691784151677199,
+    "assessableOfAboveSilenceFloor": 0.5691784151677199
+   }
+  },
+  "4.0": {
+   "tuning": {
+    "fpPerHour": 5.1,
+    "fp": 102,
+    "tp": 125,
+    "hours": 20.0,
+    "recall": 0.9148936170212766,
+    "bouts": 47,
+    "caught": 43,
+    "scoredWindows": 44483,
+    "allWindows": 143990,
+    "assessableFraction": 0.3089311757760956,
+    "assessableOfAboveSilenceFloor": 0.3089311757760956
+   },
+   "check": {
+    "fpPerHour": 0.0,
+    "fp": 0,
+    "tp": 120,
+    "hours": 20.0,
+    "recall": 0.851063829787234,
+    "bouts": 47,
+    "caught": 40,
+    "scoredWindows": 64079,
+    "allWindows": 143990,
+    "assessableFraction": 0.44502395999722205,
+    "assessableOfAboveSilenceFloor": 0.44502395999722205
+   }
+  },
+  "6.0": {
+   "tuning": {
+    "fpPerHour": 0.85,
+    "fp": 17,
+    "tp": 130,
+    "hours": 20.0,
+    "recall": 0.9148936170212766,
+    "bouts": 47,
+    "caught": 43,
+    "scoredWindows": 26486,
+    "allWindows": 143990,
+    "assessableFraction": 0.18394332939787486,
+    "assessableOfAboveSilenceFloor": 0.18394332939787486
+   },
+   "check": {
+    "fpPerHour": 0.0,
+    "fp": 0,
+    "tp": 118,
+    "hours": 20.0,
+    "recall": 0.851063829787234,
+    "bouts": 47,
+    "caught": 40,
+    "scoredWindows": 40059,
+    "allWindows": 143990,
+    "assessableFraction": 0.27820681991804985,
+    "assessableOfAboveSilenceFloor": 0.27820681991804985
+   }
+  }
+ },
+ "chosenByTuningRule": 6.0,
+ "checkFpPerHourAtChosen": 0.0,
+ "adopted": 6.0
+}

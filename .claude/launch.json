@@ -9,6 +9,15 @@
         "dev"
       ],
       "port": 5173
+    },
+    {
+      "name": "mobile-web",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd mobile && npx expo start --web --port 8124 --clear"
+      ],
+      "port": 8124
     }
   ]
 }

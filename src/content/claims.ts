@@ -601,3 +601,39 @@ export const snorePausesLine = (n: number): string =>
 export const awakeGuessContextLine = (n: number): string =>
   `${n} of these snore-like ${n === 1 ? 'window was' : 'windows were'} in time the phone guessed you were awake. They are counted in the totals above.`;
 export const COUNTING_RULE_LINE = 'Everything recorded during your scheduled sleep hours is counted. The rough sleep estimate never removes any of it.';
+
+// ---- Round 4 (2026-10-19): v3 ships on iPhone (YAMNet float32 TFLite + v3 head), v1 is the fallback and the web model. Appended; nothing above was changed. ----
+// The older v1-only model-card lines above stay for reference; the app's model card screen now uses these.
+export const MODEL_CARD_SHIPS_HEADING = 'What runs in this app';
+export const MODEL_CARD_SHIPS_V3 =
+  'On iPhone: v3, when the phone can run it. A general sound model from Google (YAMNet, run on the phone) feeds a small snore-pattern layer trained for SleepSmooth. Nothing is sent anywhere for this.';
+export const MODEL_CARD_SHIPS_FALLBACK =
+  'Fallback: v1, the earlier snore-pattern model. It is used when v3 cannot run (Expo Go, a build without the on-phone runtime, a model that fails to load, or a failed start-up check on a fixed test tone).';
+export const MODEL_CARD_SHIPS_WEB = 'Web preview: v1 only. There is no v3 runtime on the web.';
+export const MODEL_CARD_PER_NIGHT = 'Each night records which model actually ran. You can see it in the night\'s details.';
+export const MODEL_CARD_APP_SIZE = 'The bundled YAMNet file makes the app about 16 MB larger.';
+export const MODEL_CARD_NOT_VERIFIED_DEVICE =
+  'NOT VERIFIED: v3 has not yet been run on a real iPhone. Its outputs were matched against a desktop run of the same file; the phone itself is checked only on one fixed test tone at start-up.';
+export const MODEL_CARD_NOT_VERIFIED_BATTERY = 'NOT VERIFIED: battery use and processor load of v3 over a whole night have not been measured.';
+export const modelCardNowLine = (active: 'v3' | 'v1', reason: string | null): string =>
+  active === 'v3' ? 'On this device right now: v3 loaded and passed its start-up check.' : `On this device right now: v1 (fallback${reason ? `: ${reason}` : ''}).`;
+export const MODEL_CARD_V3_TESTED_HEADING = 'How v3 was tested (offline)';
+export const MODEL_CARD_V3_SOURCE_LINE =
+  'Window numbers: ESC-50 test fold 5 (8 snoring clips; that fold has been looked at several times, so they are likely a bit optimistic). 95% ranges from resampling whole clips. Prototype; not clinically validated.';
+export const MODEL_CARD_V3_PRECISION_PLAIN = 'About 3 in 5 of its flags in that test were not snoring.';
+export const MODEL_CARD_SYNTHETIC_HEADING = 'Synthetic nights (made-up test nights, not real recordings)';
+export const MODEL_CARD_SYNTHETIC_NOTE =
+  'These nights were assembled from short sound clips over invented bedroom noise. They help set the app\'s rules, but they say nothing about how v3 behaves in a real bedroom.';
+export const MODEL_CARD_V1_TESTED_HEADING = 'How v1 (the fallback) was tested';
+export const MODEL_CARD_V3_LICENSE =
+  'Both snore-pattern layers were trained on ESC-50 clips (CC BY-NC 3.0), so they are for non-commercial use only. YAMNet is Google\'s model, Apache 2.0. Full details: model/MODEL_CARD.md in the project files.';
+export const nightModelLine = (v: string): string => {
+  const family = v.startsWith('sleepsmooth-snore-yamnet') ? 'v3 (YAMNet, run on the phone)' : v.startsWith('sleepsmooth-snore-mlp') ? 'v1 (fallback model)' : 'sample data, no model ran';
+  return `Model used for this night: ${family}. Version: ${v}`;
+};
+export const MODEL_CARD_V3_OTHER_LIMITS =
+  'Other limits: trained on short clips, not overnight bedroom recordings; breathing, door knocks and some animal sounds can be flagged by mistake; performance across ages, sexes and body types is unknown; not clinically validated.';
+// Web app (this website runs v1 only).
+export const MODEL_CARD_V3_WEB_HEADING = 'A newer model (v3) runs in the iPhone app, not on this website';
+export const MODEL_CARD_V3_WEB_STATUS =
+  'The SleepSmooth iPhone app uses v3 when it can run on the phone. This website always uses v1. v3 has not yet been run on a real iPhone (NOT VERIFIED); its numbers below come from an offline test.';

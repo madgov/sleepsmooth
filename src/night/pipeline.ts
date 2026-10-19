@@ -20,6 +20,7 @@ import { BandwidthEstimator, MIN_SOURCE_RATE_HZ } from '../audio/bandwidth';
 import { toDb } from '../audio/loudness';
 import { isSnoreLike, scoreFeatures, windowFeatures } from '../audio/model/infer';
 import type { ModelJson } from '../audio/model/schema';
+import { YAMNET_PATCH_OFFSET, YAMNET_PATCH_SAMPLES, type WindowScorer } from '../audio/yamnet/scorer';
 import { countClipped } from '../audio/quality';
 import {
   BW_MIN_FRAMES,
@@ -43,6 +44,7 @@ import {
 import { encodeBits, encodeScores, int8ToBase64, quantizeFeatures, quantizeScore } from './codec';
 import { isSpeechLikeBlock } from './cues';
 import { SleepEstimator, type EpochEstimate } from './estimator';
+import { V3_OPERATING_POINT, isConfirmed } from './operatingPoint';
 import { FrameCache } from './frames';
 import { StreamingResampler } from './resample';
 import type { CaptureEndReason, CaptureGap, EpochRecord, ScheduleWindow, WindowFeatureRecord } from './types';
@@ -68,8 +70,14 @@ export interface WindowDebug {
 }
 
 export interface NightPipelineOptions {
-  /** The shipped model, or null for a capture-only build (levels and aggregates; nothing is scored). */
+  /** The v1 model, or null for a capture-only build (levels and aggregates; nothing is scored). Ignored for scoring when `scorer` is set. */
   model: ModelJson | null;
+  /**
+   * YAMNet v3 window scorer (on-device TFLite). When set, windows that pass the level gate are scored by it instead of `model`, a window is
+   * flagged at the scorer's threshold and confirmed k-of-n (src/night/operatingPoint.ts), and an epoch is closed only after its confirmation
+   * look-ahead (13 windows = 6.5 s) has been processed. Windows the scorer fails on are NOT analysed (counted as skipped), never as "no snore".
+   */
+  scorer?: WindowScorer | null;
   /** Unix ms of epoch 0. Labels only. */
   captureStartMs: number;
   /** Used for the live (provisional) state labels. null: every epoch counts as inside the window. */
@@ -123,6 +131,8 @@ interface EpochAcc {
   scoredPos: boolean[];
   flags: boolean[];
   scoresQ: number[];
+  /** Scorer mode only: scored window indices in order, raw-flagged ones are confirmed at epoch close. */
+  scorerK: number[];
   bw: BandwidthEstimator | null;
 }
 
@@ -142,6 +152,7 @@ function newAcc(): EpochAcc {
     scoredPos: new Array<boolean>(WINDOWS_PER_EPOCH).fill(false),
     flags: [],
     scoresQ: [],
+    scorerK: [],
     bw: null,
   };
 }
@@ -152,6 +163,10 @@ const r3 = (x: number) => Math.round(x * 1000) / 1000;
 export class NightPipeline {
   private readonly opt: NightPipelineOptions;
   private readonly model: ModelJson | null;
+  private readonly scorer: WindowScorer | null;
+  /** Scorer mode: raw-flagged window indices still needed for confirmation of windows not yet in a closed epoch. */
+  private readonly rawFlagged = new Set<number>();
+  private scorerFailures = 0;
   private readonly gate: boolean;
   private readonly schedule: ScheduleWindow | null;
   private readonly estimator: SleepEstimator;
@@ -198,6 +213,7 @@ export class NightPipeline {
   constructor(opt: NightPipelineOptions) {
     this.opt = opt;
     this.model = opt.model;
+    this.scorer = opt.scorer ?? null;
     this.gate = opt.gate !== false;
     this.schedule = opt.schedule ?? null;
     if (opt.retainWindowFeatures !== undefined && opt.retainWindowFeatures !== false && opt.retainWindowFeatures.devTuningBuild !== true) {
@@ -281,6 +297,11 @@ export class NightPipeline {
     this.startSegmentAt(this.pos + samples);
     this.gaps.push({ t0, t1: this.timeAtSample(this.pos), cause });
     return this.takeOut(this.emitReady(false));
+  }
+
+  /** Windows the scorer threw on (not analysed). 0 for the v1 path. For diagnostics. */
+  scorerFailureCount(): number {
+    return this.scorerFailures;
   }
 
   /** Queue backlog in seconds of audio (for a UI, and for the overload test). */
@@ -546,17 +567,37 @@ export class NightPipeline {
     }
     const floorK = this.floorFor.get(Math.floor(k / 2)) ?? this.floorSeed;
     const gateDb = this.gate ? Math.max(SILENCE_FLOOR_DBFS, floorK + GATE_DB) : SILENCE_FLOOR_DBFS;
-    if (!this.model || this.sourceTooLow || levelDb < gateDb) {
+    if ((!this.model && !this.scorer) || this.sourceTooLow || levelDb < gateDb) {
       acc.belowGate++;
       this.opt.onWindow?.({ k, t0Sec, status: 'belowGate', levelDb, floorDb: floorK });
       return;
     }
     const { logMel, interior } = this.cache.windowLogMel(k);
-    const feats = windowFeatures(logMel, this.model.featureSpec.nMels);
-    const score = scoreFeatures(this.model, feats);
-    const flag = isSnoreLike(this.model, score);
+    let score: number;
+    let flag: boolean;
+    let feats: ReturnType<typeof windowFeatures> | null = null;
+    if (this.scorer) {
+      // Energy pre-gate: only windows that passed the level gate above reach YAMNet.
+      const s0 = k * HOP_SAMPLES_WINDOW - this.bufBase + YAMNET_PATCH_OFFSET;
+      try {
+        score = this.scorer.score(this.buf.subarray(s0, s0 + YAMNET_PATCH_SAMPLES));
+      } catch {
+        // Not analysed: counted as skipped, never as "no snore".
+        this.scorerFailures++;
+        acc.overload++;
+        this.opt.onWindow?.({ k, t0Sec, status: 'skipped', levelDb, floorDb: floorK });
+        return;
+      }
+      flag = score >= this.scorer.flagThreshold;
+      if (flag) this.rawFlagged.add(k);
+      acc.scorerK.push(k);
+    } else {
+      feats = windowFeatures(logMel, (this.model as ModelJson).featureSpec.nMels);
+      score = scoreFeatures(this.model as ModelJson, feats);
+      flag = isSnoreLike(this.model as ModelJson, score);
+      acc.flags.push(flag);
+    }
     acc.scoredPos[k % WINDOWS_PER_EPOCH] = true;
-    acc.flags.push(flag);
     acc.scoresQ.push(quantizeScore(score));
     // Speech-like cue on this window's first 0.5 s block (frames 1..50 of the window). Snore-like windows are
     // excluded so snoring is never read as talking (which would drop its epoch from the analysis).
@@ -570,7 +611,7 @@ export class NightPipeline {
       acc.bw.add(this.buf, s, s + HALF_SAMPLES);
     }
     const ret = this.opt.retainWindowFeatures;
-    if (ret && ret.devTuningBuild === true) ret.onRecord({ k, t: this.timeAtSample(k * HOP_SAMPLES_WINDOW), q: int8ToBase64(quantizeFeatures(feats)) });
+    if (ret && ret.devTuningBuild === true && feats) ret.onRecord({ k, t: this.timeAtSample(k * HOP_SAMPLES_WINDOW), q: int8ToBase64(quantizeFeatures(feats)) });
     this.opt.onWindow?.({ k, t0Sec, status: 'scored', levelDb, score, snoreLike: flag, floorDb: floorK, speechLike });
   }
 
@@ -582,7 +623,7 @@ export class NightPipeline {
     for (;;) {
       const e = this.emitIdx;
       const end = (e + 1) * EPOCH_SAMPLES;
-      const ready = this.pos >= end && this.nextWindow >= (e + 1) * WINDOWS_PER_EPOCH;
+      const ready = this.pos >= end && this.nextWindow >= (e + 1) * WINDOWS_PER_EPOCH + this.confirmLookahead();
       const hasData = e * EPOCH_SAMPLES < this.pos;
       if (!(ready || (force && hasData))) break;
       out.push(this.closeEpoch(e));
@@ -591,9 +632,20 @@ export class NightPipeline {
     return out;
   }
 
+  /** Windows after an epoch's last window that must be processed before the epoch can close (k-of-n confirmation), 0 without a scorer. */
+  private confirmLookahead(): number {
+    return this.scorer ? V3_OPERATING_POINT.confirmN - 1 : 0;
+  }
+
   private closeEpoch(e: number): EpochRecord {
     const acc = this.accs.get(e) ?? newAcc();
     this.accs.delete(e);
+    if (this.scorer) {
+      const flagged = this.rawFlagged;
+      for (const k of acc.scorerK) acc.flags.push(isConfirmed(k, (j) => flagged.has(j)));
+      const keepFrom = (e + 1) * WINDOWS_PER_EPOCH - V3_OPERATING_POINT.confirmN;
+      for (const k of flagged) if (k < keepFrom) flagged.delete(k);
+    }
     const sorted = acc.secDbs.slice().sort((a, b) => a - b);
     const pick = (p: number) => (sorted.length ? (sorted[Math.floor(p * (sorted.length - 1))] as number) : -120);
     const scored = acc.flags.length;

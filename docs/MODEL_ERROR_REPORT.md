@@ -4,6 +4,16 @@ All numbers here come from DEVELOPMENT data only (ESC-50 folds 1-4, out-of-fold 
 **Fold 5 is not used anywhere in this document.** Nothing here is a final test. Nothing here is clinical, and snore-like detection is not
 apnea detection (see `docs/EVAL_PROTOCOL.md`).
 
+> **STATUS NOTE (2026-10-16): v3 numbers below were computed on features from `scripts/yamnet/yamnet_np.py` (float YAMNet), NOT on the int8 TFLite file the phone
+> would run.** Diagnosis (see `docs/YAMNET_INTEGRATION.md`): the NumPy port matches float TensorFlow ops on the same weights (max score difference < 1e-4), so the port is
+> not buggy; the shipped TFLite file is a different, post-training-quantised model whose per-window class scores differ (parity FAIL, `model/parity.v3.json`).
+> The v3 metrics therefore do not transfer to the TFLite runtime. A head retrained on TFLite scores (`model/tflite_retrain/`, pre-registered in
+> `docs/EVAL_PROTOCOL.md` section 7) is a candidate and is NOT shipped: the official hash of the TFLite file could not be obtained, so the file is not bundled in the app.
+>
+> **UPDATE (2026-10-19):** the int8 file is not used. The shipped runtime is a float32 TFLite converted from the same `.h5`; on a desktop TFLite runtime it matches the
+> NumPy port (0 decision disagreements at 0.6495 and 0.98 on 200 windows, `model/parity.v3.json`), so the v3 numbers in this report apply to it on a desktop.
+> iPhone output is NOT VERIFIED. Gate and night-rule re-evaluation at the shipped operating point: `docs/EVAL_PROTOCOL.md` sections 8-8.2.
+
 ## 0. Pre-registered operating-point rule (written 2026-10-14T23:05:53Z, BEFORE any synthetic night was generated or scored)
 
 Order of events, stated honestly: I had already read the v3 window-level numbers (`model/metrics.v3.json`) and the app's episode rule

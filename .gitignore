@@ -5,3 +5,5 @@ dist/
 *.log
 data/processed/
 data/processed_tflite/
+__pycache__/
+*.pyc

@@ -10,7 +10,8 @@ import { buildNightFromFlags, run } from './testkit';
 import type { NightAudioState } from './types';
 
 const ALL_STATES: NightAudioState[] = ['not-recorded', 'not-assessed', 'model-not-applicable', 'no-model', 'few-observations', 'snore-like-observed'];
-const flaggedLong = [...run(2000, 80), ...run(6000, 80), ...run(10000, 80)];
+// NIGHT_MIN_EPISODES (5) stretches of 80 adjacent flagged windows each: well above NIGHT_MIN_EPISODE_SEC.
+const flaggedLong = [2000, 6000, 10000, 14000, 18000].flatMap((s) => run(s, 80));
 
 function view(o: Parameters<typeof buildNightFromFlags>[0] = {}): NightView {
   const n = buildNightFromFlags({ flaggedK: flaggedLong, ...o });

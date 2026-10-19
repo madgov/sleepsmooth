@@ -1,70 +1,70 @@
 {
- "runtime": "external tf.lite scores: tf_scores.npz",
+ "runtime": "external tf.lite scores: tf_float_scores.npz",
  "tflite": "lite-model_yamnet_classification_tflite_1.tflite",
  "n": 200,
  "tfliteIO": {
-  "external": "tf_scores.npz"
+  "external": "tf_float_scores.npz"
  },
  "scores": {
-  "maxAbsDiff": 0.9750120621174574,
-  "meanAbsDiff": 0.0029350689872189206,
-  "p99AbsDiff": 0.0582918195798993,
-  "top1Agreement": 0.525,
-  "top5SetAgreement": 0.115,
-  "snoring38MaxAbsDiff": 0.8544838353991508,
-  "snoring38MeanAbsDiff": 0.06549856234697654
+  "maxAbsDiff": 2.250075340270996e-05,
+  "meanAbsDiff": 3.206244272694468e-08,
+  "p99AbsDiff": 6.519444286823175e-07,
+  "top1Agreement": 1.0,
+  "top5SetAgreement": 0.99,
+  "snoring38MaxAbsDiff": 1.2278556823730469e-05,
+  "snoring38MeanAbsDiff": 7.809574991176043e-07
  },
  "head": {
   "version": "sleepsmooth-snore-yamnet-logreg_scores-0.3.0",
   "threshold": 0.6494545434975308,
-  "decisionAgreement": 0.83,
-  "disagreements": 34,
+  "decisionAgreement": 1.0,
+  "disagreements": 0,
   "flaggedNumpy": 98,
-  "flaggedTflite": 84,
-  "headScoreMaxAbsDiff": 0.8821504689852411,
-  "headScoreMeanAbsDiff": 0.16337629549594218,
+  "flaggedTflite": 98,
+  "headScoreMaxAbsDiff": 7.769093863552179e-05,
+  "headScoreMeanAbsDiff": 1.63909944861819e-06,
   "windowsWithin0_05OfThreshold": 2,
   "disagreementsAmongThose": 0
  },
  "operatingPoint98": {
   "threshold": 0.98,
-  "disagreements": 27,
-  "decisionAgreement": 0.865,
+  "disagreements": 0,
+  "decisionAgreement": 1.0,
   "flaggedNumpy": 28,
-  "flaggedTflite": 43,
+  "flaggedTflite": 28,
   "disagreementsByGroup": {
-   "hard-negative": 7,
-   "positive": 18,
-   "random-negative": 2
+   "hard-negative": 0,
+   "positive": 0,
+   "random-negative": 0
   },
   "windowsWithin0_02OfThreshold": 32
  },
  "perGroup": {
   "hard-negative": {
    "n": 50,
-   "decisionAgreement": 0.56,
-   "snoringScoreCorr": 0.6678256147174951
+   "decisionAgreement": 1.0,
+   "snoringScoreCorr": 0.9999999998750184
   },
   "positive": {
    "n": 50,
-   "decisionAgreement": 0.92,
-   "snoringScoreCorr": 0.8197627325608449
+   "decisionAgreement": 1.0,
+   "snoringScoreCorr": 0.9999999999803391
   },
   "random-negative": {
    "n": 100,
-   "decisionAgreement": 0.92,
-   "snoringScoreCorr": 0.14054894723018874
+   "decisionAgreement": 1.0,
+   "snoringScoreCorr": 0.9999999999994472
   }
  },
  "note": "NumPy YAMNet re-implementation vs the official quantized TFLite. Windows are DEVELOPMENT folds 1-4 only. This checks runtime agreement, not model accuracy.",
  "preRegisteredCriteria": {
   "doc": "docs/YAMNET_INTEGRATION.md \"Parity pass criteria (pre-registered)\"",
   "results": {
-   "headProbMaxAbsDiffLt0_01": false,
-   "decisionAgreementGe99pct_at0_6495": false,
-   "decisionAgreementGe99pct_at0_98": false,
-   "atMost1DisagreementPosAndHardNeg_at0_98": false
+   "headProbMaxAbsDiffLt0_01": true,
+   "decisionAgreementGe99pct_at0_6495": true,
+   "decisionAgreementGe99pct_at0_98": true,
+   "atMost1DisagreementPosAndHardNeg_at0_98": true
   },
-  "verdict": "FAIL"
+  "verdict": "PASS"
  }
 }

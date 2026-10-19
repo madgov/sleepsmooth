@@ -127,3 +127,46 @@ Per the protocol the head must be retrained on TFLite scores and re-evaluated be
   (`kaggle.com/models/google/yamnet/tfLite/classification-tflite/1`) only serves a `.tar.gz` bundle (3,240,957 bytes, md5 `uE8DZmydcMuFuelFZ6+FMA==`, crc32c `SZQBBw==`
   from a 1-byte ranged GET). That is the hash of the archive, not of the .tflite inside it, so it cannot be compared with our file without downloading and unpacking the
   archive. No official per-file hash is published. The file is therefore NOT pinned and NOT copied into `mobile/assets`.
+
+## Parity diagnosis (2026-10-16): the NumPy port is correct; the TFLite file is a different (quantised) model
+Run in `~/tf_env` (read-only, TensorFlow 2.16.2), same 200 windows (`model/parity.v3.json` for the first comparison):
+* NumPy port vs the same weights run with `tf.nn` ops and the official `tf.signal` frontend (STFT 400/160/512, mel 125-7500 Hz x64, log(x+0.001)): class-score max abs diff 0.0000 (float32 rounding), top-1 agreement 100%. Frontend log-mel max diff 1.7e-3 (FFT precision). So the port is faithful.
+* TFLite graph (`tf.lite.experimental.Analyzer`): input `waveform_binary` float32 [15600]; frontend in float (frame 400/hop 160 via GATHER, Hann, RFFT 512, COMPLEX_ABS, 64x257 mel, LOG, 96x64 patch); then QUANTIZE to int8 (scale 0.048, zero point 16, range [-6.92, 5.33], no saturation on these windows); the whole conv tower is int8 with ReLU6-fused layers; the logistic output is int8 with scale 1/256 (scores come in steps of 0.0039 and cannot exceed 0.996).
+* TFLite frontend (tensor 27) vs `tf.signal`: max diff 1.1e-3, so the frontend agrees; the divergence is in the int8 tower. Float tower with ReLU6 vs float tower with ReLU: top-1 agrees 96.5% (so ReLU6 alone is minor); Keras-float vs TFLite: top-1 agrees 53.5%, max diff 0.975, snoring-class correlation 0.82 on positives, 0.68 on hard negatives, 0.14 on random negatives.
+* Conclusion: the deviation is in the quantised TFLite model, not the NumPy port. v3 metrics hold for float YAMNet and say nothing certain about the TFLite file; hence the retrain below.
+* Reproduce: `scripts/yamnet/run_tflite_retrain.sh` (TFLite features, outputs under `data/processed_tflite/` and `model/tflite_retrain/`, nothing shipped is overwritten).
+
+### v3t: head retrained on TFLite class scores (pre-registered in `docs/EVAL_PROTOCOL.md` section 7)
+* CV (folds 1-4, same grid): best by the pre-registered criterion = logistic regression on logit(scores), augmentation copies, L2 = 0.1 (criterion 0.9800; the NumPy-era head was chosen with L2 = 0.01). Threshold 0.5085 (clean OOF, bedroom-negative FPR <= 5%).
+* Redefined parity (item 4a): the TypeScript head (`head.ts` on `model/tflite_retrain/model.v3t.json`) reproduces the Python head on the TFLite scores of 204 distinct windows (200 parity + fixtures): max abs probability diff 8.9e-16, 0 decision disagreements at 0.5085, 0.9 and 0.98. This only proves the TS port, NOT that a phone's TFLite output equals the desktop one (NOT VERIFIED).
+
+## DECISION (2026-10-18): ship a float32 TFLite converted from the verified .h5, with the ORIGINAL v3 head
+* **Conversion:** `scripts/yamnet/convert_float_tflite.py` (run with `~/tf_env/bin/python -I`, TensorFlow 2.16.2, h5py read-only) builds the official tf.signal-equivalent frontend (framing, Hann, real DFT as two matmuls so only builtin TFLite ops are needed, magnitude, mel 125-7500 Hz x 64, log(x+0.001)) and the 14-layer tower from `yamnet.h5`, and converts with no quantisation. Output `mobile/assets/models/yamnet_float32.tflite`: 15,973,484 bytes, sha256 `c318dadf42d414c3b974b8773f07eb3b7c64debb6aeace0f6cf38a634c2cf8a5`, deterministic (two runs, same hash). Input float32 [15600], output float32 [1, 521].
+* **Provenance chain:** h5 md5 equals Google's object md5 -> deterministic conversion script -> output sha256 above. The .h5 itself stays in `data/raw`. License Apache 2.0. Listed in `data/ATTRIBUTION.md`.
+* **Parity vs the NumPy port (pre-registered criteria above), 200 development windows + fixtures: PASS.** Class scores: max abs diff 2.25e-05, mean 3.2e-08, p99 6.5e-07, top-1 agreement 100%, top-5 set 99%. Head probability max abs diff 7.8e-05 (criterion < 0.01). Decisions identical on 200/200 at 0.6495 and at 0.98 (0 disagreements among positives, hard negatives, random negatives). So the original v3 metrics and the pre-registered operating point transfer to this file *on the desktop TFLite runtime*. Result: `model/parity.v3.json`; the earlier int8 FAIL is kept as `model/parity.v3.int8.json`.
+* **v3t (int8 retrain, `model/tflite_retrain/`)** stays documented as an evaluated alternative and is NOT shipped.
+* **NOT VERIFIED:** iPhone fast-tflite output vs this desktop run (the fixtures in `scripts/yamnet/fixtures/synthetic_fixtures.json` now carry `expectedTflite` from the float file for that check).
+
+## App integration (2026-10-19)
+* **Runtime:** `react-native-fast-tflite` 3.0.1, CPU delegate only (no Core ML / Metal), loading `mobile/assets/models/yamnet_float32.tflite` as a Metro asset
+  (`tflite` added to `assetExts` in `mobile/metro.config.js`). Loader: `mobile/src/capture/yamnetScorer.ts`. It checks the tensor types and shapes (float32 [15600] in,
+  float32 [1, 521] out), wraps the runtime with the v3 head (`src/audio/yamnet/scorer.ts`) and runs a start-up self-check: a generated 440 Hz tone
+  (`src/audio/yamnet/selfCheck.ts`, the fixture `tone-440hz-amp0.3`) must give a head output within 0.01 of the desktop float32 TFLite value (0.038618).
+  This is one input, not a parity proof.
+* **Framing (matches training):** the night pipeline's 1 s windows on a 0.5 s hop at 16 kHz; YAMNet sees the centred 15,600 samples (offset 200) of each
+  window, exactly as `scripts/yamnet/yamnet_np.window_to_patch` did for training and for the synthetic nights.
+* **Energy pre-gate:** YAMNet runs only on windows that pass the existing level gate (above -72 dBFS and at least `GATE_DB` above the rolling 10th-percentile
+  floor). Silent and below-gate windows never reach it (test: `src/night/pipelineScorer.test.ts`).
+* **Night logic:** flag at head output >= 0.98, confirm 2-of-14 windows (7 s), segment = at least 3 confirmed windows with gaps <= 10 s
+  (`src/night/operatingPoint.ts`, a port of `scripts/eval/night_logic.py`; `src/night/operatingPoint.test.ts` reproduces the Python outputs on 169 fixture cases,
+  including the first hour of three synthetic nights). An epoch closes 13 windows (6.5 s) late so confirmation can look ahead across epoch boundaries.
+  A window on which the runtime throws is counted as skipped (not analysed), never as "no snore".
+* **Fallback to v1** (night records the v1 version): web (platform file `yamnetScorer.web.ts`, so the web bundle carries neither the runtime nor the 16 MB file),
+  Expo Go, native module missing, model load failure, wrong tensor shapes, failed self-check.
+* **BLOCKER for on-device v3:** `react-native-fast-tflite` 3.x is a Nitro module; its required native peer `react-native-nitro-modules` is NOT installed
+  (no new installs were allowed in this round). Without it, autolinking fast-tflite would break `pod install` (the podspec depends on the `NitroModules` pod), so
+  `mobile/react-native.config.js` keeps fast-tflite out of native autolinking until that package is present, and Metro resolves the JS import to a throwing
+  stub (`mobile/stubs/nitro-modules-missing.ts`). Result today: every iPhone night falls back to v1 with reason `native-module-missing`. To enable v3:
+  `cd mobile && npx expo install react-native-nitro-modules`, then rebuild the dev client; nothing else changes.
+* **NOT VERIFIED:** on-iPhone inference at all; iPhone vs desktop output agreement beyond the one self-check tone; CPU time per window, thermal and battery cost
+  over a night; behaviour on real bedroom audio.

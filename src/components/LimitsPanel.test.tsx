@@ -18,7 +18,7 @@ describe('LimitsPanel', () => {
 });
 
 describe('ModelCardNumbers', () => {
-  it('states the v1 numbers, the small test, no real-phone data, and that v3 is not in the app', () => {
+  it('states the v1 numbers, the small test, no real-phone data, and that v3 runs only in the iPhone app, not on this website', () => {
     const { container } = render(<ModelCardNumbers />);
     const text = container.textContent ?? '';
     expect(text).toContain('0.919');
@@ -27,6 +27,8 @@ describe('ModelCardNumbers', () => {
     expect(text).toMatch(/only 8 snoring clips/);
     expect(text).toMatch(/not been tested on recordings made overnight on real phones/);
     expect(text).toMatch(/recall was 0\.00/);
-    expect(text).toMatch(/NOT in this app/);
+    expect(text).toMatch(/runs in the iPhone app, not on this website/);
+    expect(text).toMatch(/This website always uses v1/);
+    expect(text).toMatch(/NOT VERIFIED/);
   });
 });

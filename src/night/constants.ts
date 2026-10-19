@@ -9,7 +9,7 @@ import { SAMPLE_RATE, SILENCE_FLOOR_DBFS, WINDOW_HOP_SEC, WINDOW_SEC } from '../
 // Single source (ER-7): re-exported, never redefined.
 export { SAMPLE_RATE, SILENCE_FLOOR_DBFS, WINDOW_HOP_SEC, WINDOW_SEC };
 
-export const NIGHT_HEURISTICS_VERSION = 'night-heuristics-0.1.0-provisional';
+export const NIGHT_HEURISTICS_VERSION = 'night-heuristics-0.2.0-provisional';
 export const EPOCH_SCHEMA_VERSION = 1;
 
 // ---------------------------------------------------------------------------
@@ -33,7 +33,12 @@ export const FRAMES_PER_HOP = HOP_SAMPLES_WINDOW / FRAME_HOP; // 50
 // ---------------------------------------------------------------------------
 // Level gate and rolling noise floor (ER-3).
 // ---------------------------------------------------------------------------
-/** PROVISIONAL. A window is analysed only if its RMS is at least floor + GATE_DB (and above SILENCE_FLOOR_DBFS). */
+/**
+ * PROVISIONAL. A window is analysed only if its RMS is at least floor + GATE_DB (and above SILENCE_FLOOR_DBFS). It is also the energy pre-gate
+ * in front of YAMNet: below-gate windows never reach the model. Re-evaluated 2026-10-19 with v3 at the operating point on SYNTHETIC nights by the rule
+ * pre-registered in docs/EVAL_PROTOCOL.md section 8 (model/gate_sweep.synthetic.json): no lower gate kept false segments <= 2 per hour on the
+ * tuning nights (G = 4 dB: 5.10/h, G = 0: 12.15/h, versus 0.85/h at 6), and recall did not rise (0.915 at every gate), so it stays 6.
+ */
 export const GATE_DB = 6;
 /** PROVISIONAL. Rolling noise floor = 10th percentile of per-second RMS over this many seconds. */
 export const ROLLING_FLOOR_SEC = 600;
@@ -83,10 +88,26 @@ export const NIGHT_MIN_ASSESSED_SEC = 2 * 3600;
 export const NIGHT_MIN_COVERAGE = 0.5;
 /** Episode = flagged windows with at most this many seconds between consecutive ones. */
 export const NIGHT_EPISODE_MAX_GAP_SEC = 10;
-export const NIGHT_EPISODE_MIN_FLAGGED = 5;
-export const NIGHT_MIN_EPISODES = 3;
-/** ER-3: absolute quantity, independent of how aggressive the gate is. Flagged seconds inside episodes. */
-export const NIGHT_MIN_EPISODE_SEC = 120;
+/**
+ * Minimum flagged windows per episode. 3 = V3_OPERATING_POINT.minConfirmed (src/night/operatingPoint.ts; pinned by operatingPoint.test.ts), so an
+ * episode in the night summary is exactly a segment of the pre-registered v3 operating point (flagged = confirmed windows). Was 5 for v1-only builds.
+ * v1 fallback nights use the same value; the v1 night behaviour at 3 has not been evaluated.
+ */
+export const NIGHT_EPISODE_MIN_FLAGGED = 3;
+/**
+ * Night rule: snore-like-observed iff episodes >= NIGHT_MIN_EPISODES AND flagged seconds inside episodes >= NIGHT_MIN_EPISODE_SEC.
+ * Re-derived 2026-10-19 for the v3 segmenting (t = 0.98, 2-of-14 confirmation, >= 3 windows per segment, GATE_DB 6) by the rule pre-registered in
+ * docs/EVAL_PROTOCOL.md section 8.1 BEFORE the segment durations were tabulated (model/night_rule_sweep.synthetic.json). Rule: among
+ * E in {1..5}, S in {10..120} s, keep candidates with no TUNING night firing from false segments alone; pick the one firing on the most tuning
+ * nights; ties to larger E, then larger S. Result E = 5, S = 60: 7/10 tuning and 8/10 check nights fire, 0 fire from false segments alone
+ * (the old 3 / 120 s fired on 4/10 and 4/10). SYNTHETIC 2-hour nights only: false segments 0.85 per hour (tuning) and 0.00 (check); flagged seconds
+ * per segment median 3.5 s for false and about 5 s for true segments. Thin margin: the worst tuning night (breathing background) had 53 s of false
+ * flagged time in 2 h, so a real 7-8 h night with similar sound would likely pass 60 s. Engineering settings, not clinical thresholds; they
+ * carry no information about how often a real night is flagged.
+ */
+export const NIGHT_MIN_EPISODES = 5;
+/** ER-3: absolute quantity, independent of how aggressive the gate is. Flagged seconds inside episodes. See NIGHT_MIN_EPISODES. */
+export const NIGHT_MIN_EPISODE_SEC = 60;
 /** ER-4: night quality thresholds, deliberately not the clip thresholds. */
 export const NIGHT_QUALITY = {
   /** Unusable at or above this clipping percentage of captured samples. */

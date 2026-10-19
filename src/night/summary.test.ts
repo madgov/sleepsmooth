@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { NIGHT_MIN_ASSESSED_SEC, NIGHT_QUALITY } from './constants';
+import { NIGHT_EPISODE_MIN_FLAGGED, NIGHT_MIN_ASSESSED_SEC, NIGHT_MIN_EPISODES, NIGHT_MIN_EPISODE_SEC, NIGHT_QUALITY } from './constants';
 import { findEpisodes, flaggedWindowIndices, nightAudioState, summarizeNight, type NightStateInput } from './summary';
 import { buildNightFromFlags, run, TEST_NIGHT_START_MS } from './testkit';
 
 const T0 = TEST_NIGHT_START_MS;
 
 describe('findEpisodes: the absolute episode rule', () => {
-  it('5 consecutive flagged windows form an episode; 4 do not', () => {
-    expect(findEpisodes(run(100, 5), T0).episodes).toHaveLength(1);
-    expect(findEpisodes(run(100, 4), T0).episodes).toHaveLength(0);
+  it('NIGHT_EPISODE_MIN_FLAGGED (3, the v3 segment minimum) consecutive flagged windows form an episode; one fewer does not', () => {
+    expect(NIGHT_EPISODE_MIN_FLAGGED).toBe(3);
+    expect(findEpisodes(run(100, NIGHT_EPISODE_MIN_FLAGGED), T0).episodes).toHaveLength(1);
+    expect(findEpisodes(run(100, NIGHT_EPISODE_MIN_FLAGGED - 1), T0).episodes).toHaveLength(0);
   });
   it('a gap of exactly 10 s between windows keeps one episode; 10.5 s splits it', () => {
     // window k spans [0.5k, 0.5k + 1]; step 23 -> start-to-start 11.5 s -> gap 10.5 s; step 22 -> gap 10 s
@@ -28,7 +29,8 @@ describe('findEpisodes: the absolute episode rule', () => {
     expect(findEpisodes(run(0, 5, 2), T0).flaggedSec).toBe(5);
   });
   it('flagged seconds count only qualifying episodes', () => {
-    expect(findEpisodes([...run(0, 4), ...run(1000, 6)], T0).flaggedSec).toBe(3.5);
+    // 2 adjacent windows (too few) + 6 adjacent windows (1 + 5 x 0.5 = 3.5 s)
+    expect(findEpisodes([...run(0, NIGHT_EPISODE_MIN_FLAGGED - 1), ...run(1000, 6)], T0).flaggedSec).toBe(3.5);
   });
   it('episode bounds are in unix ms from the capture start', () => {
     const { episodes } = findEpisodes(run(10, 5), T0);
@@ -52,8 +54,8 @@ describe('nightAudioState rows (first match wins)', () => {
     qualityReasons: [],
     bandwidthApplicable: true,
     assessableWindows: 1000,
-    episodes: 3,
-    episodeFlaggedSec: 120,
+    episodes: NIGHT_MIN_EPISODES,
+    episodeFlaggedSec: NIGHT_MIN_EPISODE_SEC,
   };
   const st = (o: Partial<NightStateInput>) => nightAudioState({ ...ok, ...o }).state;
   it('nothing recorded', () => expect(st({ recordedSec: 0 })).toBe('not-recorded'));
@@ -79,10 +81,11 @@ describe('nightAudioState rows (first match wins)', () => {
     expect(st({ bandwidthApplicable: false, assessableWindows: 0 })).toBe('model-not-applicable');
   });
   it('no assessable windows is not assessed', () => expect(st({ assessableWindows: 0 })).toBe('not-assessed'));
-  it('episode thresholds: 3 episodes and 120 s are both required', () => {
-    expect(st({ episodes: 2, episodeFlaggedSec: 500 })).toBe('few-observations');
-    expect(st({ episodes: 3, episodeFlaggedSec: 119 })).toBe('few-observations');
-    expect(st({ episodes: 3, episodeFlaggedSec: 120 })).toBe('snore-like-observed');
+  it('episode thresholds: NIGHT_MIN_EPISODES (5) episodes and NIGHT_MIN_EPISODE_SEC (60 s) are both required', () => {
+    expect([NIGHT_MIN_EPISODES, NIGHT_MIN_EPISODE_SEC]).toEqual([5, 60]);
+    expect(st({ episodes: NIGHT_MIN_EPISODES - 1, episodeFlaggedSec: 500 })).toBe('few-observations');
+    expect(st({ episodes: NIGHT_MIN_EPISODES, episodeFlaggedSec: NIGHT_MIN_EPISODE_SEC - 1 })).toBe('few-observations');
+    expect(st({ episodes: NIGHT_MIN_EPISODES, episodeFlaggedSec: NIGHT_MIN_EPISODE_SEC })).toBe('snore-like-observed');
     expect(st({ episodes: 0, episodeFlaggedSec: 0 })).toBe('few-observations');
   });
   it('precedence: not-recorded beats no-model, no-model beats not-assessed', () => {
@@ -92,30 +95,32 @@ describe('nightAudioState rows (first match wins)', () => {
 });
 
 describe('summarizeNight on epoch records', () => {
-  // Three episodes, each 40 s of consecutive flagged windows (80 windows): 120+ flagged seconds.
-  const episodes = [...run(2000, 80), ...run(6000, 80), ...run(10000, 80)];
-  it('a night with three long stretches is snore-like-observed', () => {
+  // Five episodes (NIGHT_MIN_EPISODES), each 40 s of consecutive flagged windows (80 windows): 200+ flagged seconds.
+  const starts = [2000, 6000, 10000, 14000, 18000];
+  const episodes = starts.flatMap((s) => run(s, 80));
+  it('a night with five long stretches is snore-like-observed', () => {
     const n = buildNightFromFlags({ flaggedK: episodes });
     const v = summarizeNight(n.record, n.epochs, n.schedule);
-    expect(v.summary.episodes).toHaveLength(3);
-    expect(v.summary.episodeFlaggedSec).toBeGreaterThanOrEqual(120);
+    expect(v.summary.episodes).toHaveLength(5);
+    expect(v.summary.episodeFlaggedSec).toBeGreaterThanOrEqual(NIGHT_MIN_EPISODE_SEC);
     expect(v.summary.nightState).toBe('snore-like-observed');
-    expect(v.summary.snoreLikeWindows).toBe(240);
-    expect(v.summary.assessableWindows).toBe(240);
+    expect(v.summary.snoreLikeWindows).toBe(400);
+    expect(v.summary.assessableWindows).toBe(400);
   });
-  it('119 s versus 120 s of episode time flips the state', () => {
-    // Windows adjacent: n windows cover 1 + 0.5 (n-1) s. Three episodes of 80 windows = 3 x 40.5 = 121.5 s.
-    // Three episodes of 79 windows = 3 x 40 = 120 s; 78 -> 3 x 39.5 = 118.5 s.
-    const mk = (len: number) => buildNightFromFlags({ flaggedK: [...run(2000, len), ...run(6000, len), ...run(10000, len)] });
-    const at = mk(79);
-    const below = mk(78);
-    expect(summarizeNight(at.record, at.epochs, at.schedule).summary.nightState).toBe('snore-like-observed');
+  it('59 s versus 60 s of episode time flips the state', () => {
+    // Windows adjacent: n windows cover 1 + 0.5 (n-1) s. Five episodes of 23 windows = 5 x 12 = 60 s; 22 -> 5 x 11.5 = 57.5 s.
+    const mk = (len: number) => buildNightFromFlags({ flaggedK: starts.flatMap((s) => run(s, len)) });
+    const at = mk(23);
+    const below = mk(22);
+    const a = summarizeNight(at.record, at.epochs, at.schedule).summary;
+    expect(a.episodeFlaggedSec).toBe(60);
+    expect(a.nightState).toBe('snore-like-observed');
     const b = summarizeNight(below.record, below.epochs, below.schedule).summary;
-    expect(b.episodeFlaggedSec).toBe(118.5);
+    expect(b.episodeFlaggedSec).toBe(57.5);
     expect(b.nightState).toBe('few-observations');
   });
-  it('two long episodes are few-observations', () => {
-    const n = buildNightFromFlags({ flaggedK: [...run(2000, 400), ...run(6000, 400)] });
+  it('four long episodes are few-observations', () => {
+    const n = buildNightFromFlags({ flaggedK: starts.slice(0, 4).flatMap((s) => run(s, 400)) });
     expect(summarizeNight(n.record, n.epochs, n.schedule).summary.nightState).toBe('few-observations');
   });
   it('many scattered single flagged windows never make an episode', () => {

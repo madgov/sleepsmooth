@@ -34,6 +34,7 @@ import {
   type NightDiagnostics,
 } from '@core/mobileLogic/diagnostics';
 import { CaptureSpike, type GapInfo, type SpikeEvent } from './captureSpike';
+import { loadYamnetScorer } from './yamnetScorer';
 
 const MODEL = modelJson as unknown as ModelJson;
 const hhmm = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
@@ -334,9 +335,12 @@ class CaptureController {
     const adaptation = settings.clips.enabled ? await loadClipAdaptation(settings.clips.adaptResetAtMs) : NO_ADAPTATION;
     this.clips = settings.clips.enabled ? new ClipRecorder(now, clipTempSink, adaptation) : null;
     const clips = this.clips;
+    // YAMNet v3 on-device when available; otherwise the v1 model (Expo Go, web, load or self-check failure). The night records which one ran.
+    const yam = await loadYamnetScorer();
     this.night = NightSession.open({
       store: getNightStore(),
       model: MODEL,
+      scorer: yam.scorer,
       env: ENV,
       nowMs: now,
       bedtimeLocal: hhmm(settings.sleep.bedMin),

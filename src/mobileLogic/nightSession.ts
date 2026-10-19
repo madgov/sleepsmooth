@@ -4,6 +4,7 @@ import { createNightPipeline, resolveScheduleWindow, EPOCH_SCHEMA_VERSION, NIGHT
 import type { CaptureEndReason, CaptureGap, EpochContext, EpochRecord, NightPipeline, NightRecord, NightView } from '../night';
 import type { WindowDebug } from '../night/pipeline';
 import type { ModelJson } from '../audio/model/schema';
+import type { WindowScorer } from '../audio/yamnet/scorer';
 import type { NightStore, StoredNight } from './nightStore';
 
 export interface SessionEnv {
@@ -17,7 +18,10 @@ export interface SessionEnv {
 
 export interface OpenSessionOptions {
   store: NightStore;
+  /** The v1 model. Used for scoring only when `scorer` is null (Expo Go, web, or a YAMNet load failure). */
   model: ModelJson | null;
+  /** YAMNet v3 scorer (on-device TFLite), or null for the v1 fallback. Its version is what the night records. */
+  scorer?: WindowScorer | null;
   env: SessionEnv;
   nowMs: number;
   bedtimeLocal: string;
@@ -56,7 +60,7 @@ export class NightSession {
       deviceModel: o.env.deviceModel,
       osVersion: o.env.osVersion,
       appVersion: o.env.appVersion,
-      modelVersion: o.model ? o.model.version : null,
+      modelVersion: o.scorer ? o.scorer.version : o.model ? o.model.version : null,
       nightHeuristicsVersion: NIGHT_HEURISTICS_VERSION,
       epochSchemaVersion: EPOCH_SCHEMA_VERSION,
       settings: { bedtimeLocal: o.bedtimeLocal, wakeLocal: o.wakeLocal, tz: o.env.tz, remindEnabled: o.remindEnabled, promptLeadMin: 0 },
@@ -69,7 +73,7 @@ export class NightSession {
       source: 'device-recording',
       retention: RETENTION_DEFAULT,
     };
-    const pipe = createNightPipeline({ model: o.model, captureStartMs: o.nowMs, schedule, ...(o.onWindow ? { onWindow: o.onWindow } : {}) });
+    const pipe = createNightPipeline({ model: o.model, scorer: o.scorer ?? null, captureStartMs: o.nowMs, schedule, ...(o.onWindow ? { onWindow: o.onWindow } : {}) });
     // No accelerometer in this build: epochs report motionSec null.
     pipe.setContext({ motionAvailable: false, ...o.initialContext });
     const s = new NightSession(o.store, pipe, record);

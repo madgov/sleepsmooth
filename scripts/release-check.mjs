@@ -9,6 +9,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { createHash } from 'node:crypto';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,6 +30,10 @@ const sh = (cmd, args, cwd, timeoutMs = 15 * 60 * 1000) => () => {
 };
 
 // ---- model bundle check ------------------------------------------------------------------------------------------
+// The app ships two model JSON files and one TFLite file: v3 (src/audio/model/model.v3.json head on the bundled YAMNet float32 TFLite,
+// iPhone) and v1 (src/audio/model/model.json, the fallback and the web model). Each must be listed in the "Shipped components" table of
+// model/MODEL_CARD.md with its version and hash, and the in-app card numbers (src/audio/modelCardInfo.ts) must be for those exact versions.
+const EXPECTED_MODEL_FILES = ['src/audio/model/model.json', 'src/audio/model/model.v3.json'];
 function modelBundleCheck() {
   const lines = [];
   let ok = true;
@@ -38,7 +43,7 @@ function modelBundleCheck() {
   };
   const pass = (m) => lines.push(`ok   ${m}`);
 
-  // 1. Which model file does the mobile app actually import?
+  // 1. Which model files does the mobile app actually import?
   const sources = [];
   const walk = (dir) => {
     for (const n of readdirSync(dir)) {
@@ -50,6 +55,7 @@ function modelBundleCheck() {
   };
   for (const d of ['app', 'src', 'modules']) if (existsSync(join(MOBILE, d))) walk(join(MOBILE, d));
   const modelImports = new Map(); // file path under src/audio/model -> importing files
+  const tfliteImports = new Map(); // absolute .tflite path -> importing files
   const metricImports = [];
   for (const f of sources) {
     const text = readFileSync(f, 'utf8');
@@ -62,57 +68,63 @@ function modelBundleCheck() {
       }
       if (/metrics[^/]*\.json$/.test(spec) || /model\/[^'"]*metrics/.test(spec)) metricImports.push({ spec, from: relative(ROOT, f) });
     }
+    for (const m of text.matchAll(/require\(\s*['"]([^'"]+\.tflite)['"]\s*\)/g)) {
+      const abs = join(dirname(f), m[1]);
+      tfliteImports.set(abs, [...(tfliteImports.get(abs) ?? []), relative(ROOT, f)]);
+    }
   }
-  // The app's capture path is the one that matters. The dev lab (debug) may import the same file.
+  // The app's capture path is the one that matters. The dev lab (debug) may import the same files.
   const shipped = [...modelImports.entries()].filter(([, from]) => from.some((p) => !p.includes('/debug/')));
-  if (shipped.length !== 1) {
-    fail(`expected exactly one model file imported by the app (outside the dev lab), found ${shipped.length}: ${shipped.map(([f]) => f).join(', ') || 'none'}`);
+  const shippedFiles = shipped.map(([f]) => f).sort();
+  if (JSON.stringify(shippedFiles) !== JSON.stringify(EXPECTED_MODEL_FILES)) {
+    fail(`expected the app (outside the dev lab) to import exactly ${EXPECTED_MODEL_FILES.join(' and ')}, found: ${shippedFiles.join(', ') || 'none'}`);
     return { ok, output: lines.join('\n') };
   }
-  const [modelFile, importers] = shipped[0];
-  pass(`mobile imports ${modelFile} (from ${importers.join(', ')})`);
-  const labOnly = [...modelImports.entries()].filter(([f]) => f !== modelFile);
-  if (labOnly.length) fail(`the app imports more than one model file: ${[...modelImports.keys()].join(', ')}`);
+  for (const [f, from] of shipped) pass(`mobile imports ${f} (from ${from.join(', ')})`);
+  if (modelImports.size !== shipped.length) fail(`the dev lab imports other model files: ${[...modelImports.keys()].join(', ')}`);
 
-  // 2. Version and hash against the model card.
-  const model = JSON.parse(readFileSync(join(ROOT, modelFile), 'utf8'));
+  // 2. Versions and hashes against the "Shipped components" table of the model card (one row per component).
   const card = readFileSync(join(ROOT, 'model/MODEL_CARD.md'), 'utf8');
-  const cardVersion = /\*\*Version:\*\*\s*`([^`]+)`/.exec(card)?.[1];
-  const cardHash = /\*\*Weights hash \(sha256\):\*\*\s*`([0-9a-f]+)\.{0,3}`/.exec(card)?.[1];
-  if (!cardVersion || !cardHash) {
-    fail('could not read "Version" and "Weights hash" from model/MODEL_CARD.md');
-    return { ok, output: lines.join('\n') };
+  const rows = card.split('\n').filter((l) => /^\|/.test(l));
+  const models = {};
+  for (const f of EXPECTED_MODEL_FILES) {
+    const model = JSON.parse(readFileSync(join(ROOT, f), 'utf8'));
+    models[f] = model;
+    const row = rows.find((l) => l.includes(`\`${model.version}\``) && /\| `[0-9a-f]{12,}/.test(l));
+    const cardHash = row ? /\| `([0-9a-f]{12,})\.{0,3}`/.exec(row)?.[1] : undefined;
+    if (!row || !cardHash) fail(`${f}: version ${model.version} has no row with a hash in the model card's "Shipped components" table`);
+    else if (typeof model.weightsHash === 'string' && model.weightsHash.startsWith(cardHash)) pass(`${f}: version ${model.version}, weightsHash ${model.weightsHash.slice(0, 12)}... matches the card`);
+    else fail(`${f}: weightsHash "${String(model.weightsHash).slice(0, 16)}" does not start with the card hash "${cardHash}"`);
   }
-  if (model.version === cardVersion) pass(`version ${model.version} matches the model card`);
-  else fail(`app model version "${model.version}" differs from the model card version "${cardVersion}"`);
-  if (typeof model.weightsHash === 'string' && model.weightsHash.startsWith(cardHash) && cardHash.length >= 12) pass(`weightsHash ${model.weightsHash.slice(0, 12)}... matches the card prefix ${cardHash}`);
-  else fail(`app weightsHash "${String(model.weightsHash).slice(0, 16)}" does not start with the card hash "${cardHash}"`);
+  if (models['src/audio/model/model.v3.json']?.status !== 'shipped') fail('model.v3.json is not marked status "shipped"');
 
-  // 3. Metrics shown in the app must refer to that exact version.
+  // 3. The bundled YAMNet TFLite file: exactly one, its full sha256 and size must be on the card.
+  if (tfliteImports.size !== 1) fail(`expected exactly one bundled .tflite file, found ${tfliteImports.size}`);
+  for (const [abs, from] of tfliteImports) {
+    if (!existsSync(abs)) {
+      fail(`${relative(ROOT, abs)} (required by ${from.join(', ')}) does not exist`);
+      continue;
+    }
+    const sha = createHash('sha256').update(readFileSync(abs)).digest('hex');
+    const bytes = statSync(abs).size;
+    const rel = relative(ROOT, abs);
+    const row = rows.find((l) => l.includes(rel));
+    if (row && row.includes(sha)) pass(`${rel}: sha256 ${sha.slice(0, 12)}... (${bytes.toLocaleString('en-US')} bytes) matches the card`);
+    else fail(`${rel}: sha256 ${sha} is not on its "Shipped components" row in model/MODEL_CARD.md`);
+    if (row && !row.includes(bytes.toLocaleString('en-US'))) fail(`${rel}: size ${bytes.toLocaleString('en-US')} bytes is not on its card row`);
+  }
+
+  // 4. Metrics shown in the app must refer to those exact versions.
   const cardScreen = readFileSync(join(MOBILE, 'app/model-card.tsx'), 'utf8');
-  const unavailable = /MODEL_CARD_METRICS_UNAVAILABLE/.test(cardScreen);
-  // Hand-written constants (src/audio/modelCardInfo.ts) are allowed when a test pins them to model/MODEL_CARD.md.
-  const handWritten = /V1_EVALUATION/.test(cardScreen) && existsSync(join(ROOT, 'src/audio/modelCardInfo.test.ts'));
-  if (metricImports.length === 0) {
-    if (handWritten) {
-      const info = readFileSync(join(ROOT, 'src/audio/modelCardInfo.ts'), 'utf8');
-      const v1 = /V1_EVALUATION[^=]*=\s*\{\s*version:\s*'([^']+)'/.exec(info)?.[1];
-      if (v1 === model.version) pass(`the model card screen shows hand-written v1 numbers (src/audio/modelCardInfo.ts), pinned to model/MODEL_CARD.md by modelCardInfo.test.ts, for ${v1}`);
-      else fail(`the hand-written model-card numbers are for "${String(v1)}", not for the app model "${model.version}"`);
-    } else if (unavailable) pass('the app bundles no model metrics; the model card screen says test results are not available in this build');
-    else fail('the app bundles no metrics file and the model card screen shows neither pinned numbers nor the "not available" line');
-  } else {
-    for (const m of metricImports) {
-      const name = m.spec.replace(/^.*\//, '');
-      const p = [join(ROOT, 'model', name), join(ROOT, 'src/audio/model', name)].find(existsSync);
-      if (!p) {
-        fail(`${m.from} imports ${m.spec}, which could not be found`);
-        continue;
-      }
-      const j = JSON.parse(readFileSync(p, 'utf8'));
-      const v = j.modelVersion ?? j.model?.version ?? j.version;
-      if (v === model.version) pass(`${name} refers to ${v}`);
-      else fail(`${name} (imported by ${m.from}) refers to "${String(v)}", not to the app model "${model.version}"`);
+  if (metricImports.length > 0) fail(`the app imports metrics files (not allowed): ${metricImports.map((m) => `${m.spec} from ${m.from}`).join(', ')}`);
+  const handWritten = /V1_EVALUATION/.test(cardScreen) && /V3_EVALUATION/.test(cardScreen) && existsSync(join(ROOT, 'src/audio/modelCardInfo.test.ts'));
+  if (!handWritten) fail('the model card screen does not show the pinned v1 and v3 numbers (src/audio/modelCardInfo.ts)');
+  else {
+    const info = readFileSync(join(ROOT, 'src/audio/modelCardInfo.ts'), 'utf8');
+    for (const [name, f] of [['V1_EVALUATION', 'src/audio/model/model.json'], ['V3_EVALUATION', 'src/audio/model/model.v3.json']]) {
+      const v = new RegExp(`${name}[^=]*=\\s*\\{\\s*version:\\s*'([^']+)'`).exec(info)?.[1];
+      if (v === models[f].version) pass(`the model card screen shows hand-written ${name} numbers, pinned to model/MODEL_CARD.md by modelCardInfo.test.ts, for ${v}`);
+      else fail(`the hand-written ${name} numbers are for "${String(v)}", not for ${f} "${models[f].version}"`);
     }
   }
   return { ok, output: lines.join('\n') };
@@ -127,7 +139,7 @@ const steps = [
   { id: 'mobile-tsc', title: 'Mobile typecheck (cd mobile && npx tsc --noEmit)', run: sh('npx', ['tsc', '--noEmit'], MOBILE) },
   { id: 'expo-export-ios', title: 'Expo export for iOS (npx expo export --platform ios)', run: sh('npx', ['expo', 'export', '--platform', 'ios', '--output-dir', exportDir], MOBILE) },
   { id: 'expo-install-check', title: 'Expo dependency check (npx expo install --check)', run: sh('npx', ['expo', 'install', '--check'], MOBILE, 5 * 60 * 1000) },
-  { id: 'model-bundle', title: 'Model file the app imports matches model/MODEL_CARD.md (version, hash, metrics)', run: modelBundleCheck },
+  { id: 'model-bundle', title: 'Model files the app bundles (v1 JSON, v3 head JSON, YAMNet TFLite) match model/MODEL_CARD.md (version, hash, metrics)', run: modelBundleCheck },
 ];
 
 if (argv.includes('--list')) {

@@ -1,12 +1,14 @@
 // Keeps the hand-written in-app model-card numbers honest: every value must appear in model/MODEL_CARD.md,
 // and the v1 values must also match model/metrics.json (the raw evaluation output).
-import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   MODEL_CARD_FACTS,
   V1_EVALUATION,
-  V3_OFFLINE_EVALUATION,
+  V3_EVALUATION,
+  V3_SYNTHETIC_NIGHTS,
   formatRange,
   formatValue,
   type ModelCardEvaluation,
@@ -50,9 +52,9 @@ describe('in-app model card numbers match model/MODEL_CARD.md', () => {
       const [lo, hi] = m.range ?? [NaN, NaN];
       return `${formatValue(m)} (${lo.toFixed(m.decimals)}-${hi.toFixed(m.decimals)})`;
     };
-    for (const m of V3_OFFLINE_EVALUATION.metrics) expect(card).toContain(find(m));
-    expect(card).toContain(`\`${V3_OFFLINE_EVALUATION.version}\``);
-    expect(formatRange(V3_OFFLINE_EVALUATION.metrics[1]!)).toBe('0.76 to 1.00');
+    for (const m of V3_EVALUATION.metrics) expect(card).toContain(find(m));
+    expect(card).toContain(`\`${V3_EVALUATION.version}\``);
+    expect(formatRange(V3_EVALUATION.metrics[1]!)).toBe('0.76 to 1.00');
   });
 
   it('prose facts match the card and metrics.json', () => {
@@ -64,6 +66,49 @@ describe('in-app model card numbers match model/MODEL_CARD.md', () => {
     expect(card).toContain(`Only ${MODEL_CARD_FACTS.positiveTestClips} positive test clips`);
     expect(card).toContain(`${MODEL_CARD_FACTS.positiveTestWindows} snoring, from ${MODEL_CARD_FACTS.positiveTestClips} clips`);
     expect(card).toContain(`AUC ${MODEL_CARD_FACTS.v1Auc8kHz}, recall 0.00`);
-    expect(card).toContain('The app currently runs v1');
+    expect(card).toContain('The app runs v3 on iPhone when the runtime loads, v1 otherwise and on web.');
+  });
+
+  it('the shipped model files are the ones these numbers describe', () => {
+    const v1 = JSON.parse(readFileSync(join(ROOT, 'src/audio/model/model.json'), 'utf8')) as { version: string };
+    const v3 = JSON.parse(readFileSync(join(ROOT, 'src/audio/model/model.v3.json'), 'utf8')) as { version: string; status: string };
+    expect(V1_EVALUATION.version).toBe(v1.version);
+    expect(V3_EVALUATION.version).toBe(v3.version);
+    expect(V3_SYNTHETIC_NIGHTS.version).toBe(v3.version);
+    expect(v3.status).toBe('shipped');
+  });
+
+  it('the bundled YAMNet TFLite file has the size and sha256 stated on the card', () => {
+    const f = join(ROOT, 'mobile/assets/models/yamnet_float32.tflite');
+    expect(statSync(f).size).toBe(MODEL_CARD_FACTS.yamnetTfliteBytes);
+    expect(createHash('sha256').update(readFileSync(f)).digest('hex')).toBe(MODEL_CARD_FACTS.yamnetTfliteSha256);
+    expect(card).toContain(MODEL_CARD_FACTS.yamnetTfliteSha256);
+    expect(card).toContain(`${MODEL_CARD_FACTS.yamnetTfliteBytes.toLocaleString('en-US')} bytes`);
+    expect(card).toContain('CPU and battery cost of v3 over a night: NOT VERIFIED');
+  });
+
+  it('synthetic-night numbers equal the evaluation outputs (rounded as shown)', () => {
+    type Agg = { fpPerHour: number; recall: number; caught: { all: number }; bouts: { all: number } };
+    const seg = JSON.parse(readFileSync(join(ROOT, 'model/segment_eval.synthetic.json'), 'utf8')) as {
+      chosen: { cfg: { thr: number; K: number; n: number; M: number }; tuning: Agg; check: Agg };
+    };
+    const gate = JSON.parse(readFileSync(join(ROOT, 'model/gate_sweep.synthetic.json'), 'utf8')) as {
+      adopted: number;
+      candidates: Record<string, { tuning: Agg & { assessableFraction: number }; check: Agg & { assessableFraction: number } }>;
+    };
+    expect(seg.chosen.cfg).toMatchObject({ thr: 0.98, K: 2, n: 7, M: 3 });
+    const atGate = gate.candidates[gate.adopted.toFixed(1)]!;
+    // The gate sweep at the adopted gate reproduces the original synthetic-night evaluation.
+    expect(atGate.tuning.fpPerHour).toBe(seg.chosen.tuning.fpPerHour);
+    expect(atGate.check.fpPerHour).toBe(seg.chosen.check.fpPerHour);
+    const [tfp, trec, cfp, crec, cassess] = V3_SYNTHETIC_NIGHTS.metrics;
+    expect(tfp?.value).toBe(round(seg.chosen.tuning.fpPerHour, 2));
+    expect(trec?.value).toBe(round(seg.chosen.tuning.recall, 2));
+    expect(trec?.label).toContain(`${seg.chosen.tuning.caught.all} of ${seg.chosen.tuning.bouts.all}`);
+    expect(cfp?.value).toBe(round(seg.chosen.check.fpPerHour, 2));
+    expect(crec?.value).toBe(round(seg.chosen.check.recall, 2));
+    expect(crec?.label).toContain(`${seg.chosen.check.caught.all} of ${seg.chosen.check.bouts.all}`);
+    expect(cassess?.value).toBe(round(atGate.check.assessableFraction, 2));
+    expect(V3_SYNTHETIC_NIGHTS.testSet).toMatch(/SYNTHETIC/);
   });
 });

@@ -1,18 +1,36 @@
 # Model card: SleepSmooth snore-like window classifier
 
-**Version:** `sleepsmooth-snore-mlp-esc50-0.1.0`  **Date:** 2026-10-10
-**Weights hash (sha256):** `c8d009574772...` (full value in `src/audio/model/model.json`, field `weightsHash`)
-**Shipped:** v1 (clean-only training). A v2 with augmentation was trained and evaluated and not shipped (see "v1 vs v2").
-**Status:** prototype. Not clinically validated. Numbers come from `model/metrics.json` (combined), `metrics.v1.json` and `metrics.v2.json`.
+**Date:** 2026-10-19 (v3 shipped on iPhone; v1 card first written 2026-10-10)
+**Shipped:** **v3** on iPhone = YAMNet float32 TFLite (converted from Google's provenance-checked `yamnet.h5`) + the v3 logistic-regression head, at the
+pre-registered night operating point (`src/night/operatingPoint.ts`). **v1** is the fallback (Expo Go, a build without the native TFLite runtime, a model
+that fails to load or has unexpected tensor shapes, a failed start-up self-check) and the only model on web. Each night records the version that actually
+ran (`NightRecord.modelVersion`; v3 nights read `sleepsmooth-snore-yamnet-logreg_scores-0.3.0 on YAMNet float32 (TFLite)`), and the night screen shows it.
+**Status:** prototype. Not clinically validated. Not a diagnosis, and no output is an apnea probability or risk.
 
+**Shipped components** (checked by `npm run release:check`, step `model-bundle`):
+| Component | Version / file | sha256 | Size |
+|---|---|---|---|
+| v3 head (iPhone) | `sleepsmooth-snore-yamnet-logreg_scores-0.3.0` (`src/audio/model/model.v3.json`) | `a2d153876ad8...` | 521 inputs |
+| YAMNet float32 TFLite (iPhone) | mobile/assets/models/yamnet_float32.tflite | `c318dadf42d414c3b974b8773f07eb3b7c64debb6aeace0f6cf38a634c2cf8a5` | 15,973,484 bytes |
+| v1 MLP (fallback; web) | `sleepsmooth-snore-mlp-esc50-0.1.0` (`src/audio/model/model.json`) | `c8d009574772...` | 80-32-1 |
+
+**App size:** the TFLite file adds about 16 MB (15,973,484 bytes) to the iPhone app. **CPU and battery cost of v3 over a night: NOT VERIFIED** (never measured
+on a device). **On-device inference: NOT VERIFIED** (the code has not run on an iPhone; see "v3 on iPhone" below).
+
+> **STATUS NOTE (2026-10-19).** The v3 numbers below were computed on float YAMNet features (`scripts/yamnet/yamnet_np.py`). The int8 TFLite file
+> evaluated on 2026-10-16 did NOT match them (parity FAIL, kept as `model/parity.v3.int8.json`). The shipped file is instead a float32 TFLite converted
+> from the same `.h5` weights; on the desktop TFLite runtime it matches the NumPy port (class-score max abs diff 2.25e-05, head max abs diff 7.8e-05,
+> 0 decision disagreements on 200 windows at 0.6495 and 0.98; `model/parity.v3.json`). So the v3 window metrics and the synthetic-night operating point
+> transfer to that file **on a desktop**. Whether the iPhone's TFLite runtime gives the same output is NOT VERIFIED; the app only checks one fixed test
+> tone at start-up and falls back to v1 if it differs. The int8 retrain (v3t, `model/tflite_retrain/`) is documented and NOT shipped.
 
 > ## Status and limitations (Oct 2026)
 > - **0.986 AUC is not 98.6% accuracy.** AUC measures ranking, not how often a flag is right.
-> - **About 62% of v3 flags were wrong on the test fold** (fold 5: 63 true positives against 101 false positives at the shipped threshold). More false flags than correct ones.
+> - **About 62% of v3 flags were wrong on the test fold** at the head's own threshold (fold 5: 63 true positives against 101 false positives). The app flags at a stricter operating point (head >= 0.98, confirmed by a second flag within 7 s, at least 3 confirmed windows per segment); its per-hour behaviour is known only on SYNTHETIC nights.
 > - **Only 8 positive test clips**, and the windows inside a clip overlap and are correlated, so the confidence intervals are wide and optimistic. Fold 5 has been looked at several times and is no longer a fresh test set.
 > - **Not validated on real phone recordings.** All data is ESC-50 (5 s clips). Nothing here shows how it behaves on a real night of audio.
-> - **Parity unverified.** v3 was trained on the NumPy YAMNet re-implementation; it has not been compared with the official TFLite model the phone would run (`scripts/yamnet/parity.py` exists; no TFLite runtime was available to run it).
-> - **The app currently runs v1**, not v3.
+> - **Phone parity unverified.** Desktop parity of the shipped float32 TFLite file: PASS. iPhone parity: NOT VERIFIED.
+> - **The app runs v3 on iPhone when the runtime loads, v1 otherwise and on web.**
 > - Window-level development numbers, error analysis and the synthetic-night results: `docs/MODEL_ERROR_REPORT.md`. Real-data protocol: `docs/EVAL_PROTOCOL.md`.
 
 ## Intended use
@@ -125,16 +143,17 @@ fold 5 (by 0.4 points; the gate was not relaxed after seeing the result). Rule: 
 `npm run train:all` (v1: prepare, extract features, train, evaluate once, export, build sample). v2: `npm run train:v2` (augment, train-v2, evaluate with `TRAINED_FILE=trained.v2.json METRICS_FILE=metrics.v2.json`). Sample audio:
 `public/sample-audio/esc50-sample.wav` (attribution in the same folder). Raw data and `data/processed/` are git-ignored.
 
-## v3: YAMNet-based snore-like head (evaluated; NOT yet wired into the app)
-**Status:** passes the pre-registered gate and has the best CV criterion, so it is the model to ship **once YAMNet can run on-device**
-(`docs/YAMNET_INTEGRATION.md`). The shipped app still uses v1 (`src/audio/model/model.json`) until then. Numbers: `model/metrics.v3.json`.
+## v3: YAMNet-based snore-like head (shipped on iPhone since 2026-10-19)
+**Status:** passes the pre-registered gate and has the best CV criterion. Shipped on iPhone on the float32 YAMNet TFLite file (see "v3 on iPhone" below);
+v1 (`src/audio/model/model.json`) remains the fallback and the web model. Numbers: `model/metrics.v3.json`.
 Exported head: `src/audio/model/model.v3.json` (`sleepsmooth-snore-yamnet-logreg_scores-0.3.0`, logistic regression on the logit of YAMNet's 521
 class scores, sha256 `a2d15387...`, threshold 0.6495). Pure-TS scorer and tests: `src/audio/yamnet/head.ts`.
 
 **What v3 is.** v1 plus a frozen YAMNet (Google, MobileNet-style audio classifier trained on AudioSet) in front. Same windows, same folds, same
 silence floor as v1. YAMNet is run by a **NumPy re-implementation** of the official Keras weights (`scripts/yamnet/yamnet_np.py`; no TF/TFLite
 runtime is installed). It passed a functional sanity check (expected AudioSet class in top-5 for 714/832 ESC-50 folds 1-4 clips; snoring 32/32) but
-**has not been compared numerically with the official TFLite output**. Everything below is conditional on that.
+was later compared numerically with a float32 TFLite conversion of the same weights on a desktop TFLite runtime: PASS (`model/parity.v3.json`). The
+int8 TFLite file from Google did NOT match (`model/parity.v3.int8.json`) and is not used. iPhone output: NOT VERIFIED.
 
 **Data and licenses.** ESC-50, CC BY-NC 3.0 (as v1): **the v3 head weights are derived from it and are non-commercial.** YAMNet: Apache 2.0.
 AudioSet labels: CC BY 4.0. Kaggle snoring dataset: not present in this build (pipeline ready, see below).
@@ -191,7 +210,7 @@ breathing P 0.22 / R 0.50 (hidden). Gasp-like and wheeze-like: **unevaluated** (
 
 **Limitations specific to v3.** Tiny positive sets (40 snoring clips overall; 8 in test). ESC-50 clips are Freesound recordings and AudioSet is YouTube, but I
 could not check overlap between them; YAMNet may have seen similar material, which could flatter results. No Kaggle data yet, so there is no cross-dataset
-evidence. Not overnight phone audio. Embeddings come from a re-implementation (parity unverified). Snore-like sound is not apnea.
+evidence. Not overnight phone audio. Features come from a re-implementation (desktop TFLite parity PASS; iPhone parity NOT VERIFIED). Snore-like sound is not apnea.
 
 **Kaggle snoring dataset (pending).** When `data/raw/kaggle-snoring/` is populated, `npm run yamnet:all` automatically: groups clips (filename stem plus
 near-duplicate embeddings) and assigns whole groups to folds; runs a source-confound check (Kaggle vs ESC-50 on negatives, positives, and loudness alone;
@@ -215,5 +234,22 @@ Source: `docs/MODEL_ERROR_REPORT.md`, `model/segment_eval.synthetic.json`. 20 sy
 
 - Window AUC on these nights is 0.84 (tuning) and 0.78 (check), versus 0.97 on clean clips.
 - The check half contains no breathing-background night; the breathing background alone gives 3.75 false segments/h at the candidate point. Pooled over all 40 h the candidate gives 0.42 false segments/h and misses 6 more quiet or brief bouts than the app rule.
-- Caveats: 32 distinct snoring clips back all bouts, the rhythm is imposed by the generator, the candidate sits at the edge of the tested threshold grid, and v3 parity with the TFLite model is unverified. The candidate is not adopted in the app.
+- Caveats: 32 distinct snoring clips back all bouts, the rhythm is imposed by the generator, the candidate sits at the edge of the tested threshold grid, and v3 parity with the iPhone TFLite runtime is unverified (desktop parity of the float32 file: PASS). **The candidate is the app's operating point since 2026-10-19** (`src/night/operatingPoint.ts`).
+
+## v3 on iPhone: what ships and how the night is decided (2026-10-19)
+- **Pipeline:** 1 s windows on a 0.5 s hop at 16 kHz -> level gate (above -72 dBFS and >= `GATE_DB` = 6 dB over the rolling 10th-percentile floor; also the
+  energy pre-gate, so YAMNet never runs on quiet windows) -> YAMNet float32 TFLite on the centred 15,600 samples (as in training) -> v3 head -> flag at >= 0.98 ->
+  confirmed if another flagged window lies within the same 14-window (7 s) run -> segments of >= 3 confirmed windows with gaps <= 10 s.
+- **Night rule:** "snore-like observed" iff >= 5 segments AND >= 60 s of flagged time inside them (`NIGHT_MIN_EPISODES`, `NIGHT_MIN_EPISODE_SEC`), chosen by the
+  rule pre-registered in `docs/EVAL_PROTOCOL.md` section 8.1. Otherwise the night reads "few observations", which never means "no sleep apnea".
+- **Gate re-evaluation** (pre-registered, section 8): lowering `GATE_DB` to 0-4 dB raised tuning false segments to 5.1-12.2 per hour with no recall gain, so the gate
+  stays 6 dB. Assessable share of the SYNTHETIC nights: 18% (tuning) and 28% (check) of windows. Real bedrooms: unknown.
+- **SYNTHETIC-night numbers at this point** (2 h nights, ESC-50 development clips; not real recordings): tuning 0.85 false segments/h, segment recall 0.91 (43/47);
+  check 0.00/h, 0.85 (40/47). Night rule: 7/10 tuning and 8/10 check nights fire, none from false segments alone; the worst tuning night (breathing background) had
+  53 s of false flagged time in 2 h, close to the 60 s threshold, so real 7-8 h nights with similar sounds would likely read "snore-like observed".
+- **v1 fallback nights** use the same segment and night constants; v1 was never evaluated on nights at these values.
+- **Runtime blocker:** `react-native-fast-tflite` needs `react-native-nitro-modules`, which is not installed in this build. Until it is installed and the dev client
+  rebuilt, the native runtime is not linked and every iPhone night uses v1 (recorded as such). See `docs/YAMNET_INTEGRATION.md`, "App integration".
+- **NOT VERIFIED:** v3 running on an iPhone at all; iPhone vs desktop output (only one start-up test tone is compared); CPU time, heat and battery over a night;
+  any behaviour on real bedroom audio. No number here is a clinical accuracy, an apnea measure or a probability of anything.
 

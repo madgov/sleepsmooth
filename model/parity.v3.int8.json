@@ -1,0 +1,70 @@
+{
+ "runtime": "external tf.lite scores: tf_scores.npz",
+ "tflite": "lite-model_yamnet_classification_tflite_1.tflite",
+ "n": 200,
+ "tfliteIO": {
+  "external": "tf_scores.npz"
+ },
+ "scores": {
+  "maxAbsDiff": 0.9750120621174574,
+  "meanAbsDiff": 0.0029350689872189206,
+  "p99AbsDiff": 0.0582918195798993,
+  "top1Agreement": 0.525,
+  "top5SetAgreement": 0.115,
+  "snoring38MaxAbsDiff": 0.8544838353991508,
+  "snoring38MeanAbsDiff": 0.06549856234697654
+ },
+ "head": {
+  "version": "sleepsmooth-snore-yamnet-logreg_scores-0.3.0",
+  "threshold": 0.6494545434975308,
+  "decisionAgreement": 0.83,
+  "disagreements": 34,
+  "flaggedNumpy": 98,
+  "flaggedTflite": 84,
+  "headScoreMaxAbsDiff": 0.8821504689852411,
+  "headScoreMeanAbsDiff": 0.16337629549594218,
+  "windowsWithin0_05OfThreshold": 2,
+  "disagreementsAmongThose": 0
+ },
+ "operatingPoint98": {
+  "threshold": 0.98,
+  "disagreements": 27,
+  "decisionAgreement": 0.865,
+  "flaggedNumpy": 28,
+  "flaggedTflite": 43,
+  "disagreementsByGroup": {
+   "hard-negative": 7,
+   "positive": 18,
+   "random-negative": 2
+  },
+  "windowsWithin0_02OfThreshold": 32
+ },
+ "perGroup": {
+  "hard-negative": {
+   "n": 50,
+   "decisionAgreement": 0.56,
+   "snoringScoreCorr": 0.6678256147174951
+  },
+  "positive": {
+   "n": 50,
+   "decisionAgreement": 0.92,
+   "snoringScoreCorr": 0.8197627325608449
+  },
+  "random-negative": {
+   "n": 100,
+   "decisionAgreement": 0.92,
+   "snoringScoreCorr": 0.14054894723018874
+  }
+ },
+ "note": "FIRST COMPARISON: int8 TFLite (lite-model_yamnet_classification_tflite_1.tflite) vs NumPy port. FAIL. Kept for the record; the float conversion result is model/parity.v3.json.",
+ "preRegisteredCriteria": {
+  "doc": "docs/YAMNET_INTEGRATION.md \"Parity pass criteria (pre-registered)\"",
+  "results": {
+   "headProbMaxAbsDiffLt0_01": false,
+   "decisionAgreementGe99pct_at0_6495": false,
+   "decisionAgreementGe99pct_at0_98": false,
+   "atMost1DisagreementPosAndHardNeg_at0_98": false
+  },
+  "verdict": "FAIL"
+ }
+}

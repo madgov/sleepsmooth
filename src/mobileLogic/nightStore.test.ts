@@ -141,3 +141,18 @@ describe('night store and session (simulated overnight session)', () => {
     expect(() => store.remove('../settings')).toThrow();
   });
 });
+
+describe('per-night model version (v3 scorer or v1 fallback)', () => {
+  const scorer = { version: 'sleepsmooth-snore-yamnet-logreg_scores-0.3.0 on YAMNet float32 (TFLite)', flagThreshold: 0.98, score: () => 0.1 };
+  const base = { env, nowMs: T0, bedtimeLocal: '23:00', wakeLocal: '07:00', remindEnabled: false, initialContext: {} };
+  it('records the YAMNet scorer version when a scorer is passed', async () => {
+    const store = new NightStore(new MemFs());
+    NightSession.open({ ...base, store, model: model as unknown as ModelJson, scorer }).finish('user-stop');
+    expect((await store.list())[0]?.record.modelVersion).toBe(scorer.version);
+  });
+  it('records the v1 version when the scorer is null (Expo Go, web, load or self-check failure)', async () => {
+    const store = new NightStore(new MemFs());
+    NightSession.open({ ...base, store, model: model as unknown as ModelJson, scorer: null }).finish('user-stop');
+    expect((await store.list())[0]?.record.modelVersion).toBe((model as unknown as ModelJson).version);
+  });
+});

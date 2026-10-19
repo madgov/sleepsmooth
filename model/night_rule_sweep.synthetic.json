@@ -1,0 +1,468 @@
+{
+ "label": "SYNTHETIC nights. Not real-world performance. No clinical meaning.",
+ "gate": 6.0,
+ "operatingPoint": {
+  "thr": 0.98,
+  "n": 7,
+  "K": 2,
+  "M": 3,
+  "rho": null,
+  "policy": "-"
+ },
+ "candidates": {
+  "E1_S10": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 2
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 0
+   }
+  },
+  "E1_S20": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E1_S30": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E1_S45": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E1_S60": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 7,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E1_S90": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 6,
+    "fireFalseOnly": 0
+   }
+  },
+  "E1_S120": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   }
+  },
+  "E2_S10": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 2
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 0
+   }
+  },
+  "E2_S20": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E2_S30": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E2_S45": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E2_S60": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 7,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E2_S90": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 6,
+    "fireFalseOnly": 0
+   }
+  },
+  "E2_S120": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   }
+  },
+  "E3_S10": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 2
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 0
+   }
+  },
+  "E3_S20": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 10,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E3_S30": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E3_S45": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E3_S60": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 7,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E3_S90": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 6,
+    "fireFalseOnly": 0
+   }
+  },
+  "E3_S120": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   }
+  },
+  "E4_S10": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 2
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E4_S20": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E4_S30": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E4_S45": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E4_S60": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 7,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E4_S90": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 6,
+    "fireFalseOnly": 0
+   }
+  },
+  "E4_S120": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   }
+  },
+  "E5_S10": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E5_S20": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E5_S30": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 0
+   }
+  },
+  "E5_S45": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 9,
+    "fireFalseOnly": 1
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E5_S60": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 7,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 8,
+    "fireFalseOnly": 0
+   }
+  },
+  "E5_S90": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 6,
+    "fireFalseOnly": 0
+   }
+  },
+  "E5_S120": {
+   "tuning": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   },
+   "check": {
+    "nights": 10,
+    "fireAll": 4,
+    "fireFalseOnly": 0
+   }
+  }
+ },
+ "chosen": {
+  "E": 5,
+  "S": 60,
+  "keptOld": false
+ },
+ "flaggedSecPerSegment": {
+  "tuning": {
+   "trueSegments": {
+    "n": 130,
+    "min": 2.0,
+    "median": 5.0,
+    "max": 52.0
+   },
+   "falseSegments": {
+    "n": 17,
+    "min": 2.5,
+    "median": 3.5,
+    "max": 13.5
+   }
+  },
+  "check": {
+   "trueSegments": {
+    "n": 118,
+    "min": 2.0,
+    "median": 5.5,
+    "max": 81.5
+   },
+   "falseSegments": null
+  }
+ },
+ "falseSegmentsPerHour": {
+  "tuning": 0.85,
+  "check": 0.0
+ }
+}

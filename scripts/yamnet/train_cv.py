@@ -74,10 +74,11 @@ for g in grid:
                         oofClean=oc, oofLp=ol))
     print(f"{name:44s} CV AUC clean {ac:.4f} lp4k {al:.4f} mean {(ac + al) / 2:.4f}  ({time.time() - t0:.0f}s)", flush=True)
 
-best = lambda fam: max([r for r in results if r['family'] == fam], key=lambda r: r['crit'])
+best = lambda fam: max([r for r in results if r['family'] == fam], key=lambda r: r['crit'], default=None)   # None: family not run (TFLite backend has no embeddings)
 chosen = {'zeroshot': best('zeroshot'), 'logreg': best('logreg'), 'mlp': best('mlp'), 'logreg_scores': best('logreg_scores'), 'mlp_scores': best('mlp_scores')}
 if os.environ.get('YAMNET_BACKEND') == 'tflite':
     chosen = {k: v for k, v in chosen.items() if k in ('zeroshot', 'logreg_scores', 'mlp_scores')}
+chosen = {k: v for k, v in chosen.items() if v is not None}
 final = {}
 for fam, r in chosen.items():
     thr = pick_threshold(r['oofClean'], y, bedneg, 0.05)
