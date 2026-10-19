@@ -1,18 +1,18 @@
 # Release check 2026-10-19
 
-Run at 2026-10-19 00:45 local time. Commit d96c6b2 plus uncommitted changes. Command: `npm run release:check`.
+Run at 2026-10-19 00:57 local time. Commit fd494ba plus uncommitted changes. Command: `npm run release:check`.
 
 **Result: all executed steps passed.** Passing here means the build gates passed. It says nothing about how the app behaves on a phone: every device claim is NOT VERIFIED until the table at the end is filled in.
 
 | Step | Result | Time |
 |---|---|---|
-| Root typecheck (npm run typecheck) | PASS | 8s |
-| Root lint (npm run lint) | PASS | 23s |
-| Root tests (npm test) | PASS | 66s |
-| Web build (npm run build) | PASS | 9s |
-| Forbidden-phrases test | PASS | 4s |
+| Root typecheck (npm run typecheck) | PASS | 9s |
+| Root lint (npm run lint) | PASS | 24s |
+| Root tests (npm test) | PASS | 76s |
+| Web build (npm run build) | PASS | 11s |
+| Forbidden-phrases test | PASS | 5s |
 | Mobile typecheck (cd mobile && npx tsc --noEmit) | PASS | 8s |
-| Expo export for iOS (npx expo export --platform ios) | PASS | 40s |
+| Expo export for iOS (npx expo export --platform ios) | PASS | 21s |
 | Expo dependency check (npx expo install --check) | PASS | 2s |
 | Model files the app bundles (v1 JSON, v3 head JSON, YAMNet TFLite) match model/MODEL_CARD.md (version, hash, metrics) | PASS | 0s |
 
@@ -44,10 +44,10 @@ Run at 2026-10-19 00:45 local time. Commit d96c6b2 plus uncommitted changes. Com
 
 [2m Test Files [22m [1m[32m68 passed[39m[22m[90m (68)[39m
 [2m      Tests [22m [1m[32m1099 passed[39m[22m[90m (1099)[39m
-[2m   Start at [22m 00:43:34
-[2m   Duration [22m 65.38s[2m (tests 50%, environment 43%, import 4%, transform 2%, worker 1%)[22m
+[2m   Start at [22m 00:55:24
+[2m   Duration [22m 74.43s[2m (tests 50%, environment 44%, import 5%, transform 1%)[22m
 
-[2mEnvironment [22m [33mjsdom was created 68 times[39m[2m · 182.29s total, 43% of tracked time[22m
+[2mEnvironment [22m [33mjsdom was created 68 times[39m[2m · 213.42s total, 44% of tracked time[22m
 [2m            [22m [2mcreate it once per worker with [22m[33mpool: 'vmThreads'[39m[2m (keeps per-file isolation) or [22m[33misolate: false[39m[2m (shares it across files)[22m
 [2m            [22m [2mlearn more: https://vitest.dev/guide/improving-performance#test-environments[22m
 ```
@@ -72,7 +72,7 @@ dist/assets/InfoViews-qhMnfufl.js    1.90 kB │ gzip:   0.71 kB
 dist/assets/index-BjV0s3Jh.js      371.57 kB │ gzip: 129.26 kB
 dist/assets/Parity-CWdXSz0-.js     437.89 kB │ gzip:  57.95 kB
 
-[32m✓ built in 441ms[39m
+[32m✓ built in 503ms[39m
 ```
 
 ### Forbidden-phrases test: PASS
@@ -83,8 +83,8 @@ dist/assets/Parity-CWdXSz0-.js     437.89 kB │ gzip:  57.95 kB
 
 [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
 [2m      Tests [22m [1m[32m44 passed[39m[22m[90m (44)[39m
-[2m   Start at [22m 00:44:49
-[2m   Duration [22m 2.93s[2m (import 52%, environment 41%, transform 6%, tests 1%)[22m
+[2m   Start at [22m 00:56:51
+[2m   Duration [22m 2.90s[2m (import 54%, environment 39%, transform 6%, tests 1%)[22m
 ```
 
 ### Mobile typecheck (cd mobile && npx tsc --noEmit): PASS
@@ -115,12 +115,12 @@ node_modules/react-native-audio-api/src/Audio/controls/icons/speaker-x.png (725B
 node_modules/react-native-audio-api/src/Audio/controls/icons/speaker.png (565B)
 
 › ios bundles (1):
-_expo/static/js/ios/entry-7359c76325e7d56047ae09a84a9a0af9.hbc (4.8MB)
+_expo/static/js/ios/entry-b2ecd87d971c93c143438aa081260f70.hbc (4.8MB)
 
 › Files (1):
 metadata.json (1.9KB)
 
-Exported: /var/folders/y0/7k9wwn1s5xg0z_cfv5qwh2800000gp/T/sleepsmooth-export-dTBTqX
+Exported: /var/folders/y0/7k9wwn1s5xg0z_cfv5qwh2800000gp/T/sleepsmooth-export-ij2e3p
 ```
 
 ### Expo dependency check (npx expo install --check): PASS
