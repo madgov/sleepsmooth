@@ -147,10 +147,19 @@ function stressNights(n: number): NightListItem[] {
     const d = new Date();
     d.setDate(d.getDate() - i - 1);
     const item = { ...base, id: `stress-${i}`, isSample: false, dateISO: new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString() };
+    if (i > 0) return varyStress(item, i);
     // Night 0 is a generated layout preview with a recording gap, a quiet stretch and an early stop, so every
     // coverage kind and the diagnostics section can be reviewed. It is labelled in diagnostics (devPreview).
     return i === 0 ? previewWithGaps(item) : item;
   });
+}
+
+/** Dev-only. Varies state and model label so the multi-night list shows every state. Layout preview only: not real analysis. */
+function varyStress(item: NightListItem, i: number): NightListItem {
+  const state: NightAudioState = i % 7 === 3 ? 'not-assessed' : i % 7 === 5 ? 'model-not-applicable' : i % 3 === 1 ? 'few-observations' : 'snore-like-observed';
+  const modelVersion = i % 4 === 2 ? 'sleepsmooth-snore-mlp-dev-preview' : 'sleepsmooth-snore-yamnet-dev-preview';
+  const coverage = { ...item.coverage, seconds: { ...item.coverage.seconds, recordedInWindow: item.coverage.seconds.scheduled * (0.55 + ((i * 37) % 45) / 100) } };
+  return { ...item, state, coverage, notAssessedReasons: state === 'not-assessed' ? [NIGHT_REASON_TOO_SHORT] : [], view: { ...item.view, summary: { ...item.view.summary, modelVersion, nightState: state } } };
 }
 
 /** Dev-only. Removes a stretch of epochs (a gap), marks another stretch too quiet to score, and cuts the end. */

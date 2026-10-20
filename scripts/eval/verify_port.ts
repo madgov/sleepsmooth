@@ -14,7 +14,9 @@ const samples = new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4)
 const model = JSON.parse(readFileSync(new URL('../../src/audio/model/model.json', import.meta.url), 'utf8')) as ModelJson;
 
 const windows: WindowDebug[] = [];
-const p = createNightPipeline({ model, captureStartMs: 0, onWindow: (w) => windows.push(w) });
+// A constant-score scorer: tier 2 of the adaptive gate is active only with the YAMNet scorer (section 10.A); only the gate is compared here.
+const scorer = { version: 'verify-port-constant', flagThreshold: 0.98, score: () => 0 };
+const p = createNightPipeline({ model, scorer, captureStartMs: 0, onWindow: (w) => windows.push(w) });
 const slice = 16000 * 10;
 for (let i = 0; i < samples.length; i += slice) p.push(samples.subarray(i, Math.min(samples.length, i + slice)), 16000);
 p.finish('user-stop');

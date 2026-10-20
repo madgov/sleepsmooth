@@ -68,7 +68,7 @@ export const COPY = {
   N68_NO_ESTIMATE: 'No sleep-window estimate for this night.',
   N73_CONSENT_ROW: 'Overnight sound consent',
   N74_WITHDRAW: 'Withdraw consent',
-  N75_DELETE_CONFIRM: 'Delete everything on this phone? This removes every night, your answers, sleep hours, consent, and scheduled reminders. This cannot be undone.',
+  N75_DELETE_CONFIRM: 'Delete everything on this phone? This removes every night, your answers, wearable readings, sleep hours, consent choices and the consent history, and scheduled reminders. This cannot be undone.',
   N76_DELETE_ERROR: 'Some data could not be deleted. Try again.',
   N77_DISCARD: 'Discard your answers?',
   NDELDONE: 'Your data was deleted from this phone.',

@@ -1,6 +1,7 @@
 
 import { ScrollView, View } from 'react-native';
 import { useSafeRouter } from '../src/nav/useSafeRouter';
+import { setOvernightConsent } from '@core/consent/history';
 import { DISCLAIMER_AUDIO } from '@core/content/claims';
 import { COPY, privacyRows, privacyTitle } from '../src/content/copy';
 import { IS_EXPO_GO } from '../src/native/runtime';
@@ -18,7 +19,7 @@ export default function Consent() {
   const { colors } = useTheme();
   const clipsOn = useSettings().clips.enabled;
   const agree = () => {
-    updateSettings((p) => ({ ...p, consent: { ...p.consent, granted: true, at: new Date().toISOString() } }));
+    updateSettings((p) => setOvernightConsent(p, true, new Date().toISOString()));
     router.replace(IS_EXPO_GO ? '/expo-go-recording' : '/start-sheet');
   };
   return (

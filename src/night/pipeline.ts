@@ -18,7 +18,7 @@
 import { SAMPLE_RATE, SILENCE_FLOOR_DBFS } from '../audio/constants';
 import { BandwidthEstimator, MIN_SOURCE_RATE_HZ } from '../audio/bandwidth';
 import { toDb } from '../audio/loudness';
-import { isSnoreLike, scoreFeatures, windowFeatures } from '../audio/model/infer';
+import { scoreFeatures, windowFeatures } from '../audio/model/infer';
 import type { ModelJson } from '../audio/model/schema';
 import { YAMNET_PATCH_OFFSET, YAMNET_PATCH_SAMPLES, type WindowScorer } from '../audio/yamnet/scorer';
 import { countClipped } from '../audio/quality';
@@ -31,17 +31,21 @@ import {
   FLOOR_PERCENTILE,
   FRAMES_PER_HOP,
   GATE_DB,
+  GATE_FLATNESS_CAP,
+  GATE_LOW_DB,
   HANDLING_DB,
   HANDLING_MAX_BLOCKS,
   HOP_SAMPLES_WINDOW,
   LEVEL_BLOCK_SAMPLES,
   LOUD_DB,
   OVERLOAD_QUEUE_SEC,
+  V1_NIGHT,
   ROLLING_FLOOR_SEC,
   WINDOWS_PER_EPOCH,
   WINDOW_SAMPLES,
 } from './constants';
 import { encodeBits, encodeScores, int8ToBase64, quantizeFeatures, quantizeScore } from './codec';
+import { gateTier, spectralFlatness } from './adaptiveGate';
 import { isSpeechLikeBlock } from './cues';
 import { SleepEstimator, type EpochEstimate } from './estimator';
 import { V3_OPERATING_POINT, isConfirmed } from './operatingPoint';
@@ -566,8 +570,12 @@ export class NightPipeline {
       return;
     }
     const floorK = this.floorFor.get(Math.floor(k / 2)) ?? this.floorSeed;
-    const gateDb = this.gate ? Math.max(SILENCE_FLOOR_DBFS, floorK + GATE_DB) : SILENCE_FLOOR_DBFS;
-    if ((!this.model && !this.scorer) || this.sourceTooLow || levelDb < gateDb) {
+    // Adaptive level gate (src/night/adaptiveGate.ts, EVAL_PROTOCOL section 9): tier 1 floor + GATE_DB, tier 2 floor + GATE_LOW_DB for non-stationary-noise-like windows (YAMNet scorer only; the v1 fallback keeps the fixed gate, section 10.A).
+    const bufStart = k * HOP_SAMPLES_WINDOW - this.bufBase;
+    const open =
+      !this.gate ||
+      gateTier(levelDb, floorK, SILENCE_FLOOR_DBFS, { marginDb: GATE_DB, lowMarginDb: this.scorer ? GATE_LOW_DB : GATE_DB, flatnessCap: GATE_FLATNESS_CAP }, () => spectralFlatness(this.buf, bufStart)) > 0;
+    if ((!this.model && !this.scorer) || this.sourceTooLow || !open) {
       acc.belowGate++;
       this.opt.onWindow?.({ k, t0Sec, status: 'belowGate', levelDb, floorDb: floorK });
       return;
@@ -594,7 +602,7 @@ export class NightPipeline {
     } else {
       feats = windowFeatures(logMel, (this.model as ModelJson).featureSpec.nMels);
       score = scoreFeatures(this.model as ModelJson, feats);
-      flag = isSnoreLike(this.model as ModelJson, score);
+      flag = score >= V1_NIGHT.flagThreshold; // v1 fallback flag threshold (constants.ts V1_NIGHT, section 10); the model's own 0.795 is not used here
       acc.flags.push(flag);
     }
     acc.scoredPos[k % WINDOWS_PER_EPOCH] = true;

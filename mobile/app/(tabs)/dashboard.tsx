@@ -71,7 +71,7 @@ export default function Dashboard() {
   const iconFor = summary.conclusion === 'discuss-with-clinician' ? 'person.crop.circle.badge.questionmark' : summary.conclusion === 'inconclusive' ? 'questionmark.circle' : 'circle.dashed';
   // The empty state already carries the one primary action; do not show a second "Start tonight" below it.
   const showTonightCta = rec.active || !(status === 'ready' && !real);
-  const dateLine = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const dateLine = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
 
   return (
     <Screen tab title="Dashboard" testID="screen-dashboard">
@@ -136,8 +136,8 @@ export default function Dashboard() {
               <MetricTile
                 icon="waveform"
                 label="Snore-like windows"
-                value={hero.snoreWindows ? hero.snoreWindows.snoreLike.toLocaleString('en-US') : '--'}
-                unit={hero.snoreWindows ? `of ${hero.snoreWindows.assessable.toLocaleString('en-US')}` : undefined}
+                value={hero.snoreWindows ? hero.snoreWindows.snoreLike.toLocaleString() : '--'}
+                unit={hero.snoreWindows ? `of ${hero.snoreWindows.assessable.toLocaleString()}` : undefined}
                 caption={hero.snoreWindows ? 'assessable windows' : 'Not assessed'}
                 testID="tile-snore"
               />

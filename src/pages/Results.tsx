@@ -4,6 +4,7 @@ import {
   DISCLAIMER_AUDIO,
   DISCLAIMER_NOT_DIAGNOSIS,
   RESULTS_AUDIO_DETAILS_HEADING,
+  WEB_MULTI_NIGHT_NOTE,
   RESULTS_DETAILS_HEADING,
   RESULTS_EMPTY_ACTION,
   RESULTS_EMPTY_MESSAGE,
@@ -153,6 +154,8 @@ export function Results({ onNext, onBack, onEdit, audioSlot }: { onNext: () => v
         {audioSlot ?? defaultSlot ?? <p>{AUDIO_SLOT_EMPTY}</p>}
         <p>{DISCLAIMER_AUDIO}</p>
       </div>
+
+      <p data-testid="multi-night-note">{WEB_MULTI_NIGHT_NOTE}</p>
 
       <LimitsPanel />
 

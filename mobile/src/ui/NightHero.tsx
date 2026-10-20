@@ -25,7 +25,7 @@ export function qualityChip(n: NightListItem): { label: string; tone: 'info' | '
 export function NightHero({ night, scheduledMin }: { night: NightListItem; scheduledMin: number }) {
   const q = qualityChip(night);
   const share = scheduledMin > 0 ? Math.min(1, night.recordedMinutes / scheduledMin) : 0;
-  const dateLabel = new Date(night.dateISO).toLocaleDateString('en-US', dateFmt);
+  const dateLabel = new Date(night.dateISO).toLocaleDateString(undefined, dateFmt);
   return (
     <View testID="night-hero" style={{ borderRadius: 30, borderCurve: 'continuous', boxShadow: '0px 18px 40px rgba(10,8,40,0.28)' }}>
       <GlassCard radius={30} padding={0}>

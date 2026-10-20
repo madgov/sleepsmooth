@@ -45,6 +45,7 @@ import {
 } from '@core/content/pathway';
 import { REMINDER_CHOICES, activeReminder, reminderDate, toggleTick } from '@core/mobileLogic/followThrough';
 import { buildClinicianScript, scriptToText } from '@core/mobileLogic/pathwayScript';
+import { formatClock } from '@core/mobileLogic/index';
 import { useRealNights } from '../data/nightSource';
 import { cancelFollowUpReminder, scheduleFollowUpReminder } from '../platform/reminder';
 import { requestNotifs } from '../platform/permissions';
@@ -193,7 +194,7 @@ function TrackerSection() {
         <>
           <Para>{REMINDER_NOTE}</Para>
           {reminder ? (
-            <InsetGroup footer={`Reminder set for ${reminder.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}, 9:00 AM.`}>
+            <InsetGroup footer={`Reminder set for ${reminder.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}, ${formatClock(9 * 60)}.`}>
               <ListRow title={REMINDER_OFF} leading="minus.circle" onPress={clearReminder} accessibilityRole="button" />
             </InsetGroup>
           ) : (

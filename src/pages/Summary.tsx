@@ -3,6 +3,9 @@ import { DemoBanner, LimitsPanel, SourceBadge, sourceLabel } from '../components
 import {
   NOSAS_CITATION,
   SAMPLE_AUDIO_ATTRIBUTION,
+  SUMMARY_DOWNLOAD_BUTTON,
+  SUMMARY_DOWNLOAD_FAILED,
+  SUMMARY_DOWNLOAD_NOTE,
   SUMMARY_EDITED_MARKER,
   SUMMARY_GENERATED_NOTE,
   SUMMARY_PRINT_BUTTON,
@@ -12,6 +15,7 @@ import {
   SUMMARY_REGENERATE_CONFIRM,
   SYNTHETIC_LABEL,
 } from '../content/claims';
+import { downloadTextFile, summaryFileName, summaryTextFile } from '../report/download';
 import { generateCareSummary, regenerateSummary } from '../report/generate';
 import { useDerived } from '../state/derived';
 import { useSession } from '../state/session';
@@ -22,6 +26,7 @@ export function Summary({ onNext, onBack }: { onNext: () => void; onBack: () => 
   const { audioLabel, audio } = s;
   const [now, setNow] = useState(() => new Date().toISOString());
   const [confirming, setConfirming] = useState(false);
+  const [downloadFailed, setDownloadFailed] = useState(false);
 
   const fresh = generateCareSummary(reportInput(now));
   const edited = s.editedIds;
@@ -48,6 +53,14 @@ export function Summary({ onNext, onBack }: { onNext: () => void; onBack: () => 
   const when = new Date(summary.generatedAt);
   const dateText = Number.isNaN(when.getTime()) ? summary.generatedAt : when.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
   const sampleAudioUsed = Boolean(audio && audioLabel && !input.isSynthetic);
+
+  const download = () => {
+    const labels = [
+      ...(input.isSynthetic ? [`${SYNTHETIC_LABEL}: this summary was made from an example case, not from a real person.`] : []),
+      ...(sampleAudioUsed ? [`${audioLabel}. The recording section describes the sample, not the user. ${SAMPLE_AUDIO_ATTRIBUTION}`] : []),
+    ];
+    setDownloadFailed(!downloadTextFile(summaryFileName(), summaryTextFile(summary, labels)));
+  };
 
   return (
     <section aria-labelledby="sum-h">
@@ -96,7 +109,16 @@ export function Summary({ onNext, onBack }: { onNext: () => void; onBack: () => 
             <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
               {SUMMARY_PRINT_BUTTON}
             </button>
+            <button type="button" className="btn btn-secondary" onClick={download}>
+              {SUMMARY_DOWNLOAD_BUTTON}
+            </button>
           </div>
+        )}
+        <p className="card-state">{SUMMARY_DOWNLOAD_NOTE}</p>
+        {downloadFailed && (
+          <p role="alert" className="field-error">
+            {SUMMARY_DOWNLOAD_FAILED}
+          </p>
         )}
         <div className="actions nav-actions">
           <button type="button" className="btn btn-secondary" onClick={onBack}>

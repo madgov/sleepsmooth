@@ -31,6 +31,7 @@ const ION: Record<string, Ion> = {
   'largecircle.fill.circle': 'radio-button-on',
   'info.circle': 'information-circle-outline',
   'questionmark.circle': 'help-circle-outline',
+  pencil: 'pencil',
   'person.crop.circle.badge.questionmark': 'person-circle-outline',
   'exclamationmark.triangle': 'warning-outline',
   'exclamationmark.circle': 'alert-circle-outline',

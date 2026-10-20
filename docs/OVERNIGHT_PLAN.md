@@ -759,3 +759,11 @@ Diagnostics and the test protocol: `mobile/DEVICE_TEST.md`. Privacy promises and
 - Tests: `src/night/sleepFilterAudit.test.ts` inverted, plus screen-on cases (snore-like, nothing scorable, scored but none snore-like).
 
 Still unvalidated: whether counting all in-window time changes how well the verdict matches what a clinician would find. This only removes a dependency on the estimate.
+
+## ADDENDUM 2026-10-20: snore-pause count re-checked at the v3 operating point (`SNORE_PAUSES_SHIPPED` stays false)
+The earlier look at `countSnorePauses` used the v1-era threshold t = 0.649. Re-run with the real TypeScript function over the SYNTHETIC nights at the v3 operating point (t = 0.98, 2-of-14 confirmation; confirmed windows are the flags),
+with the adaptive gate of EVAL_PROTOCOL section 9 (`scripts/eval/pause_analysis.py`, `model/snore_pauses.synthetic.json`). "False-only" = confirmed windows farther than 5 s from every annotated bout; a pause is a gap of 10 to 120 s between two bouts of >= 3 flagged windows.
+- Pauses on all flags: 90 in 20 h (tuning), 83 in 20 h (check). Pauses from false flags alone: **5 in 20 h on tuning, all on one night (night 01, 95 confirmed false windows, 5 false-only pauses; the other nine tuning nights 0), 0 on check.** Fixed 6 dB gate: 4 and 0.
+- False-only pauses per night (tuning, nights 00 to 19 with folds 1-2: 00, 01, 04, 05, 08, 09, 12, 13, 16, 17): 0, 5, 0, 0, 0, 0, 0, 0, 0, 0. Check nights: all 0.
+- Reading: with a strict flag the false-pause rate is low on these nights, but the synthetic bouts are rhythmic by construction and pauses between true bouts occur by design (every night has 4 to 7), so a pause count here measures the generator, not breathing. One breathing-background night alone produced all the false-only pauses.
+- Decision: `SNORE_PAUSES_SHIPPED = false` is unchanged. It needs real overnight nights with an independent reference before it can be shown; nothing here supports a clinical reading of a pause.

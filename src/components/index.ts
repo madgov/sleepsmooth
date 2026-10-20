@@ -8,6 +8,8 @@ export { Stepper, type StepperProps } from './Stepper';
 export { ErrorState, LoadingState, EmptyState, type ErrorStateProps, type LoadingStateProps, type EmptyStateProps } from './states';
 export { QualityPanel, type QualityPanelProps } from './QualityPanel';
 export { LoudnessChart, type LoudnessChartProps } from './LoudnessChart';
+export { WearablePanel, type WearablePanelProps } from './WearablePanel';
+export { ConsentHistory } from './ConsentHistory';
 export { AppFooter, type AppFooterProps } from './AppFooter';
 export { Icon, type IconName } from './Icon';
 export { ErrorBoundary } from './ErrorBoundary';

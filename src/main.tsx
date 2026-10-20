@@ -10,3 +10,12 @@ createRoot(root).render(
     <App />
   </StrictMode>,
 );
+
+// Offline support: production builds only. The worker caches the static app shell and nothing else (see pwa/sw.template.js).
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {
+      /* Offline support is optional; the app works without it. */
+    });
+  });
+}

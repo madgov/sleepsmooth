@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "release:check": "node scripts/release-check.mjs",
+    "docs:clinical": "tsx scripts/gen-clinical-packet.mjs",
     "data:prepare": "tsx scripts/prepare-data.ts && tsx scripts/extract-features.ts",
     "train": "tsx scripts/train.ts",
     "evaluate": "tsx scripts/evaluate.ts",

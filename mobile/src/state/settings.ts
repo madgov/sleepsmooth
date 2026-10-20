@@ -9,6 +9,11 @@ import { defaultAutoRecord, mergeAutoRecord, type AutoRecordState } from '@core/
 import { defaultMorningState, mergeMorningState, type MorningState } from '@core/mobileLogic/morningLearning';
 import { defaultRoutineMemory, mergeRoutineMemory, type RoutineMemory } from '@core/mobileLogic/routine';
 import { defaultClipSettings, mergeClipSettings, type ClipSettings } from '@core/mobileLogic/clips';
+import { mergeConsentFields } from '@core/consent/history';
+import type { ConsentHistoryRecord } from '@core/types/consent';
+import type { WearableObservation } from '@core/types/wearable';
+import { normalizeWearable } from '@core/wearable/entries';
+import { emptySummaryEdits, normalizeSummaryEdits, type SummaryEdits } from '@core/mobileLogic/summaryEdits';
 
 export const CONSENT_VERSION = 'mobile-consent-1';
 export const CONSENT_PURPOSE = 'overnight-local-capture';
@@ -16,7 +21,10 @@ export const CONSENT_PURPOSE = 'overnight-local-capture';
 export interface Settings {
   v: 1;
   onboardingCompletedAt: string | null;
+  /** Derived from `consentHistory` (the latest overnight-capture record). Existing checks read this. */
   consent: { purpose: typeof CONSENT_PURPOSE; version: typeof CONSENT_VERSION; granted: boolean; at: string | null };
+  /** Append-only list of consent choices. Cleared only by "Delete my data". */
+  consentHistory: ConsentHistoryRecord[];
   bystanderNoticeAckAt: string | null;
   sleep: { bedMin: number; wakeMin: number; userSet: boolean; reminder: boolean };
   answers: Record<string, AnswerValue>;
@@ -42,12 +50,17 @@ export interface Settings {
   routine: RoutineMemory;
   /** Apple Health: set after the read-permission request completed. HealthKit hides read decisions, so this is not "allowed". */
   health: { requestedAt: string | null; lastReadAt: string | null };
+  /** The user's edits to the clinician summary, by section. Removed by "Delete my data" (the whole settings file is reset). */
+  summaryEdits: SummaryEdits;
+  /** Numbers the user typed in from a wearable. Not checked by SleepSmooth. Removed by "Delete my data". */
+  wearable: WearableObservation[];
 }
 
 export const defaultSettings = (): Settings => ({
   v: 1,
   onboardingCompletedAt: null,
   consent: { purpose: CONSENT_PURPOSE, version: CONSENT_VERSION, granted: false, at: null },
+  consentHistory: [],
   bystanderNoticeAckAt: null,
   sleep: { bedMin: 23 * 60, wakeMin: 7 * 60, userSet: false, reminder: false },
   answers: {},
@@ -63,6 +76,8 @@ export const defaultSettings = (): Settings => ({
   morning: defaultMorningState(),
   routine: defaultRoutineMemory(),
   health: { requestedAt: null, lastReadAt: null },
+  summaryEdits: emptySummaryEdits(),
+  wearable: [],
 });
 
 type Status = 'loading' | 'ready' | 'error';
@@ -91,7 +106,7 @@ function merge(raw: unknown): Settings {
   return {
     ...d,
     ...r,
-    consent: { ...d.consent, ...(r.consent ?? {}), purpose: CONSENT_PURPOSE, version: CONSENT_VERSION },
+    ...(mergeConsentFields(r, CONSENT_PURPOSE, CONSENT_VERSION) as Pick<Settings, 'consent' | 'consentHistory'>),
     sleep: { ...d.sleep, ...(r.sleep ?? {}) },
     answers: { ...(r.answers ?? {}) },
     symptoms: { ...(r.symptoms ?? {}) },
@@ -104,6 +119,8 @@ function merge(raw: unknown): Settings {
     morning: mergeMorningState(r.morning),
     routine: mergeRoutineMemory(r.routine),
     health: mergeHealth(r.health),
+    summaryEdits: normalizeSummaryEdits(r.summaryEdits),
+    wearable: normalizeWearable(r.wearable),
     v: 1,
   };
 }

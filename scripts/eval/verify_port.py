@@ -4,10 +4,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import numpy as np
 import night_logic as NL
+import adaptive_gate as AG
 
 f32, js = sys.argv[1], sys.argv[2]
 x = np.fromfile(f32, '<f4')
-level, floor_k, status = NL.window_status(NL.block_sums(x))
+blocks = NL.block_sums(x)
+level, floor_k, status = NL.window_status(blocks, AG.flatness_all(x, len(blocks) // 5 - 1))
 d = json.load(open(js))
 names = {'tooQuiet': NL.STATUS_TOO_QUIET, 'belowGate': NL.STATUS_BELOW_GATE, 'scored': NL.STATUS_SCORED}
 ts = {int(k): (names[s], lv, fl) for k, s, lv, fl in d['windows']}

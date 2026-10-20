@@ -41,3 +41,31 @@ describe('Summary regenerate-confirm', () => {
     expect((screen.getByLabelText('Questions for my clinician') as HTMLTextAreaElement).value).toBe('x');
   });
 });
+
+describe('Summary download', () => {
+  it('offers Download as text beside print, with a note, and builds a Blob file', () => {
+    const created: Blob[] = [];
+    const names: string[] = [];
+    URL.createObjectURL = ((b: Blob) => {
+      created.push(b);
+      return 'blob:x';
+    }) as typeof URL.createObjectURL;
+    URL.revokeObjectURL = () => {};
+    const click = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function (this: HTMLAnchorElement) {
+      names.push(this.download);
+    };
+    try {
+      setup();
+      expect(screen.getByText('Print / Save as PDF')).toBeTruthy();
+      fireEvent.change(screen.getByLabelText('Questions for my clinician'), { target: { value: 'edited words' } });
+      fireEvent.click(screen.getByText('Download as text'));
+      expect(names[0]).toMatch(/^sleepsmooth-summary-\d{4}-\d{2}-\d{2}\.txt$/);
+      expect(created).toHaveLength(1);
+      expect(created[0]!.type).toContain('text/plain');
+      expect(screen.getByText(/not uploaded/)).toBeTruthy();
+    } finally {
+      HTMLAnchorElement.prototype.click = click;
+    }
+  });
+});

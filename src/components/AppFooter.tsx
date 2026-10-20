@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { DELETE_DATA_LABEL, FOOTER_MODEL_CARD, FOOTER_SOURCES, FOOTER_TEXT, PRIVACY_POLICY_TITLE, SUPPORT_TITLE } from '../content/claims';
+import { ConsentHistory } from './ConsentHistory';
+import type { ConsentHistoryRecord } from '../types/consent';
+import { DELETE_DATA_LABEL, FOOTER_MODEL_CARD, FOOTER_SOURCES, FOOTER_TEXT, OFFLINE_WORKS_NOTE, PRIVACY_POLICY_TITLE, SUPPORT_TITLE } from '../content/claims';
 
 export interface AppFooterProps {
   onDelete: () => void;
+  /** Append-only consent choices, shown in a small list. */
+  consentHistory?: readonly ConsentHistoryRecord[];
 }
 
 /** Shown on every page. Links are in-page hash views; nothing is fetched. Deleting needs a second, explicit step. */
-export function AppFooter({ onDelete }: AppFooterProps) {
+export function AppFooter({ onDelete, consentHistory }: AppFooterProps) {
   const [confirming, setConfirming] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const cancel = useRef<HTMLButtonElement>(null);
@@ -33,6 +37,8 @@ export function AppFooter({ onDelete }: AppFooterProps) {
     <footer className="app-footer no-print">
       <div className="container">
         <p>{FOOTER_TEXT}</p>
+        {consentHistory && <ConsentHistory history={consentHistory} />}
+        <p className="card-state">{OFFLINE_WORKS_NOTE}</p>
         <nav aria-label="More information" className="footer-links">
           <a href="#/sources">{FOOTER_SOURCES}</a>
           <a href="#/model-card">{FOOTER_MODEL_CARD}</a>
@@ -52,7 +58,7 @@ export function AppFooter({ onDelete }: AppFooterProps) {
         {confirming && (
           <div id="confirm-delete" className="confirm-delete" role="alertdialog" aria-labelledby="confirm-delete-t" aria-describedby="confirm-delete-d" onKeyDown={onKeyDown}>
             <p id="confirm-delete-t" className="confirm-title">Delete everything you entered?</p>
-            <p id="confirm-delete-d">This clears your answers, any recording results and your summary from this browser tab. It cannot be undone.</p>
+            <p id="confirm-delete-d">This clears your answers, any wearable readings, any recording results, your summary and your consent history from this browser tab. It cannot be undone.</p>
             <div className="actions">
               <button
                 type="button"

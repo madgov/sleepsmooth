@@ -1,9 +1,9 @@
 import { useFocusEffect } from 'expo-router';
 import { useSafeRouter } from '../../src/nav/useSafeRouter';
-import { useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { DISCLAIMER_CANNOT_RULE_OUT, ERROR_BOUNDARY_ACTION, ERROR_BOUNDARY_MESSAGE, ERROR_BOUNDARY_TITLE } from '@core/content/claims';
-import { aggregateNights } from '@core/night';
+import { selectTrendRows, type TrendWindow } from '@core/mobileLogic/nightTrend';
 import { COPY } from '../../src/content/copy';
 import { useRealNights } from '../../src/data/nightSource';
 import { useRecordAction } from '../../src/hooks/useRecordAction';
@@ -11,6 +11,7 @@ import { AppText } from '../../src/ui/AppText';
 import { GlassCard } from '../../src/ui/GlassCard';
 import { IconTile } from '../../src/ui/IconTile';
 import { NightRow } from '../../src/ui/NightRow';
+import { NightTrend } from '../../src/ui/NightTrend';
 import { PrimaryButton } from '../../src/ui/PrimaryButton';
 import { SampleRow } from '../../src/ui/SampleRow';
 import { Screen, Stagger } from '../../src/ui/Screen';
@@ -30,7 +31,11 @@ export default function Nights() {
       reload();
     }, [reload]),
   );
-  const agg = aggregateNights(nights.map((n) => ({ nightState: n.state, isSynthetic: n.isSample })));
+  const [win, setWin] = useState<TrendWindow>(7);
+  const rows = useMemo(() => selectTrendRows(nights, win), [nights, win]);
+  // Nights outside the chosen window stay reachable as full cards below the list.
+  const shown = new Set(rows.map((r) => r.id));
+  const earlier = nights.filter((n) => !shown.has(n.id));
   return (
     <Screen tab title="Nights" testID="screen-nights" gap={14}>
       <Stagger i={0}>
@@ -63,16 +68,18 @@ export default function Nights() {
         </Stagger>
       ) : null}
 
-      {nights.map((n, i) => (
-        <Stagger key={n.id} i={i + 1}>
+      {status === 'ready' && rows.length > 0 ? (
+        <Stagger i={1}>
+          <NightTrend rows={rows} window={win} onWindowChange={setWin} onOpen={(id) => router.push(`/night/${id}`)} />
+        </Stagger>
+      ) : null}
+
+      {earlier.length > 0 && rows.length > 0 ? <SectionHeader title="Earlier nights" /> : null}
+      {earlier.map((n, i) => (
+        <Stagger key={n.id} i={i + 2}>
           <NightRow night={n} onPress={() => router.push(`/night/${n.id}`)} testID={`night-${n.id}`} />
         </Stagger>
       ))}
-      {agg.assessedNights >= 2 ? (
-        <AppText variant="subheadline" tone="secondary" style={{ paddingHorizontal: 4 }}>
-          {agg.observedNights > 0 && agg.observedNights < agg.assessedNights ? COPY.N57_VARIED : COPY.N56_OBSERVED_ON(agg.observedNights, agg.assessedNights)}
-        </AppText>
-      ) : null}
 
       {status !== 'loading' ? (
         <Stagger i={nights.length + 2} style={{ gap: 10 }}>

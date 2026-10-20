@@ -38,7 +38,7 @@ import {
   setPartnerPresence,
 } from '../questionnaire/partner';
 import { activeInstrument } from '../questionnaire/registry';
-import { unitSystem } from '../questionnaire/instruments/noSas';
+import { canonicalizeAnswers, displayUnitSystem, formatBody, setBodyValue, setDisplayUnits, toCanonical, unitLabel, type BodyField } from '../questionnaire/units';
 import { FREQUENCIES, FREQUENCY_LABELS, SYMPTOM_ITEMS, type SymptomAnswers } from '../questionnaire/symptomChecklist';
 import type { AnswerValue } from '../types/questionnaire';
 import type { SymptomFrequency } from '../types/questionnaire';
@@ -53,8 +53,16 @@ function isBad(value: AnswerValue | undefined): boolean {
   return typeof value === 'number' && !(value > 0);
 }
 
-function NumberField({ id, label, value, onChange, unit, submitted }: { id: string; label: string; value: AnswerValue | undefined; onChange: (v: number | null) => void; unit?: string; submitted?: boolean }) {
-  const n = typeof value === 'number' ? value : '';
+function NumberField({ id, label, value, onChange, unit, submitted, body }: { id: string; label: string; value: AnswerValue | undefined; onChange: (v: number | null) => void; unit?: string; submitted?: boolean; body?: { field: BodyField; system: 'metric' | 'imperial' } }) {
+  // For height, weight and neck the stored value is canonical (cm, kg) and the box shows the chosen unit. The typed text is kept
+  // as typed, so converting back and forth never rewrites what the person is entering.
+  const [text, setText] = useState<string | null>(null);
+  const typedMatches = (() => {
+    if (!body || text === null || typeof value !== 'number') return false;
+    const n = parseFloat(text);
+    return Number.isFinite(n) && Math.abs(toCanonical(body.field, n, body.system) - value) < 1e-9;
+  })();
+  const shown = typeof value !== 'number' ? '' : body ? (typedMatches ? (text as string) : formatBody(body.field, value, body.system)) : String(value);
   // Check when the person leaves the field (or tries to continue), not on every keystroke.
   const [touched, setTouched] = useState(false);
   const invalid = isBad(value) && (touched || Boolean(submitted));
@@ -69,10 +77,13 @@ function NumberField({ id, label, value, onChange, unit, submitted }: { id: stri
         type="number"
         inputMode="decimal"
         min={0}
-        value={n}
+        value={shown}
         aria-invalid={invalid}
         aria-describedby={invalid ? `${id}-err` : undefined}
-        onChange={(e) => onChange(e.target.value === '' ? null : Number(e.target.value))}
+        onChange={(e) => {
+          setText(e.target.value);
+          onChange(e.target.value === '' ? null : Number(e.target.value));
+        }}
         onBlur={() => setTouched(true)}
       />
       {invalid && (
@@ -91,8 +102,10 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
   const [showErrors, setShowErrors] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   useFocusHeading(root, stage);
-  const a = s.answers;
-  const imperial = unitSystem(a) === 'imperial';
+  // Saved answers are canonical (cm, kg). Older saved answers in inches and pounds are converted here, once.
+  const a = canonicalizeAnswers(s.answers);
+  const system = displayUnitSystem(a);
+  const bodyText = (f: BodyField): string | undefined => (typeof a[f] === 'number' ? `${formatBody(f, a[f] as number, system)} ${unitLabel(f, system)}` : undefined);
 
   const setA = (k: string, v: AnswerValue | undefined) => {
     const next = { ...a };
@@ -156,13 +169,13 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
           <legend>{NOSAS_QUESTIONS.units}</legend>
           {(['metric', 'imperial'] as const).map((u) => (
             <label key={u} className="choice">
-              <input type="radio" name="units" checked={unitSystem(a) === u} onChange={() => setA('units', u)} /> {u === 'metric' ? 'Metric (cm, kg)' : 'Imperial (in, lb)'}{' '}
+              <input type="radio" name="units" checked={system === u} onChange={() => s.setAnswers(setDisplayUnits(a, u))} /> {u === 'metric' ? 'Metric (cm, kg)' : 'Imperial (in, lb)'}{' '}
             </label>
           ))}
         </fieldset>
-        <NumberField id="q-height" submitted={showErrors} label={NOSAS_QUESTIONS.height} unit={imperial ? 'inches' : 'cm'} value={a.height} onChange={(v) => setA('height', v)} />
-        <NumberField id="q-weight" submitted={showErrors} label={NOSAS_QUESTIONS.weight} unit={imperial ? 'lb' : 'kg'} value={a.weight} onChange={(v) => setA('weight', v)} />
-        <NumberField id="q-neck" submitted={showErrors} label={NOSAS_QUESTIONS.neck} unit={imperial ? 'inches' : 'cm'} value={a.neckUnknown === true ? undefined : a.neck} onChange={(v) => setA('neck', v)} />
+        <NumberField id="q-height" submitted={showErrors} label={NOSAS_QUESTIONS.height} unit={unitLabel('height', system)} value={a.height} body={{ field: 'height', system }} onChange={(v) => s.setAnswers(setBodyValue(a, 'height', v, system))} />
+        <NumberField id="q-weight" submitted={showErrors} label={NOSAS_QUESTIONS.weight} unit={unitLabel('weight', system)} value={a.weight} body={{ field: 'weight', system }} onChange={(v) => s.setAnswers(setBodyValue(a, 'weight', v, system))} />
+        <NumberField id="q-neck" submitted={showErrors} label={NOSAS_QUESTIONS.neck} unit={unitLabel('neck', system)} value={a.neckUnknown === true ? undefined : a.neck} body={{ field: 'neck', system }} onChange={(v) => s.setAnswers(setBodyValue(a, 'neck', v, system))} />
         <p>
           <label className="choice">
             <input type="checkbox" checked={a.neckUnknown === true} onChange={(e) => setA('neckUnknown', e.target.checked ? true : undefined)} /> {NOSAS_QUESTIONS.neckUnknown}
@@ -305,9 +318,9 @@ export function Questionnaire({ onDone, onBack }: { onDone: () => void; onBack: 
       <h3>{activeInstrument.title}</h3>
       <dl>
         {[
-          ['Height', a.height === undefined || a.height === null ? a.height : `${a.height} ${imperial ? 'inches' : 'cm'}`],
-          ['Weight', a.weight === undefined || a.weight === null ? a.weight : `${a.weight} ${imperial ? 'lb' : 'kg'}`],
-          ['Neck circumference', a.neckUnknown === true ? "I don't know" : a.neck === undefined || a.neck === null ? a.neck : `${a.neck} ${imperial ? 'inches' : 'cm'}`],
+          ['Height', bodyText('height')],
+          ['Weight', bodyText('weight')],
+          ['Neck circumference', a.neckUnknown === true ? "I don't know" : bodyText('neck')],
           ['Snoring', a.snoring === undefined ? undefined : a.snoring ? 'Yes' : 'No'],
           ['Age', a.age],
           ['Sex assigned at birth', a.sex === 'male' ? 'Male' : a.sex === 'female' ? 'Female' : a.sex],

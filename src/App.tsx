@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { AppFooter, Disclaimer, ErrorBoundary, Stepper, useFocusHeading } from './components';
+import { AppFooter, Disclaimer, WearablePanel, ErrorBoundary, Stepper, useFocusHeading } from './components';
 import { DELETE_DATA_DONE, SKIP_LINK } from './content/claims';
 import { NextSteps } from './pages/NextSteps';
 import { Questionnaire } from './pages/Questionnaire';
@@ -96,9 +96,10 @@ function Shell() {
                   }}
                   onSkip={() => advance(3)}
                   onBack={() => advance(1)}
-                  onConsent={() => {}}
+                  onConsent={(r) => s.recordConsent(r.purpose, r.granted)}
                 />
               )}
+              {step === 2 && <WearablePanel entries={s.wearable} onChange={s.setWearable} />}
               {step === 3 && <Results onBack={() => advance(2)} onNext={() => advance(4)} onEdit={() => advance(1)} />}
               {step === 4 && <Summary onBack={() => advance(3)} onNext={() => advance(5)} />}
               {step === 5 && <NextSteps onBack={() => advance(4)} />}
@@ -110,7 +111,7 @@ function Shell() {
           {view === 'model-card' && <ModelCardView />}
         </Suspense>
       </main>
-      <AppFooter onDelete={deleteAll} />
+      <AppFooter onDelete={deleteAll} consentHistory={s.consentHistory} />
     </>
   );
 }

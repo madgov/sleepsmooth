@@ -40,7 +40,7 @@ import { Icon, type SymbolName } from '../ui/Icon';
 import { IconTile } from '../ui/IconTile';
 import { NeuSegmented } from '../ui/NeuSegmented';
 import { TimeWheel } from '../ui/TimeWheel';
-import { positive, type Draft } from './draft';
+import { convertDraftUnits, positive, type Draft } from './draft';
 import { BigNumberField, ChoiceCard, FooterActions, StepFrame } from './parts';
 import type { StepCtx, StepDef } from './Stepper';
 
@@ -72,7 +72,7 @@ function UnitsControl({ ctx }: { ctx: StepCtx }) {
       selectedIndex={ctx.draft.units === 'metric' ? 0 : 1}
       onChange={(i) => {
         void Haptics.selectionAsync();
-        ctx.set({ units: i === 0 ? 'metric' : 'imperial' });
+        ctx.set(convertDraftUnits(ctx.draft, i === 0 ? 'metric' : 'imperial'));
       }}
     />
   );

@@ -10,7 +10,7 @@ import { createModelHook } from '../audio/modelHook';
 import { loadShippedModel } from '../audio/model/infer';
 import { parseWav } from '../audio/testing/wav';
 import { base64ToInt8, decodeBits, decodeScores, dequantizeFeatures } from './codec';
-import { EPOCH_MS, FRAMES_PER_HOP, WINDOWS_PER_EPOCH } from './constants';
+import { EPOCH_MS, FRAMES_PER_HOP, V1_NIGHT, WINDOWS_PER_EPOCH } from './constants';
 import { FrameCache, logMelFrameSparse } from './frames';
 import { createNightPipeline, type WindowDebug } from './pipeline';
 import { StreamingResampler } from './resample';
@@ -95,7 +95,8 @@ describe('parity with the existing batch pipeline (gate off)', () => {
       const b = batch.windows[i]!;
       expect(seen[i]!.t0Sec).toBe(b.t0);
       expect(Math.abs((seen[i]!.score as number) - b.score)).toBeLessThan(1e-9);
-      expect(seen[i]!.snoreLike).toBe(b.snoreLike);
+      // The night pipeline flags v1 at its own night threshold (V1_NIGHT.flagThreshold), not the model's 0.795 used by the batch hook.
+      expect(seen[i]!.snoreLike).toBe(b.score >= V1_NIGHT.flagThreshold);
     }
     expect(seen.some((w) => w.snoreLike)).toBe(true);
   }, 60000);

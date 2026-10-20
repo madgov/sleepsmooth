@@ -21,6 +21,8 @@ import { selectedDiscussItems } from '../questionnaire/discussItems';
 import { activeInstrument } from '../questionnaire/registry';
 import { FREQUENCY_LABELS, SYMPTOM_ITEMS, type SymptomAnswers } from '../questionnaire/symptomChecklist';
 import { isPartnerEmpty, partnerSection, type PartnerObservations } from '../questionnaire/partner';
+import { wearableSection } from '../wearable/entries';
+import type { WearableObservation } from '../types/wearable';
 import type { AudioAnalysis } from '../types/audio';
 import type { EvidenceSummary } from '../types/evidence';
 import type { CareSummary, CareSummarySection } from '../types/report';
@@ -32,6 +34,8 @@ export interface ReportInput {
   redFlag: boolean | null;
   /** Optional bed-partner observations (user-reported, not scored). */
   partner?: PartnerObservations | null;
+  /** Optional user-entered wearable readings (never scored or interpreted). */
+  wearable?: readonly WearableObservation[] | null;
   evidence: EvidenceSummary;
   audio: AudioAnalysis | null;
   isSynthetic: boolean;
@@ -108,6 +112,7 @@ export function generateCareSummary(i: ReportInput): CareSummary {
   const sections: CareSummarySection[] = [
     mk('reported', SUMMARY_SECTION_TITLES.reported, 'user-reported', reportedText(i), syn),
     ...(isPartnerEmpty(i.partner) ? [] : [{ ...partnerSection(i.partner), ...(syn ? { isSynthetic: true as const } : {}) }]),
+    ...(i.wearable && i.wearable.length > 0 ? [wearableSection(i.wearable)] : []),
     mk('screening', SUMMARY_SECTION_TITLES.screening, 'user-reported', screeningText(i), syn),
     ...(discussText(i) === null ? [] : [mk('discuss', DISCUSS_SUMMARY_TITLE, 'user-reported', discussText(i) as string, syn)]),
     mk('audio', SUMMARY_SECTION_TITLES.audio, i.audio && i.audio.status === 'done' ? 'audio-observation' : 'missing', sampleLead(i) + audioText(i.audio), syn && !!i.audio),

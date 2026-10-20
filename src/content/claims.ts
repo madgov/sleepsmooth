@@ -568,7 +568,7 @@ export const DISCUSS_REVIEW_NONE = 'None ticked';
  * Model card, v1 (the model this build actually runs). Hand-written constants, checked against model/MODEL_CARD.md
  * and model/metrics.json by src/audio/modelCardInfo.test.ts. Do not edit one without the other.
  */
-export const MODEL_CARD_RUNNING_LINE = 'This app runs the first version (v1) of the snore-pattern model.';
+export const MODEL_CARD_RUNNING_LINE = 'The iPhone app runs the v3 snore-pattern model (YAMNet float32 TFLite plus a logistic head). It falls back to the first version (v1) in Expo Go, on the web, or if the model does not load or fails its start-up check.';
 export const MODEL_CARD_SOURCE_LINE =
   'Numbers are copied from model/MODEL_CARD.md (test fold 5 of ESC-50, window level, 95% ranges from resampling whole clips). Prototype; not clinically validated.';
 export const MODEL_CARD_SMALL_TEST =
@@ -637,3 +637,12 @@ export const MODEL_CARD_V3_OTHER_LIMITS =
 export const MODEL_CARD_V3_WEB_HEADING = 'A newer model (v3) runs in the iPhone app, not on this website';
 export const MODEL_CARD_V3_WEB_STATUS =
   'The SleepSmooth iPhone app uses v3 when it can run on the phone. This website always uses v1. v3 has not yet been run on a real iPhone (NOT VERIFIED); its numbers below come from an offline test.';
+
+// ---- Web summary download, multi-night note, offline (round 5). Append-only. ----
+export const SUMMARY_DOWNLOAD_BUTTON = 'Download as text';
+export const SUMMARY_DOWNLOAD_NOTE =
+  'The text file has the same content as the printed summary, including any edits you made. It is made in this browser and is not uploaded. The file name has no personal details. Not a diagnosis.';
+export const SUMMARY_DOWNLOAD_FAILED = 'The download did not start in this browser. Use Print / Save as PDF instead.';
+export const WEB_MULTI_NIGHT_NOTE =
+  'This website looks at one recording at a time. Tracking several nights is in the SleepSmooth iPhone app, which keeps a list of recorded nights on the phone. A list of nights is a record of what was recorded; it is not comparable to a clinical result and cannot rule out sleep apnea.';
+export const OFFLINE_WORKS_NOTE = 'Works offline after first load, in browsers that support it. Nothing you enter is sent anywhere either way.';

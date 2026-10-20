@@ -4,6 +4,7 @@ import { normalizePartner, type PartnerObservations } from '@core/questionnaire/
 import { discussIds, discussToAnswers } from '@core/questionnaire/discussItems';
 import type { SymptomAnswers } from '@core/questionnaire/symptomChecklist';
 import type { AnswerValue } from '@core/types/questionnaire';
+import { canonicalizeAnswers, convertTyped, displayUnitSystem, formatBody, toCanonical, type BodyField } from '@core/questionnaire/units';
 import { getSettings, updateSettings } from '../state/settings';
 
 export type Units = 'metric' | 'imperial';
@@ -28,12 +29,15 @@ const str = (v: AnswerValue | undefined) => (typeof v === 'number' ? String(v) :
 
 export function initialDraft(): Draft {
   const s = getSettings();
-  const a = s.answers;
+  // Stored answers are canonical (cm, kg). The draft shows them in the chosen units; older saved answers are converted once.
+  const a = canonicalizeAnswers(s.answers);
+  const units = displayUnitSystem(a);
+  const body = (f: BodyField) => (typeof a[f] === 'number' ? formatBody(f, a[f] as number, units, 2) : '');
   return {
-    units: a.units === 'imperial' ? 'imperial' : 'metric',
-    height: str(a.height),
-    weight: str(a.weight),
-    neck: str(a.neck),
+    units,
+    height: body('height'),
+    weight: body('weight'),
+    neck: body('neck'),
     neckUnknown: a.neckUnknown === true,
     snoring: typeof a.snoring === 'boolean' ? a.snoring : null,
     age: str(a.age),
@@ -51,15 +55,28 @@ export const positive = (t: string): boolean => {
 };
 const num = (t: string): number | null => (positive(t) ? parseFloat(t) : null);
 
+/** Flipping the units choice converts what was already typed, so the numbers keep meaning the same body measurement. */
+export function convertDraftUnits(d: Draft, to: Units): Draft {
+  if (d.units === to) return d;
+  return {
+    ...d,
+    units: to,
+    height: convertTyped('height', d.height, d.units, to),
+    weight: convertTyped('weight', d.weight, d.units, to),
+    neck: convertTyped('neck', d.neck, d.units, to),
+  };
+}
+
+/** Answers are written in the canonical units (cm, kg) with the display choice in displayUnits. */
 export function toAnswers(d: Draft): Record<string, AnswerValue> {
-  const a: Record<string, AnswerValue> = { units: d.units };
+  const a: Record<string, AnswerValue> = { units: 'metric', displayUnits: d.units };
   const h = num(d.height);
   const w = num(d.weight);
   const age = num(d.age);
   const neck = d.neckUnknown ? null : num(d.neck);
-  if (h !== null) a.height = h;
-  if (w !== null) a.weight = w;
-  if (neck !== null) a.neck = neck;
+  if (h !== null) a.height = toCanonical('height', h, d.units);
+  if (w !== null) a.weight = toCanonical('weight', w, d.units);
+  if (neck !== null) a.neck = toCanonical('neck', neck, d.units);
   if (d.neckUnknown) a.neckUnknown = true;
   if (d.snoring !== null) a.snoring = d.snoring;
   if (age !== null) a.age = age;

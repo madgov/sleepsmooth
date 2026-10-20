@@ -43,6 +43,9 @@ BED_LEVEL_DB = (-55.0, -40.0)
 LOGIT = lambda p: np.log(np.clip(p, 1e-6, 1 - 1e-6) / (1 - np.clip(p, 1e-6, 1 - 1e-6)))
 
 
+POST_AUDIO_HOOK = None      # optional: callable(audio float32 array) -> dict of extra arrays saved in the night's npz (scripts/eval/adaptive_gate.py render)
+
+
 def db(x):
     return 20 * np.log10(max(float(x), 1e-12))
 
@@ -292,8 +295,9 @@ def build_night(args):
                 bouts=bouts, bursts=burst_gt, distractors=dis, nWindows=int(nwin), nScored=int(len(scored)), nTooQuiet=int((status == 0).sum()),
                 nBelowGate=int((status == 1).sum()), seedPair=[SEED, idx], renderSeconds=round(time.time() - t0, 1))
     os.makedirs(outdir, exist_ok=True)
+    extra = POST_AUDIO_HOOK(out) if POST_AUDIO_HOOK else {}
     np.savez(os.path.join(outdir, f'night_{idx:02d}.npz'), level=level.astype(np.float32), floor=floor_k.astype(np.float32), status=status, score=score,
-             ytrue=ytrue, distractor=dwin, top1=top1)
+             ytrue=ytrue, distractor=dwin, top1=top1, **extra)
     json.dump(meta, open(os.path.join(outdir, f'night_{idx:02d}.json'), 'w'))
     return idx, meta
 

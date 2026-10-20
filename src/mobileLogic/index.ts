@@ -6,10 +6,21 @@ export type MinuteOfDay = number;
 
 const NBSP = ' ';
 
+/** True when the device locale uses a 24-hour clock (for example de-DE or fr-FR). Falls back to the 12-hour clock. */
+export function uses24HourClock(): boolean {
+  try {
+    const hc = new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).resolvedOptions().hourCycle;
+    return hc === 'h23' || hc === 'h24';
+  } catch {
+    return false;
+  }
+}
+
 export function formatClock(min: MinuteOfDay): string {
   const m = ((Math.round(min) % 1440) + 1440) % 1440;
   const h24 = Math.floor(m / 60);
   const mm = m % 60;
+  if (uses24HourClock()) return `${String(h24).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
   const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
   return `${h12}:${String(mm).padStart(2, '0')}${NBSP}${h24 < 12 ? 'am' : 'pm'}`;
 }

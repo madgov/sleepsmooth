@@ -194,3 +194,80 @@ The episode minimum (`NIGHT_EPISODE_MIN_FLAGGED`) was set to 3 so the summary's 
 **Caveat (thin margin):** the worst tuning night (breathing background, 2 h) had 11 false segments with 53 s of false flagged time; a real 7-8 h night with a
 similar sound would very likely exceed 60 s and read "snore-like observed". That error direction prompts a clinician conversation rather than reassuring anyone,
 but it is still a false observation. 20 synthetic nights from 32 snoring clips cannot estimate real-night rates.
+
+## 9. Adaptive level gate: pre-registered BEFORE any flatness value, any alternative-floor window status or any adaptive-gate result was computed
+Written 2026-10-20T02:50Z (system clock, UTC). What was already known when this was written, stated so nobody has to guess: section 8.2 (fixed gate G in {0..4, 6} at floor_600 + G: 0.85 false
+segments/h at 6 dB and 5.1 to 12.2/h below it on tuning nights, assessable 0.184 tuning / 0.278 check at 6 dB). NOT known: which windows cause the extra false segments, the spectral flatness
+of any window, how a floor with a shorter horizon behaves. No result of any candidate below was looked at.
+1. **Question.** The fixed margin (floor + 6 dB, floor = 10th percentile of per-second level over 600 s) leaves about 72 to 82% of synthetic windows unanalysed, because a stationary quiet bedroom
+   hovers within a few dB of its own floor. Can a margin tied to the night's own background, plus a stationarity test, analyse more of the night without more false segments?
+2. **Reference (the current rule).** assessable iff level >= max(-72 dBFS, floor_600 + 6 dB). Same model and operating point as section 8: v3 head, flag at p >= 0.98, 2-of-14 confirmation, segment = at least 3 confirmed
+   windows, gaps <= 10 s (`model/segment_eval.synthetic.json`). Night rule unchanged (E = 5, S = 60 s, section 8.1).
+3. **Candidate family (two-tier, fully specified).** Window k is assessable iff `level >= max(-72, floor_R,10% + 6)` (tier 1: unchanged margin, floor with horizon R) OR
+   (`level >= max(-72, floor_R,10% + X)` AND `flatness <= C`) (tier 2: windows that stand out less than 6 dB are analysed only if they are not stationary-noise-like).
+   - R (floor horizon, seconds) in {180, 300, 600}; the floor is the 10th percentile of per-second dB (1 dB bins, same histogram and 30 s minimum history as today). 600 is the current value.
+   - X (tier-2 margin, dB) in {0, 1, 2, 3, 4}.
+   - C (flatness cap) in {0.5, 0.25, 0.1, 0.05, 0.02}.
+   - **Flatness (defined once, ported to TS):** for the 1 s window (16000 samples at 16 kHz) take 8 frames of 512 samples with starts `round(i*(16000-512)/7)`, i = 0..7; apply a periodic Hann window; 512-point FFT; power
+     per bin averaged over the 8 frames; over bins 8..239 (250 to 7500 Hz) flatness = exp(mean(ln(P + 1e-18))) / (mean(P) + 1e-18). Flat noise is near 1, tonal or low-frequency-heavy sound is near 0.
+   75 candidates plus the reference. The reference is also run through the same code (R = 600, X = 6, i.e. no tier 2) and must reproduce the section 8 result (0.85 false segments/h, recall 0.915 on tuning).
+4. **Windows scored.** One render scores every window above the -72 dBFS silence floor with the v3 head (same seeds, same out-of-fold heads as `synthetic_nights.py`); a window's status under any candidate is then a mask over that one render.
+5. **Selection rule (TUNING nights = folds 1 and 2 only).** A candidate is admissible iff (a) false segments/h <= 2.0, (b) segment recall (all bouts, 5 s tolerance, `segment_eval.py`) >= the reference recall (43/47), and
+   (c) no tuning night fires the night rule (5 episodes, 60 s) from its FALSE segments alone. Choose the admissible candidate with the largest assessable fraction (scored windows / all windows, pooled); ties go to the lower false segments/h, then to R = 600 over 300 over 180, then to the larger X.
+6. **Adoption rule.** Adopt the chosen candidate only if (i) its tuning assessable fraction exceeds the reference's by at least 0.02 absolute, AND (ii) on the CHECK nights (folds 3 and 4, scored ONCE, only for the chosen candidate and the reference)
+   false segments/h <= 2.0, recall >= the reference check recall, and no check night fires from false segments alone. Otherwise keep the fixed 6 dB gate and report that. There is no second search.
+7. **Reported:** for the reference and the chosen candidate, tuning and check: false segments/h, recall, assessable fraction (pooled, and the per-night median), nights firing the night rule (all / false only). For all 75 candidates, tuning only.
+   Also reported: how much of any gain is assessable windows that contain no inserted snore or distractor (background-only windows). That number matters because a larger assessable fraction is only useful if it covers windows where
+   a snore could be heard; the metric itself rewards analysing background.
+8. **What this does NOT show.** Synthetic ESC-50 backgrounds over a constant -62 dBFS pink room tone, 8 snorers per fold; ten tuning nights. Nothing about real bedrooms, real fans, real partners or phone microphones.
+
+## 10. v1 fallback under the v3 night rule: pre-registered BEFORE any v1 night-level result was computed
+Written 2026-10-20T02:50Z (system clock, UTC), directly after section 9. The v1 MLP (`src/audio/model/model.json`, flag threshold 0.7952) now runs on devices without the YAMNet scorer, under `NIGHT_EPISODE_MIN_FLAGGED = 3` (was 5) and the night rule 5 episodes / 60 s that
+section 8.1 derived for the v3 operating point. The combination v1 + 3 + (5, 60) has never been evaluated.
+1. **Evaluation (no search).** The REAL TypeScript night pipeline's v1 scorer (`windowFeatures` + `scoreFeatures`, no gate) runs over the same 20 rendered SYNTHETIC nights; a window passes the gate in force after section 9 (reported at 6 dB as well).
+   Flag = score >= 0.7952, no k-of-n (as the app does for v1), segment = at least 3 flagged windows with gaps <= 10 s, night rule E = 5, S = 60 s. Reported tuning and check: false segments/h, segment recall, nights firing the night rule
+   (all / from false segments alone), i.e. the "snore-like observed" rate. Note the synthetic bouts contain snoring on every night (4 to 7 bouts), so a "snore-like observed" night is the correct answer on a night with an annotated bout; a night counts as "false-only" when only false segments reach the rule.
+2. **v1 is "clearly worse"** iff on the TUNING nights false segments/h > 2.0 OR at least one tuning night fires the night rule from false segments alone.
+3. **If clearly worse: separate v1 constants.** Grid: v1 flag threshold t1 in {0.7952, 0.85, 0.90, 0.95, 0.98}; M (minimum flagged windows per episode) in {3, 5, 8, 12}; E in {1..5}; S in {10, 20, 30, 45, 60, 90, 120} s. A combination is admissible iff
+   tuning false segments/h <= 2.0 AND no tuning night fires from false segments alone. Choose the admissible combination that fires on the most tuning nights; ties go to higher tuning segment recall, then t1 closer to 0.7952, then smaller M, then larger E, then larger S.
+   CHECK nights are scored once for the chosen v1 constants and the shared ones. If no combination is admissible, the shared constants stay and `MODEL_CARD.md` states that v1 night verdicts have no tuned operating point on the synthetic nights.
+4. **Implementation if adopted:** per-model constants in `src/night/constants.ts` selected by the epoch's `modelVersion`.
+5. **Limits.** Same as section 9.8, plus: v1 (an MLP trained on ESC-50-derived features) has no out-of-fold head for these nights and probably saw some of the clips that build them (to be confirmed from its training script), so v1's synthetic numbers may be optimistic and are not comparable one-to-one with v3's.
+
+### 10.A Addendum written after the section 10.1 baseline and BEFORE the section 10.3 sweep was run
+Written 2026-10-20T04:00Z (system clock, UTC). The baseline (10.1) has been computed: v1 is clearly worse by rule 10.2 at both gates (tuning false segments/h 13.25 at the fixed 6 dB gate and 35.45 at the section 9 gate; nights firing the
+night rule from false segments alone 4/10 and 7/10). Because tier 2 of the section 9 gate was selected for the v3 head only and made v1 worse still, the decision (taken after seeing these two baselines, so it is NOT a blind
+choice) is: **tier 2 is enabled only when the YAMNet scorer is in use; the v1 fallback keeps the fixed gate (floor + 6 dB).** The 10.3 sweep is therefore run at the fixed gate (`--gate ref`). Everything else in 10.3 is unchanged and
+the sweep has not been run at this time.
+
+### 9.R Results of section 9 (computed 2026-10-20 after sections 9 and 10 were written; SYNTHETIC nights only; `model/adaptive_gate.synthetic.json`, `scripts/eval/adaptive_gate.py eval`, run once)
+The full render (20 nights, every window above -72 dBFS scored; about 19 minutes per batch of 6 on a loaded machine) finished before the evaluation was run. The reference reproduced section 8 exactly (0.85 false segments/h, 43/47 bouts).
+Of 75 candidates, 30 were admissible (all with C <= 0.05; every candidate with C >= 0.1 had 1-2 tuning nights firing the night rule from false segments alone, or more than 2 false segments/h). **Chosen by the rule: R = 600 s, X = 0 dB, C = 0.05.**
+
+| | Tuning (folds 1-2) fixed 6 dB | Tuning, adaptive (R600, X0, C0.05) | Check (folds 3-4) fixed 6 dB | Check, adaptive |
+|---|---|---|---|---|
+| False segments/h | 0.85 | 0.85 | 0.00 | 0.00 |
+| Segment recall | 0.915 (43/47) | 0.915 (43/47) | 0.851 (40/47) | 0.851 (40/47) |
+| Assessable fraction (pooled) | 0.184 | **0.276** | 0.278 | **0.290** |
+| Assessable fraction (median night) | 0.120 | 0.332 | 0.162 | 0.171 |
+| Nights firing the night rule, all / false only | 7/10, 0 | 7/10, 0 | 8/10, 0 | 8/10, 0 |
+| Scored windows with no inserted sound (background only) | 19,067 of 26,486 (72%) | 32,344 of 39,808 (81%) | 32,205 of 40,059 | 33,898 of 41,762 |
+
+Selected others for context (tuning): R600 X4 C0.5 (flatness barely restrictive) 5.10 false/h, assessable 0.307; R600 X0 C0.1 8.00/h, 0.346; R600 X2 C0.05 0.85/h, 0.223; R600 X0 C0.02 0.85/h, 0.195.
+**Decision: adopted** (gain +0.092 on tuning >= 0.02; check false segments/h 0.00 <= 2.0, check recall unchanged, no check night fires from false segments alone). Honest reading: the pooled gain on CHECK nights is only +0.012;
+the tuning gain comes mostly from the ten tuning nights' quiet, tonal-heavy backgrounds, and about four in five of the extra analysed windows contain no inserted sound at all, so the larger assessable fraction mostly means "more quiet
+background was inspected", not "more snoring was heard" (recall did not rise). Window-time coverage is a property of the metric as pre-registered; it is not evidence of better detection. It was kept only because it cost nothing on the tested nights.
+Implementation: `src/night/adaptiveGate.ts`, constants `GATE_LOW_DB = 0`, `GATE_FLATNESS_CAP = 0.05`, pipeline tier 2 active for the YAMNet scorer only (see 10.A). Floor horizon stays 600 s (no shorter horizon was admissible-and-better).
+
+### 10.R Results of section 10 (computed 2026-10-20; SYNTHETIC nights only; `model/v1_night_baseline.synthetic.*.json`, `model/v1_night_eval.synthetic.json`)
+Baseline (10.1; v1 flag 0.795, no confirmation, episodes of >= 3 windows, 5 episodes / 60 s; v1 scores from the real TypeScript pipeline):
+
+| Gate | Tuning false seg/h | Tuning recall | Tuning nights firing (all / false only) | Check false seg/h | Check recall | Check nights firing (all / false only) |
+|---|---|---|---|---|---|---|
+| fixed 6 dB | 13.25 | 0.979 (46/47) | 10/10, 4 | 16.65 | 0.979 (46/47) | 10/10, 5 |
+| section 9 gate | 35.45 | 0.979 | 10/10, 7 | 17.15 | 0.979 | 10/10, 5 |
+
+v1 is clearly worse by rule 10.2 at both gates. Every synthetic night contains annotated bouts, so a "snore-like observed" verdict on all 10/10 nights is not itself wrong; the problem is that 4 to 7 of those nights would reach it from false segments alone.
+Sweep (10.3, at the fixed gate per 10.A; 700 combinations, 282 admissible): **chosen t1 = 0.95, M = 3, E = 5, S = 45 s.** Tuning: 0.55 false seg/h, recall 0.936 (44/47), 10/10 nights fire, 0 from false segments alone.
+CHECK (scored once): 4.35 false seg/h, recall 0.681 (32/47), 8/10 nights fire, **2/10 from false segments alone** (shared constants on check: 16.65/h, 0.979, 10/10, 5/10). So the per-model constants help a lot but v1 still misses the tuning
+guarantees on check nights; v1 stays a fallback with no validated operating point. Caveats: v1 is an MLP refit on ESC-50 folds 1-4 (`scripts/train.ts`), i.e. it has seen the clips that build these nights (in-sample, optimistic), unlike v3's out-of-fold heads.

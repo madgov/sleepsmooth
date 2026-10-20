@@ -237,7 +237,7 @@ Source: `docs/MODEL_ERROR_REPORT.md`, `model/segment_eval.synthetic.json`. 20 sy
 - Caveats: 32 distinct snoring clips back all bouts, the rhythm is imposed by the generator, the candidate sits at the edge of the tested threshold grid, and v3 parity with the iPhone TFLite runtime is unverified (desktop parity of the float32 file: PASS). **The candidate is the app's operating point since 2026-10-19** (`src/night/operatingPoint.ts`).
 
 ## v3 on iPhone: what ships and how the night is decided (2026-10-19)
-- **Pipeline:** 1 s windows on a 0.5 s hop at 16 kHz -> level gate (above -72 dBFS and >= `GATE_DB` = 6 dB over the rolling 10th-percentile floor; also the
+- **Pipeline:** 1 s windows on a 0.5 s hop at 16 kHz -> level gate (above -72 dBFS and >= `GATE_DB` = 6 dB over the rolling 10th-percentile floor, or >= floor + 0 dB with spectral flatness <= 0.05, section 9; also the
   energy pre-gate, so YAMNet never runs on quiet windows) -> YAMNet float32 TFLite on the centred 15,600 samples (as in training) -> v3 head -> flag at >= 0.98 ->
   confirmed if another flagged window lies within the same 14-window (7 s) run -> segments of >= 3 confirmed windows with gaps <= 10 s.
 - **Night rule:** "snore-like observed" iff >= 5 segments AND >= 60 s of flagged time inside them (`NIGHT_MIN_EPISODES`, `NIGHT_MIN_EPISODE_SEC`), chosen by the
@@ -253,3 +253,10 @@ Source: `docs/MODEL_ERROR_REPORT.md`, `model/segment_eval.synthetic.json`. 20 sy
 - **NOT VERIFIED:** v3 running on an iPhone at all; iPhone vs desktop output (only one start-up test tone is compared); CPU time, heat and battery over a night;
   any behaviour on real bedroom audio. No number here is a clinical accuracy, an apnea measure or a probability of anything.
 
+## Adaptive level gate and the v1 fallback under the v3 night rule (2026-10-20, SYNTHETIC nights only)
+- **Adaptive gate** (`docs/EVAL_PROTOCOL.md` sections 9 and 9.R, `model/adaptive_gate.synthetic.json`): a window is also analysed when it is within 0 to 6 dB of the rolling floor if its spectral flatness is at most 0.05 (not stationary-noise-like).
+  Pre-registered rule, 75 candidates, chosen on tuning nights. Same false segments (0.85/h tuning, 0.00 check) and recall (0.915 / 0.851) as the fixed gate; assessable fraction 0.184 to 0.276 (tuning), 0.278 to 0.290 (check).
+  About 80% of analysed windows contain no inserted sound, so this is more background inspected, not better detection. No real-bedroom result exists.
+- **v1 fallback** (sections 10, 10.A, 10.R, `model/v1_night_eval.synthetic.json`): under the shared rule v1 gave 13.25 false segments/h (tuning) and 16.65 (check), with 4/10 and 5/10 nights reaching "snore-like observed" from false segments alone.
+  v1 therefore has its own settings, chosen on tuning nights: flag at 0.95, 3-window episodes, 5 episodes, 45 s (`V1_NIGHT` in `src/night/constants.ts`, selected by `modelVersion`), and it keeps the fixed 6 dB gate.
+  On check nights this still gave 4.35 false segments/h, segment recall 0.68 and 2/10 nights firing from false segments alone. v1 is in-sample on these nights. Treat v1 night verdicts as low-confidence; there is no validated operating point.

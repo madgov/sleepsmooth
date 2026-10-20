@@ -13,11 +13,13 @@ import numpy as np
 SR = 16000
 SILENCE_FLOOR_DBFS = -72.0
 GATE_DB = 6.0
+GATE_LOW_DB = 0.0        # tier 2 of the adaptive gate (src/night/adaptiveGate.ts); applied only when window_status gets a `flat` array
+GATE_FLATNESS_CAP = 0.05
 ROLLING_FLOOR_SEC = 600
 FLOOR_PERCENTILE = 0.1
 FLOOR_MIN_HISTORY_SEC = 30
 EPISODE_MAX_GAP_SEC = 10.0
-EPISODE_MIN_FLAGGED = 5
+EPISODE_MIN_FLAGGED = 3   # = src/night/constants.ts NIGHT_EPISODE_MIN_FLAGGED (stale value 5 caught by verify_port.sh on 2026-10-19; every sweep passes M explicitly)
 WINDOW_SEC, HOP_SEC = 1.0, 0.5
 HIST_MIN_DB, HIST_BINS = -120, 121
 MIN_DB = -120.0
@@ -48,7 +50,7 @@ def _round_half_up(v):
     return np.floor(v + 0.5)
 
 
-def window_status(blocks):
+def window_status(blocks, flat=None):
     """blocks: per-100ms sum of squares of a whole capture (one segment from t=0).
     Returns (level_db[k], floor_db[k], status[k]) for every window k that fits (window k = [k*0.5 s, k*0.5 s + 1 s))."""
     nb = len(blocks)
@@ -79,7 +81,10 @@ def window_status(blocks):
     level = to_db((half[:nwin] + half[1:nwin + 1]) / SR)
     floor_k = floors[np.minimum(k // 2, nsec - 1)]
     gate = np.maximum(SILENCE_FLOOR_DBFS, floor_k + GATE_DB)
-    status = np.where(level < SILENCE_FLOOR_DBFS, STATUS_TOO_QUIET, np.where(level < gate, STATUS_BELOW_GATE, STATUS_SCORED)).astype(np.int8)
+    open_ = level >= gate
+    if flat is not None:       # tier 2 (EVAL_PROTOCOL section 9): quieter than floor + GATE_DB but not stationary-noise-like. flat[k] from adaptive_gate.flatness_all
+        open_ = open_ | ((level >= np.maximum(SILENCE_FLOOR_DBFS, floor_k + GATE_LOW_DB)) & (np.asarray(flat, np.float64)[:nwin] <= GATE_FLATNESS_CAP))
+    status = np.where(level < SILENCE_FLOOR_DBFS, STATUS_TOO_QUIET, np.where(~open_, STATUS_BELOW_GATE, STATUS_SCORED)).astype(np.int8)
     return level, floor_k, status
 
 

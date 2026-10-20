@@ -8,6 +8,7 @@ import { serializeTestLog } from '@core/mobileLogic/exportLog';
 import { readClipsManifest } from '../clips/clipFiles';
 import type { NightListItem } from '../data/nightSource';
 import { getNightStore } from '../data/nightStoreInstance';
+import { getSettings } from '../state/settings';
 
 export type ExportResult = 'shared' | 'web-unavailable' | 'failed';
 
@@ -21,6 +22,7 @@ export async function exportTestLog(night: NightListItem): Promise<ExportResult>
     const text = serializeTestLog({
       exportedAtMs: Date.now(),
       app: { version: Constants.expoConfig?.version ?? 'unknown', deviceModel: night.view.record.deviceModel, os: String(Platform.Version) },
+      wearable: getSettings().wearable,
       nights: [{ view: night.view, diagnostics: night.diagnostics, feedback, clips: manifest?.clips ?? [] }],
     });
     file = new File(Paths.cache, `sleepsmooth-test-log-${night.id}.json`);

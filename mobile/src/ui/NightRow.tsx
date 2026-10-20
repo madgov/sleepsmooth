@@ -40,7 +40,7 @@ export function presentationFor(state: NightAudioState, reasons: readonly string
 }
 
 const DATE_FMT = { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' } as const;
-export const nightTitle = (n: NightListItem): string => new Date(n.dateISO).toLocaleDateString('en-US', DATE_FMT).replace(',', ',');
+export const nightTitle = (n: NightListItem): string => new Date(n.dateISO).toLocaleDateString(undefined, DATE_FMT).replace(',', ',');
 const LONG_FMT = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' } as const;
 
 export function NightRow({ night, onPress, testID }: { night: NightListItem; onPress: () => void; testID?: string }) {
@@ -50,7 +50,7 @@ export function NightRow({ night, onPress, testID }: { night: NightListItem; onP
   const h = Math.floor(night.recordedMinutes / 60);
   const m = night.recordedMinutes % 60;
   const d = new Date(night.dateISO);
-  const spoken = `${night.isSample ? 'Sample data. ' : ''}${d.toLocaleDateString('en-US', LONG_FMT)}, recorded ${spokenDuration(night.recordedMinutes)}, ${p.line} ${COPY.N01_NOT_A_DIAGNOSIS}.`;
+  const spoken = `${night.isSample ? 'Sample data. ' : ''}${d.toLocaleDateString(undefined, LONG_FMT)}, recorded ${spokenDuration(night.recordedMinutes)}, ${p.line} ${COPY.N01_NOT_A_DIAGNOSIS}.`;
   return (
     <PressScale testID={testID} accessibilityLabel={spoken} onPress={onPress}>
       <Surface radius="xl" padding={16} level="L2" source={night.isSample ? 'sample' : p.border === 'missing' ? 'missing' : undefined}>
@@ -58,14 +58,14 @@ export function NightRow({ night, onPress, testID }: { night: NightListItem; onP
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
             <View style={{ width: 54, height: 58, borderRadius: 16, borderCurve: 'continuous', backgroundColor: colors.accentFill, alignItems: 'center', justifyContent: 'center' }} accessible={false}>
               <AppText variant="caption1" weight="700" tone="accent" maxFontSizeMultiplier={1.2}>
-                {d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })}
+                {d.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' })}
               </AppText>
               <AppText variant="title2" tabular weight="700" maxFontSizeMultiplier={1.2}>
                 {d.getUTCDate()}
               </AppText>
             </View>
             <View style={{ flex: 1, gap: 2 }}>
-              <AppText variant="headline">{d.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })}</AppText>
+              <AppText variant="headline">{d.toLocaleDateString(undefined, { weekday: 'long', timeZone: 'UTC' })}</AppText>
               <AppText variant="subheadline" tone="secondary" tabular>
                 {COPY.N58_RECORDED(h, m)}
               </AppText>

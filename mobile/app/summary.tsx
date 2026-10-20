@@ -6,12 +6,13 @@ import { Platform, Share, View } from 'react-native';
 import { ERROR_BOUNDARY_MESSAGE, SUMMARY_GENERATED_NOTE, SUMMARY_PRINT_NOT_DIAGNOSIS } from '@core/content/claims';
 import { buildSampleNightView } from '@core/night';
 import { buildSummary, summaryToHtml, summaryToPlainText } from '@core/mobileLogic/summaryText';
+import { applyEdits, resetSectionEdit, saveSectionEdit } from '@core/mobileLogic/summaryEdits';
 import { useRealNights } from '../src/data/nightSource';
-import { useSettings } from '../src/state/settings';
+import { updateSettings, useSettings } from '../src/state/settings';
 import { AppText } from '../src/ui/AppText';
 import { BackBar } from '../src/ui/ScreenHeader';
 import { Screen } from '../src/ui/Screen';
-import { Disclosure } from '../src/ui/Disclosure';
+import { SummarySectionEditor } from '../src/ui/SummarySectionEditor';
 import { InsetGroup, ListRow } from '../src/ui/InsetGroup';
 import { LimitsPanel } from '../src/ui/LimitsPanel';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
@@ -21,29 +22,6 @@ import { Surface } from '../src/ui/Surface';
 
 /** The web preview has no iOS share sheet; say so instead of a generic failure. */
 const WEB_SHARE_NOTE = Platform.OS === 'web' ? 'Sharing needs the iPhone app. This web preview cannot open a share sheet. Nothing was sent.' : null;
-
-/** Sections whose long lists are folded behind a Disclosure. Screening, audio, nights and limits always stay fully visible (labels, caveats, sources). */
-const FOLDABLE = new Set(['reported', 'discuss', 'guidance', 'questions']);
-
-function SummarySectionCard({ id, title, text }: { id: string; title: string; text: string }) {
-  const lines = text.split('\n');
-  const fold = FOLDABLE.has(id) && lines.length > 2;
-  return (
-    <Surface padding={0} testID={`summary-section-${id}`}>
-      <View style={{ gap: 6, padding: 16 }}>
-        <AppText variant="headline" accessibilityRole="header">
-          {title}
-        </AppText>
-        <AppText variant="body">{fold ? (lines[0] ?? '') : text}</AppText>
-      </View>
-      {fold ? (
-        <Disclosure title={`Show all ${lines.length - 1} lines`}>
-          <AppText variant="body">{lines.slice(1).join('\n')}</AppText>
-        </Disclosure>
-      ) : null}
-    </Surface>
-  );
-}
 
 export default function SummaryScreen() {
   const s = useSettings();
@@ -60,6 +38,7 @@ export default function SummaryScreen() {
         symptoms: s.symptoms,
         redFlag: s.redFlag,
         partner: s.partner,
+        wearable: s.wearable,
         realNights: nights.map((n) => n.view),
         sampleNight: useSample ? buildSampleNightView('snore-episodes') : null,
         generatedAtISO: new Date().toISOString(),
@@ -67,26 +46,36 @@ export default function SummaryScreen() {
     } catch {
       return 'error' as const;
     }
-  }, [status, s.answers, s.symptoms, s.redFlag, s.partner, nights, useSample]);
+  }, [status, s.answers, s.symptoms, s.redFlag, s.partner, s.wearable, nights, useSample]);
+
+  // Edits are applied on top of the freshly built summary. The disclaimer header, sources and footer are added by the
+  // exporters around the sections, so no edit can remove them.
+  const applied = useMemo(() => (built && built !== 'error' ? applyEdits(built.summary, s.summaryEdits) : null), [built, s.summaryEdits]);
+  const saveEdit = (id: string, text: string) => {
+    if (!built || built === 'error') return;
+    const generated = built.summary.sections.find((x) => x.id === id)?.text ?? '';
+    updateSettings((cur) => ({ ...cur, summaryEdits: saveSectionEdit(cur.summaryEdits, id, text, generated) }));
+  };
+  const resetEdit = (id: string) => updateSettings((cur) => ({ ...cur, summaryEdits: resetSectionEdit(cur.summaryEdits, id) }));
 
   const shareText = async () => {
-    if (!built || built === 'error') return;
+    if (!built || built === 'error' || !applied) return;
     setShareError(null);
     try {
-      await Share.share({ message: summaryToPlainText(built.summary, built.sampleOnly), title: 'SleepSmooth summary (not a diagnosis)' });
+      await Share.share({ message: summaryToPlainText(applied.summary, built.sampleOnly), title: 'SleepSmooth summary (not a diagnosis)' });
     } catch {
       setShareError(WEB_SHARE_NOTE ?? 'The summary could not be shared. Nothing was sent.');
     }
   };
 
   const sharePdf = async () => {
-    if (!built || built === 'error') return;
+    if (!built || built === 'error' || !applied) return;
     setShareError(null);
     setBusy(true);
     let uri: string | null = null;
     try {
       if (!(await Sharing.isAvailableAsync())) throw new Error('unavailable');
-      const r = await Print.printToFileAsync({ html: summaryToHtml(built.summary, built.sampleOnly) });
+      const r = await Print.printToFileAsync({ html: summaryToHtml(applied.summary, built.sampleOnly) });
       uri = r.uri;
       await Sharing.shareAsync(uri, { mimeType: 'application/pdf', UTI: 'com.adobe.pdf', dialogTitle: 'SleepSmooth summary (not a diagnosis)' });
     } catch {
@@ -128,9 +117,21 @@ export default function SummaryScreen() {
               </InsetGroup>
             ) : null}
 
-            {built.summary.sections.map((sec) => (
-              <SummarySectionCard key={sec.id} id={sec.id} title={sec.title} text={sec.text} />
-            ))}
+            {built.summary.sections.map((sec) => {
+              const shown = applied?.summary.sections.find((x) => x.id === sec.id);
+              return (
+                <SummarySectionEditor
+                  key={sec.id}
+                  id={sec.id}
+                  title={sec.title}
+                  text={shown?.text ?? sec.text}
+                  edited={applied?.editedIds.includes(sec.id) ?? false}
+                  stale={applied?.staleIds.includes(sec.id) ?? false}
+                  onSave={saveEdit}
+                  onReset={resetEdit}
+                />
+              );
+            })}
 
             <LimitsPanel />
 
@@ -140,7 +141,7 @@ export default function SummaryScreen() {
               <PrimaryButton label={busy ? 'Preparing PDF' : 'Share as PDF'} variant="tinted" onPress={sharePdf} disabled={busy} />
             </View>
             <AppText variant="footnote" tone="secondary">
-              Sharing opens the iOS share sheet. SleepSmooth does not send this anywhere itself.
+              Sharing opens the iOS share sheet. SleepSmooth does not send this anywhere itself. Edits are saved on this iPhone only and are removed by "Delete my data". Shared copies mark edited sections "Edited by you".
             </AppText>
           </>
         ) : null}

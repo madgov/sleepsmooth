@@ -7,12 +7,16 @@ import { computeCoverage } from './coverage';
 import { DEVICE_CRITERIA, diagnosticsNumbers, evaluateCriteria, type NightDiagnostics } from './diagnostics';
 import type { FeedbackFile } from './clipFeedback';
 import type { ClipMeta } from './clips';
+import { WEARABLE_SOURCE_LABEL } from '../content/wearable';
+import type { WearableObservation } from '../types/wearable';
 
 export const TEST_LOG_VERSION = 1;
 
 export interface TestLogInput {
   exportedAtMs: number;
   app: { version: string; deviceModel: string; os: string };
+  /** User-entered wearable readings, included as typed. Omitted from the log when empty. */
+  wearable?: readonly WearableObservation[];
   nights: { view: NightView; diagnostics: NightDiagnostics | null; feedback: FeedbackFile | null; clips: readonly ClipMeta[] }[];
 }
 
@@ -25,6 +29,7 @@ export function buildTestLog(input: TestLogInput): Record<string, unknown> {
     exportedAt: new Date(input.exportedAtMs).toISOString(),
     app: input.app,
     criteria: DEVICE_CRITERIA,
+    ...(input.wearable && input.wearable.length > 0 ? { wearableReadings: { note: WEARABLE_SOURCE_LABEL, entries: input.wearable } } : {}),
     nights: real.map((n) => {
       const r = n.view.record;
       const s = n.view.summary;

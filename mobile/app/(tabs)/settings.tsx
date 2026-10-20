@@ -20,6 +20,8 @@ import {
   SUPPORT_TITLE,
   SUPPORT_URL,
 } from '@core/content/claims';
+import { setOvernightConsent } from '@core/consent/history';
+import { ConsentHistoryList } from '../../src/ui/ConsentHistoryList';
 import { autoRecordRowValue, outcomeNote } from '@core/mobileLogic/autoRecord';
 import { RETENTION_OPTIONS, estimateStorageBytes, formatBytes } from '@core/mobileLogic/clips';
 import { clearClipTemp, deleteAllClips } from '../../src/clips/clipFiles';
@@ -92,7 +94,7 @@ export default function Settings() {
       destructive: true,
       onConfirm: () => {
         void captureController.stop().catch(() => undefined);
-        updateSettings((p) => ({ ...p, consent: { ...p.consent, granted: false, at: new Date().toISOString() } }));
+        updateSettings((p) => setOvernightConsent(p, false, new Date().toISOString()));
       },
     });
 
@@ -135,6 +137,16 @@ export default function Settings() {
             leading={tile('list.clipboard', 'violet')}
             trailing="chevron"
             onPress={() => router.push('/questionnaire?from=settings')}
+          />
+          <ListRow
+            title="Wearable readings"
+            subtitle="Numbers you type in from a watch or ring"
+            value={s.wearable.length > 0 ? String(s.wearable.length) : undefined}
+            accessibilityLabel={`Wearable readings. Numbers you type in from a watch or ring. ${s.wearable.length === 0 ? 'None entered' : `${s.wearable.length} entered`}`}
+            leading={tile('heart.text.square')}
+            trailing="chevron"
+            onPress={() => router.push('/wearable')}
+            testID="row-wearable"
           />
         </InsetGroup>
       </Stagger>
@@ -247,6 +259,7 @@ export default function Settings() {
             </PressScale>
           </View>
         ) : null}
+        <ConsentHistoryList history={s.consentHistory} />
       </Stagger>
 
       <Stagger i={5}>

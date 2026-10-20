@@ -3,6 +3,7 @@ import { useSafeRouter } from '../src/nav/useSafeRouter';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, ScrollView, View } from 'react-native';
+import { setOvernightConsent } from '@core/consent/history';
 import { bystanderAckIsFresh } from '@core/mobileLogic/index';
 import { FIRST_ENTRY_PRIMER_VERSION } from '@core/mobileLogic/autoRecord';
 import { CLIP_TOGGLE_BODY, CLIP_TOGGLE_DETAIL, CLIP_TOGGLE_TITLE } from '@core/content/claims';
@@ -46,9 +47,8 @@ export default function StartSheet() {
     // Just-in-time: consent, the bystander notice and the microphone are all handled here, on the first Record tap.
     const now = new Date().toISOString();
     updateSettings((p) => ({
-      ...p,
+      ...setOvernightConsent(p, true, now),
       bystanderNoticeAckAt: now,
-      consent: p.consent.granted ? p.consent : { ...p.consent, granted: true, at: now },
       clips: p.consent.granted ? p.clips : { ...p.clips, enabled: clipsOn, decidedAt: now },
     }));
     if ((await requestMic()) !== 'granted') {
@@ -67,9 +67,8 @@ export default function StartSheet() {
   const agree = async () => {
     const now = new Date().toISOString();
     updateSettings((p) => ({
-      ...p,
+      ...setOvernightConsent(p, true, now),
       bystanderNoticeAckAt: now,
-      consent: p.consent.granted ? p.consent : { ...p.consent, granted: true, at: now },
       clips: { ...p.clips, enabled: clipsOn, decidedAt: now },
       primerShownVersion: FIRST_ENTRY_PRIMER_VERSION,
     }));

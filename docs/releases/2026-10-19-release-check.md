@@ -1,19 +1,20 @@
 # Release check 2026-10-19
 
-Run at 2026-10-19 00:57 local time. Commit fd494ba plus uncommitted changes. Command: `npm run release:check`.
+Run at 2026-10-19 21:07 local time. Commit 9a6d0bb plus uncommitted changes. Command: `npm run release:check`.
 
 **Result: all executed steps passed.** Passing here means the build gates passed. It says nothing about how the app behaves on a phone: every device claim is NOT VERIFIED until the table at the end is filled in.
 
 | Step | Result | Time |
 |---|---|---|
-| Root typecheck (npm run typecheck) | PASS | 9s |
+| Root typecheck (npm run typecheck) | PASS | 8s |
 | Root lint (npm run lint) | PASS | 24s |
-| Root tests (npm test) | PASS | 76s |
-| Web build (npm run build) | PASS | 11s |
-| Forbidden-phrases test | PASS | 5s |
+| Root tests (npm test) | PASS | 74s |
+| Web build (npm run build) | PASS | 9s |
+| Forbidden-phrases test | PASS | 4s |
+| docs/CLINICAL_REVIEW_PACKET.md is up to date with the source copy (npm run docs:clinical) | PASS | 1s |
 | Mobile typecheck (cd mobile && npx tsc --noEmit) | PASS | 8s |
-| Expo export for iOS (npx expo export --platform ios) | PASS | 21s |
-| Expo dependency check (npx expo install --check) | PASS | 2s |
+| Expo export for iOS (npx expo export --platform ios) | PASS | 44s |
+| Expo dependency check (npx expo install --check) | PASS | 1s |
 | Model files the app bundles (v1 JSON, v3 head JSON, YAMNet TFLite) match model/MODEL_CARD.md (version, hash, metrics) | PASS | 0s |
 
 ## Output (last lines of each step)
@@ -42,12 +43,12 @@ Run at 2026-10-19 00:57 local time. Commit fd494ba plus uncommitted changes. Com
 [1m[30m[46m RUN [49m[39m[22m [36mv5.0.3 [39m[90m/Users/maadhavgovil/Sleep Apnea[39m
 
 
-[2m Test Files [22m [1m[32m68 passed[39m[22m[90m (68)[39m
-[2m      Tests [22m [1m[32m1099 passed[39m[22m[90m (1099)[39m
-[2m   Start at [22m 00:55:24
-[2m   Duration [22m 74.43s[2m (tests 50%, environment 44%, import 5%, transform 1%)[22m
+[2m Test Files [22m [1m[32m78 passed[39m[22m[90m (78)[39m
+[2m      Tests [22m [1m[32m1356 passed[39m[22m[90m (1356)[39m
+[2m   Start at [22m 21:05:07
+[2m   Duration [22m 73.21s[2m (environment 47%, tests 47%, import 4%, transform 2%)[22m
 
-[2mEnvironment [22m [33mjsdom was created 68 times[39m[2m · 213.42s total, 44% of tracked time[22m
+[2mEnvironment [22m [33mjsdom was created 78 times[39m[2m · 224.53s total, 47% of tracked time[22m
 [2m            [22m [2mcreate it once per worker with [22m[33mpool: 'vmThreads'[39m[2m (keeps per-file isolation) or [22m[33misolate: false[39m[2m (shares it across files)[22m
 [2m            [22m [2mlearn more: https://vitest.dev/guide/improving-performance#test-environments[22m
 ```
@@ -60,19 +61,20 @@ Run at 2026-10-19 00:57 local time. Commit fd494ba plus uncommitted changes. Com
 
 [36mvite v8.3.4 [32mbuilding client environment for production...[36m[39m
 transforming...
-✓ 89 modules transformed.
+✓ 119 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/index.html                      1.60 kB │ gzip:   0.79 kB
+dist/index.html                      1.81 kB │ gzip:   0.86 kB
+dist/sw.js                           3.42 kB
 dist/assets/parity-hLjHNuKS.mp3     48.94 kB
 dist/assets/parity-4Ca6RDhA.m4a     49.15 kB
 dist/assets/worker-N0HqG8J5.js      63.89 kB
-dist/assets/index-DBV_6MQK.css      24.01 kB │ gzip:   5.92 kB
-dist/assets/InfoViews-qhMnfufl.js    1.90 kB │ gzip:   0.71 kB
-dist/assets/index-BjV0s3Jh.js      371.57 kB │ gzip: 129.26 kB
-dist/assets/Parity-CWdXSz0-.js     437.89 kB │ gzip:  57.95 kB
+dist/assets/index-CR3Hmm9w.css      24.50 kB │ gzip:   6.00 kB
+dist/assets/InfoViews-G9WqtFvc.js    1.89 kB │ gzip:   0.71 kB
+dist/assets/index-BNJyhPOX.js      390.22 kB │ gzip: 135.38 kB
+dist/assets/Parity-QyFayjHY.js     435.16 kB │ gzip:  56.31 kB
 
-[32m✓ built in 503ms[39m
+[32m✓ built in 549ms[39m
 ```
 
 ### Forbidden-phrases test: PASS
@@ -83,8 +85,14 @@ dist/assets/Parity-CWdXSz0-.js     437.89 kB │ gzip:  57.95 kB
 
 [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
 [2m      Tests [22m [1m[32m44 passed[39m[22m[90m (44)[39m
-[2m   Start at [22m 00:56:51
-[2m   Duration [22m 2.90s[2m (import 54%, environment 39%, transform 6%, tests 1%)[22m
+[2m   Start at [22m 21:06:30
+[2m   Duration [22m 3.05s[2m (import 53%, environment 40%, transform 6%, tests 1%)[22m
+```
+
+### docs/CLINICAL_REVIEW_PACKET.md is up to date with the source copy (npm run docs:clinical): PASS
+
+```
+docs/CLINICAL_REVIEW_PACKET.md is up to date (246 lines).
 ```
 
 ### Mobile typecheck (cd mobile && npx tsc --noEmit): PASS
@@ -115,12 +123,12 @@ node_modules/react-native-audio-api/src/Audio/controls/icons/speaker-x.png (725B
 node_modules/react-native-audio-api/src/Audio/controls/icons/speaker.png (565B)
 
 › ios bundles (1):
-_expo/static/js/ios/entry-b2ecd87d971c93c143438aa081260f70.hbc (4.8MB)
+_expo/static/js/ios/entry-6e61d465cf193e5936c59cf39546e11b.hbc (4.9MB)
 
 › Files (1):
 metadata.json (1.9KB)
 
-Exported: /var/folders/y0/7k9wwn1s5xg0z_cfv5qwh2800000gp/T/sleepsmooth-export-ij2e3p
+Exported: /var/folders/y0/7k9wwn1s5xg0z_cfv5qwh2800000gp/T/sleepsmooth-export-mOGj1G
 ```
 
 ### Expo dependency check (npx expo install --check): PASS

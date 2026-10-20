@@ -16,7 +16,7 @@ export function lastReadText(iso: string | null, nowMs = Date.now()): string | n
   if (Number.isNaN(d.getTime())) return null;
   const clock = formatClock(d.getHours() * 60 + d.getMinutes());
   const same = new Date(nowMs).toDateString() === d.toDateString();
-  return same ? `today ${clock}` : `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${clock}`;
+  return same ? `today ${clock}` : `${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} ${clock}`;
 }
 
 export const healthRowValue = (status: HealthStatus, lastReadIso: string | null, nowMs?: number): string =>

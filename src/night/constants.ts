@@ -40,6 +40,15 @@ export const FRAMES_PER_HOP = HOP_SAMPLES_WINDOW / FRAME_HOP; // 50
  * tuning nights (G = 4 dB: 5.10/h, G = 0: 12.15/h, versus 0.85/h at 6), and recall did not rise (0.915 at every gate), so it stays 6.
  */
 export const GATE_DB = 6;
+/**
+ * PROVISIONAL, SYNTHETIC-night selection only. Tier 2 of the adaptive gate (src/night/adaptiveGate.ts, docs/EVAL_PROTOCOL.md section 9,
+ * model/adaptive_gate.synthetic.json): a window that is below floor + GATE_DB is still analysed if it is at least floor + GATE_LOW_DB AND its
+ * spectral flatness is at most GATE_FLATNESS_CAP (not stationary-noise-like). Chosen by the pre-registered rule from 75 candidates on the 10 tuning nights:
+ * same 0.85 false segments/h and recall as the fixed gate, assessable fraction 0.184 -> 0.276 (tuning) and 0.278 -> 0.290 (check, scored once). Most of the
+ * extra analysed windows are background-only; the gain says nothing about real bedrooms.
+ */
+export const GATE_LOW_DB = 0;
+export const GATE_FLATNESS_CAP = 0.05;
 /** PROVISIONAL. Rolling noise floor = 10th percentile of per-second RMS over this many seconds. */
 export const ROLLING_FLOOR_SEC = 600;
 export const FLOOR_PERCENTILE = 0.1;
@@ -123,3 +132,22 @@ export const NIGHT_QUALITY = {
   /** Lower-bound sanity: windows below the silence floor in more than this share of all windows. */
   marginalUncertainFraction: 0.5,
 } as const;
+
+// ---------------------------------------------------------------------------
+// v1 fallback model (docs/EVAL_PROTOCOL.md section 10, model/v1_night_eval.synthetic.json). SYNTHETIC nights only; PROVISIONAL.
+// ---------------------------------------------------------------------------
+/** Version-string prefix of the v1 MLP (src/audio/model/model.json). Anything else (the YAMNet scorer, sample or test nights) uses the shared constants above. */
+export const V1_MODEL_VERSION_PREFIX = 'sleepsmooth-snore-mlp-';
+/**
+ * v1 under the shared rule (flag at its shipped 0.795, 3-window episodes, 5 episodes / 60 s) gave 13.25 false segments per hour and 4 of 10 tuning nights
+ * firing from false segments alone on the synthetic nights, so it has its own settings, chosen by the rule pre-registered in section 10.3 (tuning nights only):
+ * flag threshold 0.95, episodes of >= 3 windows (same as shared), 5 episodes, 45 s. Check nights (scored once) were still worse than the v3 point: 4.35 false
+ * segments/h, 2 of 10 nights firing from false segments alone, segment recall 0.68. v1 is a fallback with no validated operating point.
+ */
+export const V1_NIGHT = { flagThreshold: 0.95, minEpisodes: 5, minEpisodeSec: 45 } as const;
+
+/** Night-level rule for the model that produced the night. */
+export function nightRuleFor(modelVersion: string | null): { minEpisodes: number; minEpisodeSec: number } {
+  if (modelVersion !== null && modelVersion.startsWith(V1_MODEL_VERSION_PREFIX)) return { minEpisodes: V1_NIGHT.minEpisodes, minEpisodeSec: V1_NIGHT.minEpisodeSec };
+  return { minEpisodes: NIGHT_MIN_EPISODES, minEpisodeSec: NIGHT_MIN_EPISODE_SEC };
+}

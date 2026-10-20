@@ -1,0 +1,35 @@
+{
+ "label": "SYNTHETIC nights. Not real-world performance. No clinical meaning.",
+ "gate": "ref",
+ "v1Threshold": 0.7952122356614229,
+ "shared": {
+  "M": 3,
+  "E": 5,
+  "S": 60
+ },
+ "tuning": {
+  "fpPerHour": 13.25,
+  "fp": 265,
+  "tp": 77,
+  "recall": 0.9787234042553191,
+  "caught": 46,
+  "bouts": 47,
+  "nights": 10,
+  "nightsFireAll": 10,
+  "nightsFireFalseOnly": 4,
+  "hours": 20.0
+ },
+ "check": {
+  "fpPerHour": 16.65,
+  "fp": 333,
+  "tp": 70,
+  "recall": 0.9787234042553191,
+  "caught": 46,
+  "bouts": 47,
+  "nights": 10,
+  "nightsFireAll": 10,
+  "nightsFireFalseOnly": 5,
+  "hours": 20.0
+ },
+ "clearlyWorse": true
+}

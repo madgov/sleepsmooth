@@ -17,6 +17,7 @@ import { nightRulesInput } from '../night';
 import type { NightAudioState, NightView } from '../night';
 import { generateCareSummary } from '../report/generate';
 import type { PartnerObservations } from '../questionnaire/partner';
+import type { WearableObservation } from '../types/wearable';
 import type { SymptomAnswers } from '../questionnaire/symptomChecklist';
 import type { CareSummary, CareSummarySection } from '../types/report';
 import type { AnswerValue } from '../types/questionnaire';
@@ -28,6 +29,8 @@ export interface SummaryArgs {
   redFlag: boolean | null;
   /** Optional bed-partner observations (user-reported, not scored). */
   partner?: PartnerObservations | null;
+  /** Optional user-entered wearable readings (not scored). */
+  wearable?: readonly WearableObservation[] | null;
   /** Real nights, newest first. */
   realNights: readonly NightView[];
   /** A sample night, included only when the user asks to preview with it. It is labelled everywhere it appears. */
@@ -59,7 +62,7 @@ export function nightLine(v: NightView): string {
   const s = v.summary;
   const utc = s.isSynthetic;
   const d = new Date(v.record.captureStart);
-  const date = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', ...(utc ? { timeZone: 'UTC' } : {}) });
+  const date = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', ...(utc ? { timeZone: 'UTC' } : {}) });
   const mod = (ms: number) => {
     const x = new Date(ms);
     return utc ? x.getUTCHours() * 60 + x.getUTCMinutes() : x.getHours() * 60 + x.getMinutes();
@@ -80,6 +83,7 @@ export function buildSummary(a: SummaryArgs): BuiltSummary {
     symptoms: a.symptoms,
     redFlag: a.redFlag,
     partner: a.partner,
+    wearable: a.wearable,
     evidence,
     audio: analysis,
     isSynthetic: sampleOnly,
@@ -100,8 +104,8 @@ export function buildSummary(a: SummaryArgs): BuiltSummary {
 }
 
 /** Plain text for the iOS share sheet. Always starts with the not-a-diagnosis statement. */
-export function summaryToPlainText(s: CareSummary, sampleOnly: boolean): string {
-  const head = [SUMMARY_PRINT_TITLE, SUMMARY_PRINT_NOT_DIAGNOSIS, ...(sampleOnly ? [NIGHT_SAMPLE_LABEL] : []), SUMMARY_GENERATED_NOTE, `Generated: ${s.generatedAt}`];
+export function summaryToPlainText(s: CareSummary, sampleOnly: boolean, extraLabels: readonly string[] = []): string {
+  const head = [SUMMARY_PRINT_TITLE, SUMMARY_PRINT_NOT_DIAGNOSIS, ...(sampleOnly ? [NIGHT_SAMPLE_LABEL] : []), ...extraLabels, SUMMARY_GENERATED_NOTE, `Generated: ${s.generatedAt}`];
   const body = s.sections.map((x) => `${x.title.toUpperCase()}\n${x.text}`);
   return [...head, '', body.join('\n\n'), '', `${SUMMARY_PRINT_SOURCES}: ${NOSAS_CITATION}`, '', DISCLAIMER_NOT_DIAGNOSIS].join('\n');
 }

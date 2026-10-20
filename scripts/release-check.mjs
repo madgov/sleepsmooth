@@ -136,6 +136,7 @@ const steps = [
   { id: 'test', title: 'Root tests (npm test)', run: sh('npm', ['test'], ROOT) },
   { id: 'build', title: 'Web build (npm run build)', run: sh('npm', ['run', 'build'], ROOT) },
   { id: 'forbidden-phrases', title: 'Forbidden-phrases test', run: sh('npx', ['vitest', 'run', 'src/content/forbiddenPhrases.test.ts'], ROOT) },
+  { id: 'clinical-packet', title: 'docs/CLINICAL_REVIEW_PACKET.md is up to date with the source copy (npm run docs:clinical)', run: sh('npx', ['tsx', 'scripts/gen-clinical-packet.mjs', '--check'], ROOT) },
   { id: 'mobile-tsc', title: 'Mobile typecheck (cd mobile && npx tsc --noEmit)', run: sh('npx', ['tsc', '--noEmit'], MOBILE) },
   { id: 'expo-export-ios', title: 'Expo export for iOS (npx expo export --platform ios)', run: sh('npx', ['expo', 'export', '--platform', 'ios', '--output-dir', exportDir], MOBILE) },
   { id: 'expo-install-check', title: 'Expo dependency check (npx expo install --check)', run: sh('npx', ['expo', 'install', '--check'], MOBILE, 5 * 60 * 1000) },

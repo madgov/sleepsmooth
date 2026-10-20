@@ -1,0 +1,384 @@
+{
+ "label": "SYNTHETIC nights. Not real-world performance. No clinical meaning.",
+ "thr": 0.98,
+ "confirm": "2-of-14",
+ "gate": "600,0,0.05",
+ "nights": [
+  {
+   "night": 0,
+   "fold": 1,
+   "hours": 2,
+   "all": {
+    "count": 8,
+    "bouts": 13
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 1
+   },
+   "trueOnly": {
+    "count": 8,
+    "bouts": 12
+   },
+   "confirmedFalseWindows": 3
+  },
+  {
+   "night": 1,
+   "fold": 2,
+   "hours": 2,
+   "all": {
+    "count": 20,
+    "bouts": 30
+   },
+   "falseOnly": {
+    "count": 5,
+    "bouts": 12
+   },
+   "trueOnly": {
+    "count": 13,
+    "bouts": 18
+   },
+   "confirmedFalseWindows": 95
+  },
+  {
+   "night": 2,
+   "fold": 3,
+   "hours": 2,
+   "all": {
+    "count": 2,
+    "bouts": 3
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 2,
+    "bouts": 3
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 3,
+   "fold": 4,
+   "hours": 2,
+   "all": {
+    "count": 13,
+    "bouts": 17
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 13,
+    "bouts": 17
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 4,
+   "fold": 1,
+   "hours": 2,
+   "all": {
+    "count": 9,
+    "bouts": 12
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 9,
+    "bouts": 12
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 5,
+   "fold": 2,
+   "hours": 2,
+   "all": {
+    "count": 14,
+    "bouts": 24
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 1
+   },
+   "trueOnly": {
+    "count": 13,
+    "bouts": 23
+   },
+   "confirmedFalseWindows": 3
+  },
+  {
+   "night": 6,
+   "fold": 3,
+   "hours": 2,
+   "all": {
+    "count": 11,
+    "bouts": 17
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 11,
+    "bouts": 17
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 7,
+   "fold": 4,
+   "hours": 2,
+   "all": {
+    "count": 7,
+    "bouts": 13
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 7,
+    "bouts": 13
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 8,
+   "fold": 1,
+   "hours": 2,
+   "all": {
+    "count": 5,
+    "bouts": 14
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 4
+   },
+   "trueOnly": {
+    "count": 5,
+    "bouts": 10
+   },
+   "confirmedFalseWindows": 53
+  },
+  {
+   "night": 9,
+   "fold": 2,
+   "hours": 2,
+   "all": {
+    "count": 11,
+    "bouts": 17
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 11,
+    "bouts": 17
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 10,
+   "fold": 3,
+   "hours": 2,
+   "all": {
+    "count": 10,
+    "bouts": 14
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 10,
+    "bouts": 14
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 11,
+   "fold": 4,
+   "hours": 2,
+   "all": {
+    "count": 13,
+    "bouts": 19
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 13,
+    "bouts": 19
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 12,
+   "fold": 1,
+   "hours": 2,
+   "all": {
+    "count": 6,
+    "bouts": 10
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 6,
+    "bouts": 10
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 13,
+   "fold": 2,
+   "hours": 2,
+   "all": {
+    "count": 1,
+    "bouts": 5
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 1,
+    "bouts": 5
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 14,
+   "fold": 3,
+   "hours": 2,
+   "all": {
+    "count": 7,
+    "bouts": 11
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 7,
+    "bouts": 11
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 15,
+   "fold": 4,
+   "hours": 2,
+   "all": {
+    "count": 6,
+    "bouts": 9
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 6,
+    "bouts": 9
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 16,
+   "fold": 1,
+   "hours": 2,
+   "all": {
+    "count": 1,
+    "bouts": 3
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 1,
+    "bouts": 3
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 17,
+   "fold": 2,
+   "hours": 2,
+   "all": {
+    "count": 15,
+    "bouts": 22
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 15,
+    "bouts": 22
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 18,
+   "fold": 3,
+   "hours": 2,
+   "all": {
+    "count": 5,
+    "bouts": 9
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 5,
+    "bouts": 9
+   },
+   "confirmedFalseWindows": 0
+  },
+  {
+   "night": 19,
+   "fold": 4,
+   "hours": 2,
+   "all": {
+    "count": 9,
+    "bouts": 16
+   },
+   "falseOnly": {
+    "count": 0,
+    "bouts": 0
+   },
+   "trueOnly": {
+    "count": 9,
+    "bouts": 16
+   },
+   "confirmedFalseWindows": 0
+  }
+ ],
+ "totals": {
+  "tuning": {
+   "nights": 10,
+   "hours": 20,
+   "pausesAll": 90,
+   "pausesFalseOnly": 5,
+   "nightsWithFalseOnlyPause": 1
+  },
+  "check": {
+   "nights": 10,
+   "hours": 20,
+   "pausesAll": 83,
+   "pausesFalseOnly": 0,
+   "nightsWithFalseOnlyPause": 0
+  }
+ }
+}

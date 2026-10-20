@@ -30,9 +30,8 @@ import {
   NIGHT_EPISODE_MIN_FLAGGED,
   NIGHT_MIN_ASSESSED_SEC,
   NIGHT_MIN_COVERAGE,
-  NIGHT_MIN_EPISODES,
-  NIGHT_MIN_EPISODE_SEC,
   NIGHT_QUALITY,
+  nightRuleFor,
   WINDOWS_PER_EPOCH,
   WINDOW_HOP_SEC,
   WINDOW_SEC,
@@ -159,7 +158,8 @@ export function nightAudioState(i: NightStateInput): { state: NightAudioState; r
   if (reasons.length > 0) return { state: 'not-assessed', reasons };
   if (!i.bandwidthApplicable) return { state: 'model-not-applicable', reasons: [MODEL_NOT_APPLICABLE] };
   if (i.assessableWindows === 0) return { state: 'not-assessed', reasons: [NIGHT_REASON_NO_WINDOWS] };
-  if (i.episodes >= NIGHT_MIN_EPISODES && i.episodeFlaggedSec >= NIGHT_MIN_EPISODE_SEC) return { state: 'snore-like-observed', reasons: [] };
+  const rule = nightRuleFor(i.modelVersion);
+  if (i.episodes >= rule.minEpisodes && i.episodeFlaggedSec >= rule.minEpisodeSec) return { state: 'snore-like-observed', reasons: [] };
   return { state: 'few-observations', reasons: [] };
 }
 

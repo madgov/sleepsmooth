@@ -342,3 +342,11 @@ textarea { max-width: 75ch; }
 .discuss-list legend { font-weight: 600; padding: 0 var(--space-1); }
 .discuss-list .choice { display: block; margin: var(--space-2) 0; }
 .discuss-src { display: block; margin-left: 1.75rem; font-size: 0.85rem; color: var(--muted); }
+/* Wearable entry and consent history (neutral on purpose: no status colours) */
+.wearable-label { font-weight: 600; margin: var(--space-2) 0; }
+.wearable-list { list-style: none; padding: 0; margin: 0 0 var(--space-3); }
+.wearable-list li { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; padding: var(--space-2) 0; border-bottom: 1px solid var(--border); }
+.wearable-list li > span:first-child { flex: 1 1 100%; }
+.wearable-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.consent-history { margin: var(--space-3) 0; }
+.consent-history ul { margin: var(--space-2) 0; padding-left: 1.25rem; }

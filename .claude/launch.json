@@ -18,6 +18,18 @@
         "cd mobile && npx expo start --web --port 8124 --clear"
       ],
       "port": 8124
+    },
+    {
+      "name": "web-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
+      "port": 4173
     }
   ]
 }

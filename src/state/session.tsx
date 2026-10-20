@@ -4,14 +4,21 @@ import type { SymptomAnswers } from '../questionnaire/symptomChecklist';
 import type { AudioAnalysis } from '../types/audio';
 import type { CareSummary } from '../types/report';
 import type { AnswerValue } from '../types/questionnaire';
-import { clearAllStorage, emptySession, loadSession, saveSession, type PersistedSession } from './storage';
+import type { ConsentPurpose } from '../types/consent';
+import type { WearableObservation } from '../types/wearable';
+import { appendConsent } from '../consent/history';
+import { clearAllStorage, deriveConsent, emptySession, loadSession, saveSession, WEB_CONSENT_VERSION, type PersistedSession } from './storage';
 
 export interface SessionApi extends PersistedSession {
   /** In memory only. Never persisted. */
   audio: AudioAnalysis | null;
   /** In memory only. Set when the audio came from the public sample recording (Amendment 4). */
   audioLabel: string | null;
+  /** Session-storage consent. Appends a record to the consent history. */
   setConsent(granted: boolean): void;
+  /** Any other purpose (for example 'audio-local-analysis'). Appends to the history only when the choice changes. */
+  recordConsent(purpose: ConsentPurpose, granted: boolean): void;
+  setWearable(list: WearableObservation[]): void;
   setAnswers(a: Record<string, AnswerValue>): void;
   setSymptoms(s: SymptomAnswers): void;
   setRedFlag(v: boolean | null): void;
@@ -41,12 +48,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const patch = useCallback((p: Partial<PersistedSession>) => setData((d) => ({ ...d, ...p })), []);
 
+  const recordConsent = useCallback((purpose: ConsentPurpose, granted: boolean) => {
+    setData((d) => {
+      const consentHistory = appendConsent(d.consentHistory, { purpose, version: WEB_CONSENT_VERSION, granted, at: new Date().toISOString() });
+      return consentHistory === d.consentHistory ? d : { ...d, consentHistory, consent: deriveConsent(consentHistory) };
+    });
+  }, []);
+
   const api = useMemo<SessionApi>(
     () => ({
       ...data,
       audio,
       audioLabel,
-      setConsent: (granted) => patch({ consent: { purpose: 'session-storage', granted, at: new Date().toISOString() } }),
+      setConsent: (granted) => recordConsent('session-storage', granted),
+      recordConsent,
+      setWearable: (wearable) => patch({ wearable }),
       setAnswers: (answers) => patch({ answers }),
       setSymptoms: (symptoms) => patch({ symptoms }),
       setRedFlag: (redFlag) => patch({ redFlag }),
@@ -65,7 +81,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setAudioLabel(null);
       },
     }),
-    [data, audio, audioLabel, patch, setAudio],
+    [data, audio, audioLabel, patch, setAudio, recordConsent],
   );
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>;
 }
